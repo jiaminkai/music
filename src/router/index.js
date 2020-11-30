@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import MusicDetails from '../views/MusicDetails.vue';
 import Dj from '../components/Dj/Dj.vue';
+import Top from '../views/TopList.vue';
 
 import index from '../views/index.vue';
 Vue.use(VueRouter)
@@ -33,6 +34,11 @@ const routes = [
         component:Dj
       }
     ]
+  },
+  {
+     path:'/Top',
+     name:'TopList',
+     component : Top
   }
 ]
 

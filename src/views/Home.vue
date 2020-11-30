@@ -10,12 +10,11 @@
         </el-header>
         <el-main>
             <router-view @palynewmusic="palynewmusic">
-
             </router-view>
         </el-main>
         <el-footer>
              <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
-             <play ref="paly" @godetails="godetails" @opend="opend" :like="likemusci"  @timeup="timeup"></play>
+             <play ref="paly" @gecishow="gecishow" @godetails="godetails" @opend="opend" :like="likemusci"  @timeup="timeup"></play>
         </el-footer>
     </el-container>
 
@@ -42,20 +41,20 @@
     title="播放历史"
     :visible.sync="drawer"
     :modal="false"
-    size="430px"
+    size="450px"
     :with-header="false">
     <div class="top">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="正在播放" name="first">
                   <template>
                     <el-table
-                          :data="likemusci"
-                          max-height="400"  
+                          :data="likemusci" 
                           :show-header="false"
+                          height="450px"
                           @row-click="onplay"
-                          @
                           @cell-mouse-enter="hoveraction"
                           @cell-mouse-leave="hoverleave"
+                          :key="itemkey"
                       >
                                   <el-table-column
                                       width="50"
@@ -88,7 +87,7 @@
                                   <span class="iconfont" style="margin-left:10px">&#xe674;</span>
                                 </div>
                                
-                                <span>{{scope.row.playtime}}</span>
+                                <span v-else>{{scope.row.playtime}}</span>
                             </template>
                           </el-table-column>
                           
@@ -107,6 +106,29 @@
     </div>
 
 </el-drawer>
+
+  <el-drawer
+    title="歌词"
+    :visible.sync="drawergeci"
+    :modal="false"
+    size="600px"
+    :with-header="false">
+        <div class="top">
+            <div class="geciname"><span>歌词</span> <span class="iconfont" @click="conle">&#xe701;</span></div>
+        </div>
+         <div class="lyricshowbox">
+           <div class="gecibox">
+               <p v-for="(item,index) in this.lyric" :key="index">{{item.text}}</p>
+           </div>
+         </div>
+    <div class="bottom">
+        <div>翻译</div>
+        <div>
+            <span>歌词纠正</span>
+        </div>
+    </div>
+
+</el-drawer>
   </div>
 </template>
 
@@ -114,22 +136,26 @@
 // @ is an alias to /src
 import NavMenu from '../components/home/NavMenu.vue'
 import Play from '../components/home/paly.vue'
-// import MusicDetails from '../views/MusicDetails.vue';
 import {Home,Subcount,LikeMusic,GetMusic,GetMusicDetails,Music} from '../components/home/home'// eslint-disable-line no-unused-vars
 import {btnLogin,Login,LoginDetail} from '../components/login/login'// eslint-disable-line no-unused-vars
+import { GetLyric } from "../components/MusicDetails/details";
 export default {
   name: 'Home',
   data(){
     return{ 
       activeName:'first',
-         drawer:false,
+      drawer:false,
+      drawergeci:false,
       token:'',
       likemusci:[],
       cookie:'',
+      palytime:'',
       only:[],
       newmusic:[],
       loginuser:{},
       uesrId:'',
+      itemkey:'',
+      lyric:[],
       percentage:0,
       islogin:false,
       loginchange:true,
@@ -151,7 +177,15 @@ export default {
     Play,
 
   },
-
+  watch:{
+    
+  },
+  mounted(){
+          this.$bus.$on('name',(value)=>{
+            console.log(value )
+            this.palytime=value
+        })
+  },
   methods:{
     godetails(val){
       this.$router.push({
@@ -159,25 +193,65 @@ export default {
         query:val
       })
     },
+    conle(){
+      this.drawergeci=false
+    },
+    // 歌词展示
+    async gecishow(val){
+      console.log(val.musicid)
+      this.lyric=[]
+      const {data:Lyric}  = await GetLyric(val.musicid) 
+      console.log(Lyric.lrc.lyric)
+      this.formatLyric(Lyric.lrc.lyric)
+      this.drawergeci=true
+    },
+    formatLyric(text) {
+      let arr = text.split("\n"); //原歌词文本已经换好行了方便很多，我们直接通过换行符“\n”进行切割
+      let row = arr.length; //获取歌词行数
+      for (let i = 0; i < row; i++) {
+        let temp_row = arr[i]; //现在每一行格式大概就是这样"[00:04.302][02:10.00]hello world";
+        let temp_arr = temp_row.split("]");//我们可以通过“]”对时间和文本进行分离
+        let text = temp_arr.pop(); //把歌词文本从数组中剔除出来，获取到歌词文本了！
+        //再对剩下的歌词时间进行处理
+        temp_arr.forEach(element => {
+          let obj = {};
+          let time_arr = element.substr(1, element.length - 1).split(":");//先把多余的“[”去掉，再分离出分、秒
+          let s = parseInt(time_arr[0]) * 60 + Math.ceil(time_arr[1]); //把时间转换成与currentTime相同的类型，方便待会实现滚动效果
+          obj.time = s;
+          obj.text = text;
+          this.lyric.push(obj); //每一行歌词对象存到组件的lyric歌词属性里
+        });
+      }
+      this.lyric.sort(this.sortRule); //由于不同时间的相同歌词我们给排到一起了，所以这里要以时间顺序重新排列一下
+       //把歌词提交到store里，为了重新进入该组件时还能再次渲染
+    },
+    sortRule(a, b) { //设置一下排序规则
+      return a.time - b.time;
+    },
 //  鼠标移入表格行事件
     hoveraction(row,event,column){
       console.log(row.userId,event,column)
-      this.likemusci.forEach(item=>{
-          if(item.userId==row.userId){
-            item.hover=true
-          }
+      var index= this.likemusci.findIndex(item=>{
+        return  item.userId==row.userId
       })
-      // this.$forceUpdate()
+      var a =this.likemusci[index]
+      a.hover=true
+      a.isonplay=true
+      this.$set(this.likemusci,index,a)
+
 
     },
 //  鼠标移出表格行事件
     hoverleave(row,event,column){
        console.log(row.userId,event,column)
-      // this.likemusci.forEach(item=>{
-      //     if(item.userId==row.userId){
-      //       item.hover=false
-      //     }
-      // })
+       var index= this.likemusci.findIndex(item=>{
+        return  item.userId==row.userId
+      })
+      var a =this.likemusci[index]
+      a.hover=false
+      a.isonplay=false
+      this.$set(this.likemusci,index,a)
+     
 
     },
     // 播放目录中的音乐
@@ -187,7 +261,6 @@ export default {
         return item.userId==row.userId
       })
       this.$refs.paly.i=a
-    //  this.$refs.paly.playmusic();
     },
 
     opend(val){
@@ -195,10 +268,18 @@ export default {
     },
     // 播放新歌
     palynewmusic(val){
-         this.likemusci.unshift(val)
-         this.$forceUpdate()
-         this.islogin
-         this.percentage =0
+     var  valid= this.likemusci.findIndex(item=>{
+        return  item.musicid==val.musicid
+      })
+      if(valid==-1){
+        this.likemusci.unshift(val)
+          window.sessionStorage.setItem('music',JSON.stringify(this.likemusci))
+        this.$forceUpdate()
+      }else{
+        this.$refs.paly.i=valid
+      }
+        this.islogin
+        this.percentage =0
         this.likemusci.forEach((item,index)=>{
             item.isonplay=false
             item.hover=false
@@ -257,6 +338,8 @@ export default {
           item.playtime= h+':'+s
         })
         this.music = this.likemusci[0]
+        this.$store.commit('SetMusic',this.likemusci)
+        window.sessionStorage.setItem('music',JSON.stringify(this.likemusci))
     },
     // 查看登录状态
     async loginchan(){
@@ -332,12 +415,12 @@ export default {
 <style >
 @font-face {
   font-family: 'iconfont';  /* project id 2223549 */
-  src: url('//at.alicdn.com/t/font_2223549_p9m953adpb.eot');
-  src: url('//at.alicdn.com/t/font_2223549_p9m953adpb.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2223549_p9m953adpb.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2223549_p9m953adpb.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2223549_p9m953adpb.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2223549_p9m953adpb.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_2223549_g4odzpizzem.eot');
+  src: url('//at.alicdn.com/t/font_2223549_g4odzpizzem.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.svg#iconfont') format('svg');
 }
 .iconfont{
     font-family:"iconfont" !important;
@@ -349,6 +432,34 @@ body{
   padding: 0;
   margin: 0;
 }
+.geciname{
+  display: flex;
+  font-size: 20px;
+  padding-top: 10px;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.geciname span{
+  display: block;
+  width: 60px;
+}
+.gecibox{
+  min-width: 230px;
+  height: auto;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.lyricshowbox{
+  width: 100%;
+  height: 450px;
+  margin-top: 20px;
+  background: chocolate;
+  position: relative;
+  overflow: hidden;
+}
 .el-header{
     background: #fff;
     box-shadow: 0px 2px 5px #cccccc;
@@ -357,8 +468,6 @@ body{
     position: sticky;
     top: 0;
     z-index: 333;
- 
-    
 }
 .container{
   width: 1200px;
@@ -399,9 +508,12 @@ body{
 }
 .el-drawer{
   height: 60% !important;
+  display: flex !important;
+  flex-direction: column !important;
   position: fixed !important;
   bottom: 60px !important;
   top: auto!important;
+  right: 20px !important;
   padding: 20px 30px;
 }
 .bottom{

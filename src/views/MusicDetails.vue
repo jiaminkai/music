@@ -1,14 +1,40 @@
 <template>
    
-<musicitem>
-          <div class="desc" slot="djdesc">
-            <div class="desctitle">专辑介绍</div>
-            <div class="djdesc">
-                {{this.array.djdesc}}
-            </div>
-            <span class="move">更多</span>
-        </div> 
-       
+<musicitem :music="this.music" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment">
+      
+       <div slot="dj">
+                 <div class="lyricbox">
+                        <p id="geici">歌词</p>
+                        <p v-for="(item,index) in this.array.lyric" :key="index">{{item}}</p>
+
+                </div>
+                <p class="slh" v-if="true">.....</p>
+                <div class="movegeci">
+                    <span  v-if="true" >更多<span class="iconfont">&#xe601;</span></span>
+                    <span v-else>收齐<span  class="iconfont">&#xe603;</span></span>
+                </div>
+                <div class="xiangsibox">
+                    <div class="xiangsi">
+                    <p>相似歌曲</p>
+                    <div class="xiangsige">
+                            <div class="xiangsiitem" v-for="(item,index) in this.songs" :key="index">
+                                <img :src="item.album.picUrl" alt="">
+                                <div class="xiangsimusic">{{item.name}}</div>
+                                <div class="xiangsiuser">{{item.artists[0].name}}</div>
+                                <div class="xiangsitime">{{item.bMusic.playTime}}</div>
+                                <audio :src="item.mp3Url"></audio>
+                            </div>
+                    </div>
+                </div>
+                </div>
+       </div>
+       <div slot="djcary">
+             <div class="djcary">
+                  <div><span>所属专辑</span><span>{{this.array.djname}}</span></div>
+                  <div><span>作词</span><span>{{this.array.user}}</span></div>
+                  <div><span>作曲</span><span>{{this.array.user}}</span></div>
+             </div>
+       </div>
 </musicitem>
 
 </template>
@@ -24,7 +50,6 @@ export default {
             array:{},
             palytime:'',
             songs:[],
-            textarea:'',
             hotcomment:[],
             newcomment:[]
 
@@ -294,6 +319,9 @@ color: #4a4a4a;
     height: auto;
     position: absolute;
 }
+.xiangsibox{
+    display: flex;
+}
 .xiangsi{
     display: flex;
     flex-direction: column;
@@ -306,7 +334,7 @@ color: #4a4a4a;
 }
 .xiangsige{
     background: #f7f7f7;
-    width: 600px;
+    width: 500px;
     padding: 15px 30px;
 }
 .xiangsiitem{
@@ -419,6 +447,6 @@ color: #4a4a4a;
 }
 .desc{
     height: 300px;
-    background: lavender;
+
 }
 </style>

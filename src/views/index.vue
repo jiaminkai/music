@@ -14,7 +14,6 @@ import Swiper from '../components/home/swipe.vue'
 import TuiMusic from '../components/home/TuiJianMusic.vue'
 import OnlyOne from '../components/home/OnlyOne.vue'
 import NewMusic from '../components/home/NewMusic.vue'
-// import MusicDetails from '../views/MusicDetails.vue';
 import {Home,Subcount,LikeMusic,GetMusic,GetMusicDetails,Music} from '../components/home/home'// eslint-disable-line no-unused-vars
 import {btnLogin,Login,LoginDetail} from '../components/login/login'// eslint-disable-line no-unused-vars
 export default {
@@ -24,7 +23,6 @@ export default {
       swipe:[],
       music:{},
       tuijianmusic:[],
-    //   likemusci:[],
       only:[],
       newmusic:[],
       uesrId:'',
@@ -52,24 +50,6 @@ export default {
 
          this.$emit("palynewmusic",music)
     },
-    //    // 查看登录状态
-    // async loginchan(){
-    //  const logs =await btnLogin()
-     
-    //  if(logs.data.profile!=null){
-    //    this.loginchange=false
-    //    console.log("已登录")
-    //    console.log(logs.data.profile)
-    //    this.uesrId=logs.data.profile.userId
-    //    this.loginuser =logs.data.profile
-    //    this.getuserSub(this.uesrId)
-    //    this.getlike(this.uesrId)
-
-        
-    //  }else{
-    //    this.loginchange=true
-    //  }
-    // },
     // 获取音乐
     async getmusic(id){
         var array=[]
@@ -81,20 +61,6 @@ export default {
         }
         return array
     },
-    // 获取喜欢的歌曲列表
-    // async getlike(id){
-    //     const {data:data} =await LikeMusic(id)
-    //    await this.getmusic(data.ids.join(',')).then(res=>{
-    //        this.likemusci=res
-    //     })
-    //     this.likemusci.forEach((item,index)=>{
-    //       item.isonplay=false
-    //       item.hover=false
-    //       item.index=index
-    //     })
-    //     this.$forceUpdate()
-    //     this.music = this.likemusci[0]
-    // },
 
     // 获取用户歌单
     async getuserSub(id,cookie){

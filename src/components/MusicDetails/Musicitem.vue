@@ -4,33 +4,43 @@
     <div class="container">
       <el-aside width="360px">
           <div class="djbox">
-              <div class="img">
-                  <img :src="this.array.picUrl" alt="">
+              <div class="img" >
+                  <img v-if="this.array!=undefined" :src="this.array.picUrl" alt="">
+                  <img v-else :src="this.dj.coverImgUrl" alt="">
               </div>
-              <div class="djcary">
-                  <div><span>所属专辑</span><span>{{this.array.djname}}</span></div>
-                  <div><span>作词</span><span>{{this.array.user}}</span></div>
-                  <div><span>作曲</span><span>{{this.array.user}}</span></div>
-              </div>
-              <solt name="djdesc" class="slotdesc">
+               <slot name="djdesc" class="slotdesc">
                   
-              </solt>
+              </slot>
+              <slot name="djcary">
+                 
+              
+              </slot>
+
+
           </div>
       </el-aside>
       <el-main>
           <div class="top">
                   <div class="musicname">
-                      <div>{{this.music.musicname}}</div>
+                      <div v-if="this.dj==undefined">{{this.music.musicname}}</div>
+                      <div v-else>{{this.dj.name}}</div>
                       <div class="icon">
-                             <el-avatar> user </el-avatar>
-                            <span>{{this.array.user}}</span>
+                            <el-avatar> user </el-avatar>
+                            <span  v-if="this.array!=undefined">{{this.array.user}}</span>
+                            <span v-else>{{this.dj.name}}</span>
+                            
                       </div>
-                      <div class="tabs">
+                      <div class="signature" v-if="this.dj!=undefined">{{this.dj.creator.signature}}</div>
+                      <div class="tabs" v-if="this.dj==undefined">
                           <span>#独立摇滚</span>
                           <span>#另类摇滚</span>
                       </div>
+                        <div class="tabs" v-else>
+                          <span v-for="(item,index) in this.dj.tags" :key="index">#{{item}}</span>
+                      </div>
                     <div class="Btnbox">
-                        <div><span class="iconfont">&#xe630;</span><span>立即播放</span></div>
+                        <div @click="allplay1" v-if="this.dj==undefined"><span class="iconfont">&#xe630;</span><span>立即播放</span></div>
+                        <div @click="allplay2" v-else><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
                         <div><span class="iconfont">&#xe607;</span><span>1314159</span></div>
                         <div><span class="iconfont">&#xe785;</span><span>分享</span></div>
                         <div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
@@ -38,28 +48,7 @@
               </div>
           </div>
           <slot name="dj">
-                    <!-- <div class="lyricbox">
-                        <p id="geici">歌词</p>
-                        <p v-for="(item,index) in this.array.lyric" :key="index">{{item}}</p>
-
-                </div>
-                <p class="slh" v-if="true">.....</p>
-                <div class="movegeci">
-                    <span  v-if="true" >更多<span class="iconfont">&#xe601;</span></span>
-                    <span v-else>收齐<span  class="iconfont">&#xe603;</span></span>
-                </div>
-                <div class="xiangsi">
-                    <p>相似歌曲</p>
-                    <div class="xiangsige">
-                            <div class="xiangsiitem" v-for="(item,index) in this.songs" :key="index">
-                                <img :src="item.album.picUrl" alt="">
-                                <div class="xiangsimusic">{{item.name}}</div>
-                                <div class="xiangsiuser">{{item.artists[0].name}}</div>
-                                <div class="xiangsitime">{{item.bMusic.playTime}}</div>
-                                <audio :src="item.mp3Url"></audio>
-                            </div>
-                    </div>
-                </div> -->
+              
           </slot>
 
            <div class="pinglun">
@@ -72,7 +61,7 @@
                 ></el-input>
                 <div class="pinglubtn">评论</div>
            </div>
-           <div class="oldpinglun">
+           <div class="oldpinglun" v-if="this.hotcomment!=undefined">
                <div class="hot">热门评论 <span>{{this.hotcomment.length}}</span></div>
                <div class="pingluitem" v-for="(item,index) in this.hotcomment" :key="index">
                    <div class="usersicon">
@@ -123,77 +112,43 @@
 </template>
 
 <script>
-import {Music,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../../components/MusicDetails/details';// eslint-disable-line no-unused-vars
+// import {Music,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../../components/MusicDetails/details';// eslint-disable-line no-unused-vars
 export default {
     name:'Detailsitem',
+    props:{
+music:{
+    type:Object
+},array:{
+    type:Object
+},
+songs:{
+    tyep:Array
+},
+hotcomment:{
+    type:Array
+},
+newcomment:{
+    type:Array
+},
+djmusic:{
+    type:Array
+},
+dj:{
+    type:Object
+}
+    },
     data(){
         return{
-            music:{},
-            array:{},
-            palytime:'',
-            songs:[],
-            textarea:'',
-            hotcomment:[],
-            newcomment:[]
-
+            textarea:''
         }
-    },
-    computed:{
-   
-    },
-    mounted(){
-        this.$bus.$on('name',(value)=>{
-            console.log(value )
-            this.palytime=value
-        })
     },
     methods:{
-     async getsong(){
-        const {data:data} = await GetSong(this.music.musicid)
-        console.log("相似",data )
-        this.songs=data.songs
-            this.songs.forEach(item=>{
-                var c= Math.floor(item.bMusic.playTime/1000/60)
-                var b=Math.floor(item.bMusic.playTime/1000%60)
-                if(c<10){c='0'+c}
-                if(b<10){b='0'+b}
-                    item.bMusic.playTime= c+':'+b
-            })
-        
-      },
-      async  getmusic(){
-          console.log(this.music)
-            const {data:list} = await GetDetails(this.music.musicid)// eslint-disable-line no-unused-vars
-            const {data:alcum}  = await GetAlbum(this.music.djid)
-            const {data:comment}  = await GetComment(this.music.musicid)
-            const {data:Lyric}  = await GetLyric(this.music.musicid) 
-            const {data:hotcomment}  = await GetHotComment(this.music.musicid)
-            console.log( comment)
-            this.hotcomment=hotcomment.hotComments
-            this.newcomment=comment.data.comments
-            this.hotcomment.forEach(item=>{
-                item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
-            })
-             this.newcomment.forEach(item=>{
-                item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
-            })
-            this.array =new Music(list.songs[0],alcum,comment,Lyric)
-            var c =this.array.lyric.replace(/\[.*?\]/g,'')
-            var snsArr=c.split(/[(\r\n)\r\n]+/);
-            snsArr.forEach((item,index)=>{
-                if(!item){
-                    snsArr.splice(index,1);//删除空项
-                }
-            })
-            // console.log(typeof(snsArr),snsArr )
-            this.array.lyric =snsArr
-        }
-    },
-    created(){
-       this.music= this.$route.query
-       this.getmusic(this.$route.query)
-       this.getsong()
-
+        allplay1(){
+                this.$emit('allplay1',this.music)
+            },
+        allplay2(){
+                this.$emit('allplay2')
+    }
     }
 }
 </script>
@@ -527,6 +482,10 @@ color: #4a4a4a;
 }
 .slotdesc{
     height: 300px;
-    background: #767676;
+   
+}
+.signature{
+    padding: 10px 0 20px 0;
+    font-size: 20px;
 }
 </style>

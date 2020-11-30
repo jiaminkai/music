@@ -1,6 +1,6 @@
 <template>
     <div class="palybox">
-        <img class="icon" :src="like[this.i].picUrl" alt="">
+        <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
         <div class="musictitle">
             <div class="name"><span >{{like[this.i].musicname }}</span>  - <span>{{ like[this.i].user}}</span></div>
             <div class="time">
@@ -22,7 +22,7 @@
                 <span class="iconfont" v-if="type==1" @click="change">&#xe66c;</span>
                 <span class="iconfont" v-if="type==2"  @click="change">&#xe613;</span>
                 <span class="iconfont" v-if="type==3"  @click="change">&#xe622;</span>
-                <span  class="iconfont" @click="geci(like[i])">&#xe727;</span>
+                <span  class="iconfont" @click="gecishow(like[i])">&#xe727;</span>
                 <span class="iconfont" @click="opendrawer">&#xe636;</span>
          </div>
 
@@ -59,9 +59,12 @@ export default {
         geci(val){
             this.$emit("godetails",val)
         },
+        gecishow(val){
+            this.$emit("gecishow",val)
+        },
 
         opendrawer(){
-            console.log("open" )
+            console.log("open")
             this.$emit("opend",!this.drawer)
         },
         // 上一首
@@ -146,6 +149,7 @@ export default {
     },
     
     },
+    
 
 }
 </script>

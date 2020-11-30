@@ -5,10 +5,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    music:{}
+    music:[]
   },
   mutations: {
-
+    SetMusic(state, payload){
+       console.log("aaa",payload)
+       state.music=payload
+    }
   },
   actions: {
   },
@@ -16,6 +19,6 @@ export default new Vuex.Store({
 
   },
   getters:{
-    
+   
   }
 })
