@@ -4,8 +4,10 @@ import Home from '../views/Home.vue'
 import MusicDetails from '../views/MusicDetails.vue';
 import Dj from '../components/Dj/Dj.vue';
 import Top from '../views/TopList.vue';
-
+import Song from '../views/Song.vue';
 import index from '../views/index.vue';
+import Singers from '../views/Singers.vue';
+import SingersDetails from "../views/SingersDetails.vue";
 Vue.use(VueRouter)
 
 const routes = [
@@ -39,7 +41,23 @@ const routes = [
      path:'/Top',
      name:'TopList',
      component : Top
-  }
+  },
+  {
+    path:'/Song',
+    name:'Song',
+    component : Song
+ },
+ {
+  path:'/Singers',
+  name:'Singers',
+  component : Singers
+}
+,
+ {
+  path:'/SingersDetails:id',
+  name:'SingersDetails',
+  component : SingersDetails
+}
 ]
 
 const router = new VueRouter({

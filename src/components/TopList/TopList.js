@@ -28,6 +28,11 @@ export function TopGuan(id){
         this.musicid=data.id
         this.name=data.al.name
         this.picUrl=data.al.picUrl
-
      }
  }
+ export class Guanimg{
+    constructor(data,lists){
+       this.picUrl=data.picUrl
+       this.tracks=lists.tracks
+    }
+}

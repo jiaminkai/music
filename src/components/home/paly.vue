@@ -176,6 +176,8 @@ export default {
     width: 100%;
     height: auto;
     padding: 5px 20px;
+    position: fixed;
+    z-index: 9;
 }
 .icon{
     width: 45px;

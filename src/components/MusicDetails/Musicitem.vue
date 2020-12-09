@@ -8,8 +8,8 @@
                   <img v-if="this.array!=undefined" :src="this.array.picUrl" alt="">
                   <img v-else :src="this.dj.coverImgUrl" alt="">
               </div>
-               <slot name="djdesc" class="slotdesc">
-                  
+            <slot name="djdesc" class="slotdesc">
+                   
               </slot>
               <slot name="djcary">
                  
@@ -30,7 +30,7 @@
                             <span v-else>{{this.dj.name}}</span>
                             
                       </div>
-                      <div class="signature" v-if="this.dj!=undefined">{{this.dj.creator.signature}}</div>
+                      <div class="signature" v-if="this.dj.creator!=undefined">{{this.dj.creator.signature}}</div>
                       <div class="tabs" v-if="this.dj==undefined">
                           <span>#独立摇滚</span>
                           <span>#另类摇滚</span>
@@ -45,7 +45,7 @@
                         <div><span class="iconfont">&#xe785;</span><span>分享</span></div>
                         <div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
                     </div>
-              </div>
+                  </div>
           </div>
           <slot name="dj">
               
@@ -81,7 +81,7 @@
                    </div>
                </div>
            </div>
-              <div class="newpinglun">
+              <div class="newpinglun" v-if="this.hotcomment!=undefined">
                <div class="hot">最新评论 <span>{{this.newcomment.length}}</span></div>
                <div class="pingluitem" v-for="(item,index) in this.newcomment" :key="index">
                    <div class="usersicon">

@@ -6,9 +6,8 @@
             <ul id="nav-ul">
                 <li><el-link :underline="false" @click="toindex">发现音乐</el-link></li>
                 <li><el-link :underline="false" href="/Top">排行榜</el-link></li>
-                <li><el-link :underline="false" href="#">歌单</el-link></li>
-                <li><el-link :underline="false" href="#">歌手</el-link></li>
-                <li><el-link :underline="false" href="#">视频</el-link></li>
+                <li><el-link :underline="false" href="/Song">歌单</el-link></li>
+                <li><el-link :underline="false" href="/Singers">歌手</el-link></li>
                 <li><el-link :underline="false" href="#">MV</el-link></li>
             </ul>
             <el-button circle icon="el-icon-search" />
