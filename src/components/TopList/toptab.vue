@@ -3,9 +3,9 @@
      <div class="top-row">
         <div span="4" class="toptitle">网易云官方榜</div>
         <div  class="top4">
-          <div @click="change(0)">新歌</div>
-          <div @click="change(1)">原创</div>
-          <div @click="change(2)">飙升</div>
+          <div :class="{'active':index==0}" @click="change(0)">新歌</div>
+          <div :class="{'active':index==1}" @click="change(1)">原创</div>
+          <div :class="{'active':index==2}" @click="change(2)">飙升</div>
        </div>
      </div>
       <div class="topguan">
@@ -225,10 +225,10 @@ transform: rotateY(25deg) translateX(-10px) translateZ(-140px);
   justify-content: space-between;
 }
 .imgitem:nth-child(1),.imgitem:nth-child(2),.imgitem:nth-child(5),.imgitem:nth-child(6){
-  background:#e3e3e3 ;
+  background:#fcfcfc ;
 }
 .imgitem:nth-child(3),.imgitem:nth-child(4),.imgitem:nth-child(7),.imgitem:nth-child(8){
-  background:#dfdfdf ;
+  background:#efefef ;
 }
 .move{
   line-height: 40px;
@@ -250,5 +250,10 @@ transform: rotateY(25deg) translateX(-10px) translateZ(-140px);
 }
 .allpaly span:nth-child(2){
  display: flex;
+}
+.active{
+  color:lightsalmon;
+  font-weight: 500;
+  border-bottom: lightsalmon 2px solid;
 }
 </style>

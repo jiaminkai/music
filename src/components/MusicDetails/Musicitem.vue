@@ -50,8 +50,8 @@
           <slot name="dj">
               
           </slot>
-
-           <div class="pinglun">
+            <pinglun :hotcomment="this.hotcomment" :newcomment="this.newcomment" ></pinglun>
+           <!-- <div class="pinglun">
                <div class="pinlutitle">评论</div>
                <el-input type="textarea" placeholder="我来说两句...."
                     v-model="textarea"
@@ -100,7 +100,7 @@
                        </div>
                    </div>
                </div>
-           </div>
+           </div> -->
       </el-main>
  
     </div>
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-// import {Music,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../../components/MusicDetails/details';// eslint-disable-line no-unused-vars
+import pinglun from '../../components/MusicDetails/pinlun.vue';// eslint-disable-line no-unused-vars
 export default {
     name:'Detailsitem',
     props:{
@@ -149,6 +149,9 @@ dj:{
         allplay2(){
                 this.$emit('allplay2')
     }
+    },
+    components:{
+        pinglun
     }
 }
 </script>
@@ -397,81 +400,7 @@ color: #4a4a4a;
 .xiangsitime{
     text-align: right;
 }
-.pinglun{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-bottom: 80px;
-    position: relative;
-}
-.pinlutitle{
-     text-align: left;
-    font-size: 24px;
-    font-weight: 500;
-    margin: 40px 0 30px 0;
-}
 
-.pinglubtn  {
-    display: block;
-    width: 100px;
-    height: 30px;
-    font-size: 16px;
-    line-height: 30px;
-    background: #ff410f;
-    border-radius: 30px;
-    margin:20px  0 30px 0;
-    color: #fff;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-}
-.oldpinglun,.newpinglun{
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-   
-}
-.newpinglun{
-    margin-top: 40px;
-}
-.hot{
-    font-size: 16px ;
-    margin: 15px 0;
-    font-weight: 500;
-    color: #4a4a4a;
-}
-.pingluitem{
-    margin: 10px 0;
-    display: flex;
-    box-shadow: 0 1px 0 0 #ededed;
-    padding-bottom: 20px;
-    
-}
-.pinglundesc{
-    width: 280px;
-    margin: 10px 0;
-    line-height: 22px;
-    white-space:inherit
-}
-.pinglundesc ,.pingluntime{
-     color: #999;
-    
-}
-.pingluntime span{
-    margin-right: 30px;
-    font-size: 16px;
-}
-.usersicon{
-    width: 40px;
-    min-height: 110px;
-    margin-right: 20px;
-}
-.usersicon img{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
 /* .a{
     width: 100%;
     height: 300px;

@@ -1,41 +1,11 @@
 <template>
-	<el-container>
-        <el-header>
-            <nav-menu></nav-menu>
-        </el-header>
-        <el-main>
-			<div class="sanxuan">
-				<div class="yunyantype">
-					<div>语种：</div>
-					<div class="yuzhong">
-						<ul>
-							<li v-for="(item,index) in type" :key="index" :a="1" @click="saixuna(item,1)">
-								<a href="#">{{item.name}}</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="catery">
-					<div>分类：</div>
-					<div class="cary">
-						<ul>
-							<li v-for="(item,index) in area" :key="index" :a="2" @click="saixuna(item,2)">
-								<a href="#">{{item.name}}</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="sanxuna">
-					<div>筛选：</div>
-					<div class="zimu">
-						<ul>
-							<li v-for="(item,index) in zimu" :key="index" :a="3" @click="saixuna(item,3)">
-								<a href="#">{{item.name}}</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
+	<singer-item   :type="type" :area="area" :zimu="zimu" :SingersList="SingersList"
+		@saixuna="saixuna"
+	>
+		<div slot="yunyantype">语种：</div>
+		<div slot="catery">分类：</div>
+		<div slot="zimu">筛选：</div>
+		<div slot="Singers">
 			<div class="Singers">
 				<div class="SingersBox">
 					<div class="SingersItem" @click="SingersDetails(item.id)" v-for="(item,index) in this.SingersList " :key="index">
@@ -46,19 +16,13 @@
 					</div>
 				</div>
 			</div>
-			
-        </el-main>
-        <el-footer>
-            <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
-            <bottom   :like="music" @timeup="timeup" ></bottom>
-        </el-footer>
-    </el-container>
-
+		</div>
+	</singer-item>
 </template>
 
 <script>
-import NavMenu from '../components/home/NavMenu.vue'
-import bottom from '../components/home/paly.vue'
+
+import SingerItem from '../components/Singers/SingerItem.vue';
 import { SingersTop,Singerscart } from "../components/Singers/Singers";
 export default {
 	
@@ -116,15 +80,14 @@ export default {
 
 			],
 			info:{
-				tyep:-1,
+				type:-1,
 				area:-1,
 				initial:'-1'
 			}
 		}
 	},
 	components:{
-		NavMenu,
-		bottom
+		SingerItem
 	},
 	mounted(){
 		this.$bus.$on('name',(value)=>{
@@ -143,9 +106,6 @@ export default {
 			const {data:data} =await SingersTop()
 			console.log(data.list.artists)
 			this.SingersList=data.list.artists
-		},
-		timeup(val){
-			console.log(val )
 		},
 		async saixuna(item,a){
 			console.log("saixuna",a)
@@ -178,6 +138,7 @@ export default {
 .Singers{
 	width: 1200px;
 	margin: 0 auto;
+	background: #fff;
 }
 .SingersBox{
 	display: flex;
@@ -196,6 +157,17 @@ export default {
 	height: 100px;
 	border-radius: 50%;
 	margin-bottom: 10px;
+	position: relative;
+}
+::v-deep .Singersicon img::after{
+	content: "正在加载";
+	display: block;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background:url('../assets/icon.jpg') ;
 }
 .Singersicon img:hover{	
 	box-shadow: 0px 2px 5px;
@@ -204,42 +176,5 @@ export default {
 .Singersicon div{
 	font-size: 14px;
 }
-.sanxuan{
-	width: 1200px;
-	margin: 0 auto;
-	padding-bottom: 30px;
-	font-size: 14px;
-}
-.sanxuan div {
-	height: 30px;
-	line-height: 30px;
-}
-.yunyantype,.catery,.sanxuna{
-	text-align: left;
-	display: flex;
-	align-items: center;
-	height: 30px;
-	padding: 2px 0;
-}
-.yuzhong,.cary{
-	display: flex;
-}
-ul{
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-li{
-	float: left;
-	line-height: 30px;
-	
-	
-	
-}
-li a{
-	padding: 0 15px;
-	border-right: 1px #ccc solid;
-	text-decoration: none;
-	color: orange;
-}
+
 </style>

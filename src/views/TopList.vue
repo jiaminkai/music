@@ -103,11 +103,12 @@ export default {
 .container{
 width: 1200px;
 margin: 0 auto;
-box-shadow: 1px 0px 13px;
+box-shadow: 0px 0px 8px #efefef;
+margin-bottom: 100px;
 background: #fff;
 }
 .el-main{
-background: #cecece;
+background: #fefefe;
 }
 
 </style>

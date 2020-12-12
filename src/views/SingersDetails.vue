@@ -226,6 +226,7 @@ export default {
 	margin: 0 auto;
 	display: flex;
 	padding-bottom: 100px;
+	background: #fff;
 }
 .desc{
 	width: 200px;

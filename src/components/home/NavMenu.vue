@@ -4,14 +4,13 @@
                 <img src="http://images.shejidaren.com/wp-content/uploads/2014/09/021504BV4.jpg" alt="">
             </div>
             <ul id="nav-ul">
-                <li><el-link :underline="false" @click="toindex">发现音乐</el-link></li>
+                <li><el-link :underline="false" href="/">发现音乐</el-link></li>
                 <li><el-link :underline="false" href="/Top">排行榜</el-link></li>
                 <li><el-link :underline="false" href="/Song">歌单</el-link></li>
                 <li><el-link :underline="false" href="/Singers">歌手</el-link></li>
-                <li><el-link :underline="false" href="#">MV</el-link></li>
+                <li><el-link :underline="false" href="/MV">MV</el-link></li>
             </ul>
             <el-button circle icon="el-icon-search" />
-            
         </div>
 </template>
 
@@ -19,9 +18,13 @@
 export default {
  name:'NavMenu',
  methods:{
-     toindex(){
-         this.$router.push('/')
-     }
+
+ },
+ watch:{
+    '$route': function (to, from) {
+        console.log( )
+    //执行数据更新查询
+    }
  }
 }
 </script>

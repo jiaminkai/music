@@ -8,6 +8,9 @@ import Song from '../views/Song.vue';
 import index from '../views/index.vue';
 import Singers from '../views/Singers.vue';
 import SingersDetails from "../views/SingersDetails.vue";
+import MV from "../views/MV.vue";
+import MVDetail from "../components/MV/MvDetails.vue";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -57,6 +60,18 @@ const routes = [
   path:'/SingersDetails:id',
   name:'SingersDetails',
   component : SingersDetails
+}
+,
+ {
+  path:'/MV',
+  name:'MV',
+  component : MV
+}
+,
+ {
+  path:'/MVDetail:id',
+  name:'MVDetail',
+  component : MVDetail
 }
 ]
 
