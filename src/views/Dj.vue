@@ -41,8 +41,6 @@
                     label="歌手"
                     min-width="180"
                     prop="user"
-
-
                 ></el-table-column>
                 <el-table-column
                    label="专辑"
@@ -52,7 +50,6 @@
                 <el-table-column
                    label="时长"
                    min-width="120"
-                   
                 >
                     <template slot-scope="scope">
                          <div v-if="!scope.row.hover">{{scope.row.playtime}}</div>
@@ -66,13 +63,12 @@
             </el-table>
         </div>
   </musicitem>
-  
 </template>
 
 <script>
-import { GetDj, GetDjComment} from "./Dj";
-import { GetMusicDetails,Music,GetMusic} from "../../components/home/home";
-import Musicitem from '../../components/MusicDetails/Musicitem.vue';
+import { GetDj, GetDjComment} from "../components/Dj/Dj";
+import { GetMusicDetails,Music,GetMusic} from "../components/home/home";
+import Musicitem from '../components/MusicDetails/Musicitem.vue';
 export default {
     name:'Dj',
     data(){
@@ -110,17 +106,10 @@ export default {
     },
     allplay2(){
                 console.log("全部播放")
-                var  a =[]
-                this.music.forEach(item=>{
-                    a.push(item)
-                })
-
-                a.reverse()
-                console.log("a",a )
-                a.forEach(item=>{
-                     console.log(this.$parent.$parent.$parent.palynewmusic(item))
-                })
-                
+                var mus = JSON.parse(sessionStorage.getItem('music'))
+                mus.unshift(...this.music)
+                console.log("legthn",mus.length)
+                this.resetSetItem('music', JSON.stringify(mus))
       },
       paly(row, column, event){
           console.log(row.url,column,event )
@@ -132,10 +121,14 @@ export default {
         })
         console.log("index",index )
         var a =this.music[index]
-        console.log(a )
+        console.log("a",a )
         a.ispaly=true
         this.$set(this.music,index,a)
-          this.$parent.$parent.$parent.palynewmusic(row)
+        var mus = JSON.parse(sessionStorage.getItem('music'))
+        mus.unshift(row)
+        // sessionStorage.clear()
+        this.resetSetItem('music', JSON.stringify(mus));
+
       },
       async  getDj(id){
           const {data:data} =await GetDj(id)
@@ -150,7 +143,7 @@ export default {
         },
         async GetComment(id){
             const {data:data} =await GetDjComment(id)
-            console.log("aaaa",data.comments)
+            console.log("aaaa品论",data.comments)
             this.comment =data.comments
 
         },

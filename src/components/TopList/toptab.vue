@@ -12,16 +12,17 @@
           <div class="topguanitem" v-if="this.index==0">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[0].list[0].picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[0].list[1].picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[0].list[2].picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.guan[0].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.guan[0].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.guan[0].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
                   <div class="allpaly"><span>全部播放</span> <span class="move">详情<div class="iconfont move">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[0].list" :key="index">
-                          <img :src="n.picUrl" alt="">
+                          <img :src="n.al.picUrl" alt="">
+                          <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
                       </div>
                   </div>
@@ -33,16 +34,17 @@
           <div class="topguanitem" v-if="this.index==1">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[1].list[0].picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[1].list[1].picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[1].list[2].picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.guan[1].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.guan[1].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.guan[1].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
                   <div class="allpaly"><span>全部播放</span> <span>详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[1].list" :key="index">
-                          <img :src="n.picUrl" alt="">
+                          <img :src="n.al.picUrl" alt="">
+                          <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
                       </div>
                   </div>
@@ -53,16 +55,18 @@
           <div class="topguanitem"  v-if="this.index==2">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[2].list[0].picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[2].list[1].picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[2].list[2].picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.guan[2].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.guan[2].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.guan[2].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
                   <div class="allpaly"><span>全部播放</span> <span>详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[2].list" :key="index">
-                          <img :src="n.picUrl" alt="">
+                          <div class="hovepaly" ><span class="el-icon-video-play"></span></div>
+                          <img :src="n.al.picUrl" alt="">
+                          <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
                       </div>
                   </div>
@@ -74,7 +78,6 @@
 </template>
 
 <script>
-import { Guanimg } from './TopList';
 
 export default {
     name:'toptab',
@@ -116,7 +119,10 @@ export default {
         console.log(val )
         this.index=val
       }
-    }
+    },
+  created(){
+
+  }
 }
 </script>
 
@@ -134,7 +140,15 @@ export default {
   height: 420px;
   padding: 20px;
   margin-bottom: 30px;
-  
+      background: linear-gradient(#c5c5c5,#e4e4e4)
+}
+.couindex{
+  font-size: 45px;
+  font-weight: 600;
+  position: absolute;
+  left: 15px;
+  top: -4px;
+  color: #ccc;
 }
 .toptitle{
   font-size: 24px;
@@ -179,6 +193,7 @@ export default {
   position: relative;
   transform-style:preserve-3d;
   transform:perspective(500px)
+
 }
 .img1,.img2,.img3{  
   width: 250px;
@@ -211,12 +226,15 @@ transform: rotateY(25deg) translateX(-10px) translateZ(-140px);
   display: flex;
   align-items: center;
   padding: 0 20px;
+  position: relative;
 }
 
 .imgitem img{
   width: 40px;
   height: 40px;
-  padding-right: 20px;
+  padding: 0 20px ;
+  position: relative;
+  z-index: 9;
 }
 .allpaly{
   flex: 1 ;
@@ -225,7 +243,7 @@ transform: rotateY(25deg) translateX(-10px) translateZ(-140px);
   justify-content: space-between;
 }
 .imgitem:nth-child(1),.imgitem:nth-child(2),.imgitem:nth-child(5),.imgitem:nth-child(6){
-  background:#fcfcfc ;
+  background:#e3e3e3 ;
 }
 .imgitem:nth-child(3),.imgitem:nth-child(4),.imgitem:nth-child(7),.imgitem:nth-child(8){
   background:#efefef ;

@@ -28,7 +28,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
 .title{
   text-align: left;
   margin: 20px 0;
@@ -46,6 +46,14 @@ export default {
   margin-bottom: 30px;
   position: relative;
   
+}
+.hovepaly{
+  color: coral;
+  font-size: 30px;
+  position: absolute;
+  left: 45px;
+  top: 15 px;
+  z-index: 99;
 }
 .musciitem:nth-child(10n+10){
   margin-right: 0px;

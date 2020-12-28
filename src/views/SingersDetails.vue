@@ -1,8 +1,5 @@
 <template>
 	<el-container>
-        <el-header>
-            <nav-menu></nav-menu>
-        </el-header>
         <el-main>
             <div class="container">
 				<div class="left">
@@ -121,15 +118,10 @@
 				</div>
             </div>
         </el-main>
-        <el-footer>
-            <bottom  :like="this.music"/>
-        </el-footer>
     </el-container>
 </template>
 
 <script>
-import NavMenu from '../components/home/NavMenu.vue'
-import bottom from '../components/home/paly.vue'
 import MusicItem from '../components/MusicDetails/Musicitem.vue';
 import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger} from "../components/Singers/Singers";
 export default {
@@ -146,10 +138,7 @@ export default {
 			smimt:[]
 		}
 	},
-	components:{
-		NavMenu,
-		bottom
-	},
+
 	computed:{
 	},
 	methods:{
@@ -208,7 +197,6 @@ export default {
 		}
 	},
 	created(){
-		this.music = JSON.parse(sessionStorage.getItem('music'))
 		this.SingersId = this.$route.params.id
 		console.log("this.SingersId",this.SingersId )
 		this.getSingersDetails(this.SingersId)

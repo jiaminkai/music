@@ -1,18 +1,18 @@
 <template>
 	<div>
 		<div class="pinglun">
-               <div class="pinlutitle">评论</div>
+               <div class="pinlutitle"><slot name="pingtitle"></slot></div>
                <el-input type="textarea" placeholder="我来说两句...."
                     v-model="textarea"
                     maxlength="300"
                     show-word-limit
                     :autosize="{ minRows: 4}"
                 ></el-input>
-                <div class="pinglubtn">评论</div>
+                <div class="pinglubtn" @click="sendcomment">评论</div>
         </div>
 		<div class="oldpinglun" v-if="this.hotcomment!=undefined">
-			<div class="hot">热门评论 <span>{{this.hotcomment.length}}</span></div>
-			<div class="pingluitem" v-for="(item,index) in this.hotcomment" :key="index">
+			<div class="hot" v-if="this.hotcomment.length!=0">热门评论 <span>{{this.hotcomment.length}}</span></div>
+			<div class="pingluitem"  v-for="(item,index) in this.hotcomment" :key="index">
 				<div class="usersicon">
 					<img :src="item.user.avatarUrl" alt="">
 				</div>
@@ -31,7 +31,7 @@
 			</div>
 		</div>
 		<div class="newpinglun" v-if="this.newcomment!=undefined">
-			<div class="hot">最新评论 <span>{{this.newcomment.length}}</span></div>
+			<div class="hot" v-if="this.newcomment.length!=0">最新评论 <span>{{this.newcomment.length}}</span></div>
 			<div class="pingluitem" v-for="(item,index) in this.newcomment" :key="index">
 				<div class="usersicon">
 					<img :src="item.user.avatarUrl" alt="">
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { SendComment,DelComment,EventLikeComment,LikeComment} from "../comment/pinlun";
 export default {
 	name:'Pinglun',
 	data(){
@@ -68,7 +69,18 @@ export default {
 		newcomment:{
 			type:Array
 		},
-	}
+		type:Number,
+		id:String 
+	},
+	methods:{
+		async sendcomment(){
+			console.log("发送评论:",this.id,this.textarea )
+			const{data:Data} =await SendComment(this.type,this.id,this.textarea)
+			console.log(Data )
+			this.$forceUpdate()
+		}
+	},
+
 }
 </script>
 
@@ -107,6 +119,7 @@ export default {
     display: flex;
     flex-direction: column;
     font-size: 14px;
+	margin-bottom: 30px;
    
 }
 .newpinglun{
@@ -126,7 +139,7 @@ export default {
     
 }
 .pinglundesc{
-    width: 280px;
+    width: 85%;
     margin: 10px 0;
     line-height: 22px;
     white-space:inherit

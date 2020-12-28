@@ -3,15 +3,14 @@
 <musicitem :music="this.music" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment">
       
        <div slot="dj">
-                 <div class="lyricbox">
+                 <div class="lyricbox" :style="{height:this.height}">
                         <p id="geici">歌词</p>
                         <p v-for="(item,index) in this.array.lyric" :key="index">{{item}}</p>
-
                 </div>
-                <p class="slh" v-if="true">.....</p>
+                <p class="slh" v-if="this.ismove">.....</p>
                 <div class="movegeci">
-                    <span  v-if="true" >更多<span class="iconfont">&#xe601;</span></span>
-                    <span v-else>收齐<span  class="iconfont">&#xe603;</span></span>
+                    <span  v-if="this.ismove" @click="showmove">更多<span class="iconfont">&#xe601;</span></span>
+                    <span v-else @click="hiedmove">收齐<span  class="iconfont">&#xe603;</span></span>
                 </div>
                 <div class="xiangsibox">
                     <div class="xiangsi">
@@ -40,8 +39,9 @@
 </template>
 
 <script>
-import {Music,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
+import {Musics,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
 import Musicitem from "../components/MusicDetails/Musicitem.vue";
+import {Music,GetMusic} from '../components/home/home'
 export default {
     name:'Details',
     data(){
@@ -51,7 +51,9 @@ export default {
             palytime:'',
             songs:[],
             hotcomment:[],
-            newcomment:[]
+            newcomment:[],
+            ismove:true,
+            height:'350px'
 
         }
     },
@@ -64,7 +66,19 @@ export default {
             this.palytime=value
         })
     },
+
     methods:{
+    // 展开歌词
+    showmove(){
+        this.ismove =false
+        this.height='auto'
+    },
+    // 折叠歌词
+    hiedmove(){
+        this.ismove =true
+        this.height='350px'
+    },
+
      async getsong(){
         const {data:data} = await GetSong(this.music.musicid)
         console.log("相似",data )
@@ -78,6 +92,16 @@ export default {
             })
         
       },
+    //   直接重搜索跳转到详情
+      async geimus(id){
+          console.log(id )
+           const {data:list} = await GetDetails(id)
+           const {data:url} = await GetMusic(id)
+            console.log(list,url )
+            this.music = new Music(list.songs[0],url.data[0].url)
+            this.getmusic()
+      },
+
       async  getmusic(){
           console.log(this.music)
             const {data:list} = await GetDetails(this.music.musicid)// eslint-disable-line no-unused-vars
@@ -94,7 +118,7 @@ export default {
              this.newcomment.forEach(item=>{
                 item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
             })
-            this.array =new Music(list.songs[0],alcum,comment,Lyric)
+            this.array =new Musics(list.songs[0],alcum,comment,Lyric)
             var c =this.array.lyric.replace(/\[.*?\]/g,'')
             var snsArr=c.split(/[(\r\n)\r\n]+/);
             snsArr.forEach((item,index)=>{
@@ -108,8 +132,14 @@ export default {
     },
     created(){
        this.music= this.$route.query
-       this.getmusic(this.$route.query)
-       this.getsong()
+       if(this.$route.query.id!=undefined){
+           this.geimus(this.$route.query.id)
+       }else{
+         this.getmusic( this.music)
+        this.getsong()
+       }
+
+
 
     }
 }
@@ -277,7 +307,6 @@ export default {
     white-space:inherit;
     font-weight: 300;
     color: #4a4a4a;
-    height: 350px;
     overflow-y: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

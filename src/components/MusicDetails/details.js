@@ -39,7 +39,7 @@ export function GetSong(id){
     })
 }
 
-export class Music{
+export class Musics{
     constructor(songs,alcum,comments,lyric){
         this.picUrl=songs.al.picUrl,
         this.musicname=songs.al.name,

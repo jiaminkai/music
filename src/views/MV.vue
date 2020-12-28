@@ -1,5 +1,6 @@
 <template>
-<singer-item  :type="type" :area="area" :zimu="zimu" :SingersList="SingersList"
+<div class="sss">
+	<singer-item  :type="type" :area="area" :zimu="zimu" :SingersList="SingersList"
 		@saixuna="saixuna">
 	<div slot="yunyantype">地区：</div>
 	<div slot="catery">类型：</div>
@@ -15,6 +16,7 @@
 		</div>
 	</div>
 </singer-item>
+</div>
 
 </template>
 
@@ -81,7 +83,6 @@ export default {
 		}
 	},
 	async created(){
-		this.music = JSON.parse(sessionStorage.getItem('music'))
 		const {data:data}= await AllMV(this.info.type,this.info.area,this.info.order)
 			console.log("info",data.data)
 			this.SingersList=data.data
@@ -91,6 +92,9 @@ export default {
 </script>
 
 <style>
+.sss{
+	padding: 30px 0;
+}
 .container{
 	width: 1200px;
 	margin: 0 auto;

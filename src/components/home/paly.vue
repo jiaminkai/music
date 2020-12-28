@@ -1,6 +1,8 @@
 <template>
-    <div class="palybox">
-        <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
+    <div class="foot" >
+        <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
+        <div class="palybox">
+            <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
         <div class="musictitle">
             <div class="name"><span >{{like[this.i].musicname }}</span>  - <span>{{ like[this.i].user}}</span></div>
             <div class="time">
@@ -25,6 +27,7 @@
                 <span  class="iconfont" @click="gecishow(like[i])">&#xe727;</span>
                 <span class="iconfont" @click="opendrawer">&#xe636;</span>
          </div>
+         <!-- 播放歌单 -->
         <el-drawer
             title="播放历史"
             :visible.sync="drawers"
@@ -49,7 +52,7 @@
                                             prop="isonplay"
                                             >
                                             <template slot-scope="scope">
-                                                <span v-if="!scope.row.isonplay">{{scope.row.index}}</span>
+                                                <span v-if="!scope.row.isonplay"  >{{scope.row.courrindex}}</span>
                                                 <!-- <span  v-else class="iconfont">&#xe61c;</span> -->
                                                 <span v-else class="iconfont">&#xe768;</span>
                                             </template>
@@ -94,7 +97,7 @@
             </div>
 
         </el-drawer>
-
+        <!-- 歌词 -->
         <el-drawer
             title="歌词"
             :visible.sync="drawergeci"
@@ -105,12 +108,12 @@
                     <div class="geciname"><span>歌词</span> <span class="iconfont" @click="conle">&#xe701;</span></div>
                 </div>
                 <div class="lyricshowbox">
-                <div class="gecibox" v-if="this.lyric==undefined">
+                <div class="gecibox" >
                     <p v-for="(item,index) in this.lyric" :key="index">{{item.text}}</p>
                 </div>
-                <div class="gecibox" v-else>
+                <!-- <div class="gecibox" v-else>
                     <p > 暂无歌词</p>
-                </div>
+                </div> -->
                 </div>
             <div class="bottom">
                 <div>翻译</div>
@@ -120,6 +123,7 @@
             </div>
 
         </el-drawer>
+        </div>
     </div>
 </template>
 
@@ -127,9 +131,9 @@
 import { GetLyric } from "../MusicDetails/details";
 export default {
     name:'Play',
-    props:{
-        like:Array
-    },
+    // props:{
+    //     like:Array
+    // },
     data(){
         return{
             value3:43,
@@ -137,36 +141,46 @@ export default {
             starttime:'00:00',
             ispaly:true,
             itemkey:'',
+            percentage:0,
             i:0,
             isone:true,
             type:1,
             drawers:false,
             activeName:'first',
             drawergeci:false,
-            lyric:[]
+            lyric:[],
+            like:[]
         }
-    }
-    ,
+    },
     mounted(){
         window.addEventListener("timeupdate",this.updateTime)
+        this.$bus.$on('plays',this.playmusic)
+        this.$bus.$on('playmnue',(val)=>{
+            this.i=val
+            this.playmusic
+        })
+
+        
     },
+    // 获取处理歌词
     destroyed(){
         window.removeEventListener("timeupdate",this.updateTime)
     },
     methods:{
-        async gecishow(val){
-            console.log(val.musicid)
+    // 歌词展示
+    async gecishow(val){
+        console.log(val.musicid)
+        this.lyric=[]
+        const {data:Lyric}  = await GetLyric(val.musicid) 
+        console.log("歌词",Lyric)
+        if(Lyric.lrc==undefined){
             this.lyric=[]
-            const {data:Lyric}  = await GetLyric(val.musicid) 
-            console.log("歌词",Lyric)
-            if(Lyric.lrc==undefined){
-                this.lyric=[]
-            }else{
-                this.formatLyric(Lyric.lrc.lyric)
-                this.drawergeci=true
-            }
-
-        },
+            console.log("歌词清空" )
+        }else{
+            this.formatLyric(Lyric.lrc.lyric)
+        }
+        this.drawergeci=true
+    },
     formatLyric(text) {
       let arr = text.split("\n"); //原歌词文本已经换好行了方便很多，我们直接通过换行符“\n”进行切割
       let row = arr.length; //获取歌词行数
@@ -186,6 +200,7 @@ export default {
       }
       this.lyric.sort(this.sortRule); //由于不同时间的相同歌词我们给排到一起了，所以这里要以时间顺序重新排列一下
        //把歌词提交到store里，为了重新进入该组件时还能再次渲染
+       console.log(this.lyric )
     },
     conle(){
       this.drawergeci=false
@@ -195,27 +210,21 @@ export default {
     },
 //  鼠标移入表格行事件
     hoveraction(row,event,column){
-      console.log(row.userId,event,column)
-      var index= this.like.findIndex(item=>{
-        return  item.userId==row.userId
-      })
-      var a =this.like[index]
-      a.hover=true
-      a.isonplay=true
-      this.$set(this.like,index,a)
-
+      row.hover=true
+        row.isonplay=true
 
     },
 //  鼠标移出表格行事件
     hoverleave(row,event,column){
-       console.log(row.userId,event,column)
-       var index= this.like.findIndex(item=>{
-        return  item.userId==row.userId
-      })
-      var a =this.like[index]
-      a.hover=false
-      a.isonplay=false
-      this.$set(this.like,index,a)
+        row.hover=false
+      row.isonplay=false
+    //    console.log(row.userId,event,column)
+    //    var index= this.like.findIndex(item=>{
+    //     return  item.userId==row.userId
+    //   })
+    //   var a =this.like[index]
+ 
+    //   this.$set(this.like,index,a)
      
 
     },
@@ -227,10 +236,7 @@ export default {
       })
       this.i=a
     },
-
-
-      
-    
+    // 跳转歌曲详情页
     geci(val){
       this.$router.push({
         path: '/details',
@@ -288,23 +294,33 @@ export default {
         }
     },
     // 监听播放时长
-        updateTime() {
+    updateTime() {
         var m =Math.ceil(parseInt(this.$refs.audio.currentTime/60))
         var s =Math.ceil(parseInt(this.$refs.audio.currentTime%60))
         if(m<10){ m='0'+m}
         if(s<10){ s='0'+s}
         console.log(m+':'+s )
         this.starttime=m+':'+s
-        this.$emit("timeup",this.$refs.audio.currentTime/this.$refs.audio.duration)
+        var val =this.$refs.audio.currentTime/this.$refs.audio.duration
+        if(Number.isNaN(parseFloat(val*100))){
+            this.percentage=0
+            console.log(this.percentage)
+        }else{
+            this.percentage=parseFloat(val*100)
+            console.log(this.percentage)
+        }
+        this.$emit("timeup",val)
         if(this.$refs.audio.currentTime/this.$refs.audio.duration==1){
             this.next()
         }
+
         this.$bus.$emit('name',this.starttime)
-},
+    },
     // 播放
     playmusic(){
         console.log("播放音乐" )
         this.$refs.audio.play()
+        console.log( this.$refs.audio )
         this.ispaly=false
         
     },
@@ -326,10 +342,22 @@ export default {
         this.endtime =m+':'+s
     },
 
+
     },
+    created(){
+        this.like= JSON.parse(sessionStorage.getItem('music'))
+        window.addEventListener('setItem', ()=> {
+            var c =JSON.parse(sessionStorage.getItem('music'))
+            c.forEach((item,index)=>{
+                item.courrindex=index+1
+                item.hover =false
+                item.isonplay=false
+            })
+            this.like = c
+            console.log("監聽到了" )      
+        })
 
-    
-
+    },
 }
 </script>
 
@@ -349,8 +377,23 @@ export default {
     -webkit-font-smoothing: antialiased;
     -webkit-text-stroke-width: 0.2px;
     -moz-osx-font-smoothing: grayscale;}
+.foot{
+    height: 70px;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0px 2px 4px #cccccc;
+    padding: 0!important;
+    position: fixed;
+    bottom: 0 ;
+    display: flex;
+    flex-direction: column;
+    z-index: 99999;
+}
+.time{
+    text-align: left;
+}
 .palybox{
-
+    position: fixed;
     display: flex;
     width: 100%;
     height: auto;
@@ -358,10 +401,18 @@ export default {
     position: fixed;
     z-index: 9;
 }
+.el-progress{
+    width: 100%;
+    position: absolute;
+    top: -6px;
+}
+.el-progress-bar__outer{
+  height: 3px;
+}
 .icon{
     width: 45px;
     height: 45px;
-    margin-right: 20px;
+    margin: 0 20px ;
     /* border: 1px solid aqua; */
 }
 .musictitle{
@@ -435,21 +486,7 @@ width: 150px;
     place-self: center;
     font-size: 25px;
 }
-@font-face {
-  font-family: 'iconfont';  /* project id 2223549 */
-  src: url('//at.alicdn.com/t/font_2223549_g4odzpizzem.eot');
-  src: url('//at.alicdn.com/t/font_2223549_g4odzpizzem.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2223549_g4odzpizzem.svg#iconfont') format('svg');
-}
-.iconfont{
-    font-family:"iconfont" !important;
-    font-size:16px;font-style:normal;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-stroke-width: 0.2px;
-}
+
 .geciname{
   display: flex;
   font-size: 20px;
@@ -489,6 +526,7 @@ width: 150px;
   top: auto!important;
   right: 20px !important;
   padding: 20px 30px;
+  background: #fff;
 }
 .bottom{
   display: flex;

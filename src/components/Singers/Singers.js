@@ -11,9 +11,9 @@ export function SingersDj(id){
 		method:'get'
 	})
 }
-export function Singerscart(type=0,area=-1,initial='-1'){
+export function Singerscart(type=0,area=-1,initial='-1',limit=50,offset=1){
 	return request({
-		url:`/artist/list?type=${type}&area=${area}&initial=${initial}`,
+		url:`/artist/list?type=${type}&area=${area}&initial=${initial}&limit=${limit}&offset=${offset}`,
 		method:'get'
 	})
 }

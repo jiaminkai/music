@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import MusicDetails from '../views/MusicDetails.vue';
-import Dj from '../components/Dj/Dj.vue';
+import Dj from '../views/Dj.vue';
 import Top from '../views/TopList.vue';
 import Song from '../views/Song.vue';
 import index from '../views/index.vue';
@@ -10,6 +10,9 @@ import Singers from '../views/Singers.vue';
 import SingersDetails from "../views/SingersDetails.vue";
 import MV from "../views/MV.vue";
 import MVDetail from "../components/MV/MvDetails.vue";
+import TopMusics from "../components/TopList/TopMusic.vue";
+import MyMusic from '../views/MyMusic.vue';
+import Event from '../views/Event.vue';
 
 Vue.use(VueRouter)
 
@@ -73,6 +76,25 @@ const routes = [
   name:'MVDetail',
   component : MVDetail
 }
+,
+{
+  path:'/TopMusics:id',
+  name:'TopMusics',
+  component : TopMusics
+}
+,
+{
+  path:'/MyMusic',
+  name:'MyMusic',
+  component : MyMusic
+}
+,
+{
+  path:'/Event',
+  name:'Event',
+  component : Event
+}
+
 ]
 
 const router = new VueRouter({

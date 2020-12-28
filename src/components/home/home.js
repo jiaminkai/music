@@ -35,10 +35,14 @@ export function GetMusic(id,params){
         params
     })
 }
-
+export function HotSearch(){
+	return request({
+		url:`/search/hot/detail`
+	})
+}
 export class Music{
     constructor(songs,url){
-        this.picUrl=songs.al.picUrl,
+        this.picUrl='',
         this.musicname=songs.name,
         this.playtime=songs.dt
         this.user=songs.ar[0].name

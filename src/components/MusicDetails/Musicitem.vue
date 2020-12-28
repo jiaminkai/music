@@ -27,10 +27,9 @@
                       <div class="icon">
                             <el-avatar> user </el-avatar>
                             <span  v-if="this.array!=undefined">{{this.array.user}}</span>
-                            <span v-else>{{this.dj.name}}</span>
-                            
+                            <span v-else>{{this.dj.name}}</span>    
                       </div>
-                      <div class="signature" v-if="this.dj.creator!=undefined">{{this.dj.creator.signature}}</div>
+                      <div class="signature" v-if="this.dj!=undefined">{{this.dj.creator.signature}}</div>
                       <div class="tabs" v-if="this.dj==undefined">
                           <span>#独立摇滚</span>
                           <span>#另类摇滚</span>
@@ -50,57 +49,9 @@
           <slot name="dj">
               
           </slot>
-            <pinglun :hotcomment="this.hotcomment" :newcomment="this.newcomment" ></pinglun>
-           <!-- <div class="pinglun">
-               <div class="pinlutitle">评论</div>
-               <el-input type="textarea" placeholder="我来说两句...."
-                    v-model="textarea"
-                    maxlength="300"
-                    show-word-limit
-                    :autosize="{ minRows: 4}"
-                ></el-input>
-                <div class="pinglubtn">评论</div>
-           </div>
-           <div class="oldpinglun" v-if="this.hotcomment!=undefined">
-               <div class="hot">热门评论 <span>{{this.hotcomment.length}}</span></div>
-               <div class="pingluitem" v-for="(item,index) in this.hotcomment" :key="index">
-                   <div class="usersicon">
-                       <img :src="item.user.avatarUrl" alt="">
-                   </div>
-                   <div class="">
-                       <div class="pinglunname">
-                           {{item.user.nickname}} <span class="iconfont" style="color:red;font-size:24px">&#xe67c;</span>
-                       </div>
-                       <div class="pinglundesc">{{item.content}}</div>
-                       <div class="pingluntime">    
-                           <span>{{item.time}}</span>
-                           <span class="iconfont">&#xe68e;</span>
-                           <span class="iconfont">&#xe646;<span>{{item.likedCount}}</span></span>
-                            <span>更多</span>
-                       </div>
-                   </div>
-               </div>
-           </div>
-              <div class="newpinglun" v-if="this.hotcomment!=undefined">
-               <div class="hot">最新评论 <span>{{this.newcomment.length}}</span></div>
-               <div class="pingluitem" v-for="(item,index) in this.newcomment" :key="index">
-                   <div class="usersicon">
-                       <img :src="item.user.avatarUrl" alt="">
-                   </div>
-                   <div class="">
-                       <div class="pinglunname">
-                           {{item.user.nickname}} <span class="iconfont" style="color:red;font-size:24px">&#xe67c;</span>
-                       </div>
-                       <div class="pinglundesc">{{item.content}}</div>
-                       <div class="pingluntime">    
-                           <span>{{item.time}}</span>
-                           <span class="iconfont">&#xe68e;</span>
-                           <span class="iconfont">&#xe646;<span>{{item.likedCount}}</span></span>
-                            <span>更多</span>
-                       </div>
-                   </div>
-               </div>
-           </div> -->
+            <pinglun :type="3" :hotcomment="this.hotcomment" :newcomment="this.newcomment" >
+                <div slot="pingtitle">评论</div>
+            </pinglun>
       </el-main>
  
     </div>

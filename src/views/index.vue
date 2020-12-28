@@ -112,19 +112,18 @@ export default {
     this.gettuijian()
     this.getonlyone()
     this.getnewmusic()
-    // this.loginchan()
-    // this.islogin =this.btnLogin()
   }
 }
 
 </script>
     
 <style scoped>
-.container{
-  width: 1200px;
-  margin: 0 auto;
-}
+
 .top{
   margin-top: 30px;
 }
+.container{
+  width: 1200px;
+  margin: 0 auto;
+} 
 </style>

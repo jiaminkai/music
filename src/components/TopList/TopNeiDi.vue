@@ -1,11 +1,13 @@
 <template>
     <div class="paihangbangbox">
-	<div class="toplist" :style="{ backgroundColor:'#e4e4e4',backgroundPosition: '50%',flexShrink: '0'}" v-for="(item,index) in this.array" :key="index">
+	<div class="toplist" @click="toTop(item.id)"   v-for="(item,index) in this.array" :key="index">
+		<img class="mobanimg" :src="item.coverImgUrl" alt=""/>
+		<div class="moban">
 			<div class="topitemimg">
 				<img :src="item.coverImgUrl" alt="">
 			</div>
 			<div class="topitems">
-				<div class="itemsuser" v-for="(n,index) in item.tracks" :key="index">
+				<div class="itemsuser" v-for="(n,index) in item.tracks" :key="index"  @click="PlayMusic(item.id)">
 					<span class="index">{{index+1}}</span>
 					<div class="indexitem">
 						<span>{{n.first}}</span>
@@ -20,13 +22,14 @@
 			<div class="toprigth">
 				{{item.updateFrequency}}
 			</div>
+		</div>
 		</div>	
 	</div>
 
 </template>
 
 <script>
-import {Guanimg} from '../TopList/TopList'
+import { TopGuan } from "./TopList";
 export default {
 	name:'Topneidi',
 	props:{
@@ -37,9 +40,34 @@ export default {
 	data(){
 		return{
 			dataarray:[],
-			dataimg:[]
+			dataimg:[],
+			bfimg:[]
 		}
 	},
+	methods:{
+		toTop(id){
+			console.log(id )
+			this.$router.push({
+				path:`/TopMusics${id}`,
+				params:id
+			})
+		},
+		abuju(){
+			
+			this.array.forEach(item=>{
+				TopGuan(item.id).then(res=>{
+					console.log(res.data.playlist.subscribers )
+
+				})
+			})
+		},
+		PlayMusic(id){
+			console.log(id )
+		}
+	},
+	created(){
+		this.abuju()
+	}
 
 }
 
@@ -69,7 +97,8 @@ export default {
 	margin-bottom: 20px;
 	display: flex;
 	position: relative;
-	
+	z-index: 9;
+	background: #fff;
 }
 .topitemimg{
 	width: 140px;
@@ -78,6 +107,23 @@ export default {
 .topitemimg img{
 	width: 100%;
 	height: 100%;
+}
+.moban{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: rgba(255, 255, 255, 0.6);
+	z-index: 6;
+}
+.mobanimg{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 6;
 }
 .topitems{
 	width: 150px;

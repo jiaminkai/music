@@ -1,9 +1,6 @@
 <template>
-	<el-container>
-        <el-header>
-            <nav-menu></nav-menu>
-        </el-header>
-        <el-main>
+<div>
+	
 			<div class="sanxuan">
 				<div class="yunyantype">
 					
@@ -44,12 +41,8 @@
 				</div>
 			</div>
 			<slot  name="Singers"></slot>
-        </el-main>
-        <el-footer>
-            <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
-            <bottom   :like="music"  ></bottom>
-        </el-footer>
-    </el-container>
+	
+</div>
 </template>
 <style scoped>
 
@@ -94,8 +87,6 @@ li a{
 </style>
 
 <script>
-import NavMenu from '../home/NavMenu.vue'
-import bottom from '../home/paly.vue'
 export default {
 	name:'SingersItem',
 	data(){
@@ -103,10 +94,6 @@ export default {
 			music:[],
 			percentage:0,
 		}
-	},
-	components:{
-		NavMenu,
-		bottom
 	},
 	props:{
 		area:{
@@ -121,7 +108,7 @@ export default {
 	},
 	methods:{
 		saixuna(item,a){
-			this.$emit('saixuna',{item,a})
+			this.$emit('saixuna',{id:item.val,a})
 		},
 		SingersDetails(item){
 			this.$emit('SingersDetails',item)
@@ -129,7 +116,7 @@ export default {
 	},
 	
 	created(){
-		this.music = JSON.parse(sessionStorage.getItem('music'))
+
 	}
 
 }

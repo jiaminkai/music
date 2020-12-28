@@ -23,12 +23,30 @@ export function TopGuan(id){
         url:`/song/url?id=${id}`,
      })
  }
+ export function TopSubSingers(id){
+    return request({
+        method:'get',
+        url:`/related/playlist?id=${id}`,
+     })
+ }
+ export function TopPingLun(id){
+    return request({
+        method:'get',
+        url:`/comment/playlist?id=${id}`,
+     })
+ }
  export class Guan{
-     constructor(data){
+     constructor(pdata,data){
+        this.url=pdata.url
         this.musicid=data.id
-        this.name=data.al.name
+        this.musicname=data.name
+        this.user=data.ar[0].name
         this.picUrl=data.al.picUrl
+        this.djname =data.al.name
+        this.playtime="03:56"
+
      }
+     
  }
  export class Guanimg{
     constructor(data,lists){

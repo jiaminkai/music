@@ -18,7 +18,9 @@
 						</div>
 					</div>
 					<div class="comment">
-						<pinlun :hotcomment="this.comment.hotComments" :newcomment="this.comment.comments"></pinlun>
+						<pinlun :type="1" :hotcomment="this.comment.hotComments" :newcomment="this.comment.comments">
+							<div slot="pingtitle">评论</div>
+						</pinlun>
 					</div>
 			</div>
 			<div class="mvrigth">
@@ -109,7 +111,10 @@ this.getMvData(this.$route.params.id);
 
 }
 .mvleft{
-	width: 68%;
+	width: 65%;
+	padding: 30px;
+	margin-top: 30px;
+	box-shadow: 1px 1px 10px #cecece;
 	
 }
 .video-js{

@@ -5,6 +5,7 @@ export function SongCate(){
 		method:'get'
 	})
 }
+
 export function SongHot(){
 	return request({
 		url:'/playlist/hot',
@@ -17,15 +18,10 @@ export function SongDetail(id){
 		method:'get'
 	})
 }
-export function SongTop(order,cat,limit,offset){
+export function SongTop(cat="全部",limit=50,offset=1,order){
+	console.log(order )
 	return request({
-		url:`/top/playlist`,
-		method:'get',
-		params:{
-			order,
-			cat,
-			limit,
-			offset
-		}
+		url:`/top/playlist?limit=${limit}&cat=${cat}&offset=${offset}&order=${order}`,
+		method:'get'
 	})
 }

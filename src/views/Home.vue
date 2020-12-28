@@ -1,21 +1,12 @@
 <template>
   <div class="home">
     <el-container>
-        <el-header>
-          <nav-menu></nav-menu>
-          <el-button v-if="this.loginchange" @click="login">登录</el-button>
-          <div v-else class="usericon">
-              <img :src="this.loginuser.avatarUrl" alt="" srcset="">
-          </div>
-        </el-header>
+
         <el-main>
             <router-view @palynewmusic="palynewmusic">
             </router-view>
         </el-main>
-        <el-footer>
-             <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
-             <play ref="paly"  :like="likemusci"  @timeup="timeup"></play>
-        </el-footer>
+
     </el-container>
 
     <el-dialog
@@ -43,8 +34,6 @@
 
 <script>
 // @ is an alias to /src
-import NavMenu from '../components/home/NavMenu.vue'
-import Play from '../components/home/paly.vue'
 import {Home,Subcount,LikeMusic,GetMusic,GetMusicDetails,Music} from '../components/home/home'// eslint-disable-line no-unused-vars
 import {btnLogin,Login,LoginDetail} from '../components/login/login'// eslint-disable-line no-unused-vars
 import { GetLyric } from "../components/MusicDetails/details";
@@ -52,7 +41,6 @@ export default {
   name: 'Home',
   data(){
     return{ 
-
       token:'',
       likemusci:[],
       cookie:'',
@@ -78,20 +66,15 @@ export default {
 
     }
   },
-  components: {
-    
-    NavMenu,
-    Play,
 
-  },
   watch:{
     
   },
   mounted(){
-          this.$bus.$on('name',(value)=>{
-            console.log(value )
-            this.palytime=value
-        })
+        //   this.$bus.$on('name',(value)=>{
+        //     console.log(value )
+        //     this.palytime=value
+        // })
   },
   methods:{
 
@@ -110,28 +93,6 @@ export default {
 
 
     },
-//  鼠标移出表格行事件
-    hoverleave(row,event,column){
-       console.log(row.userId,event,column)
-       var index= this.likemusci.findIndex(item=>{
-        return  item.userId==row.userId
-      })
-      var a =this.likemusci[index]
-      a.hover=false
-      a.isonplay=false
-      this.$set(this.likemusci,index,a)
-     
-
-    },
-    // 播放目录中的音乐
-    onplay(row,event,column){
-      console.log(row.userId,event,column)
-      var a =this.likemusci.findIndex(item => {
-        return item.userId==row.userId
-      })
-      this.$refs.paly.i=a
-    },
-
     opend(val){
       this.drawer=val
     },
@@ -157,22 +118,10 @@ export default {
         this.$refs.paly.$refs.audio.play();
         console.log(this.$refs.paly)
     },
-    // 更改进度条状态
-    timeup(val){
-      if(Number.isNaN(parseFloat(val*100))){
-        this.percentage=0
-        console.log(this.percentage)
-      }else{
-         this.percentage=parseFloat(val*100)
-         console.log(this.percentage)
-      }
-     
-    },
     // 获取音乐
     async getmusic(id){
         var array=[]
         const {data:data} =await GetMusic(id)
-        
         const {data:ndata} =await GetMusicDetails(id)
         console.log("musci",ndata)
         for(var i =0 ;i<ndata.songs.length;i++){
@@ -187,7 +136,6 @@ export default {
     },
     // 获取喜欢的歌曲列表
     async getlike(id){
-
         const {data:data} =await LikeMusic(id)
        await this.getmusic(data.ids.join(',')).then(res=>{
            this.likemusci=res
@@ -208,32 +156,11 @@ export default {
         })
         this.music = this.likemusci[0]
         this.$store.commit('SetMusic',this.likemusci)
-        window.sessionStorage.setItem('music',JSON.stringify(this.likemusci))
+        
+        this.resetSetItem('music', JSON.stringify(this.likemusci));
     },
     // 查看登录状态
-    async loginchan(){
-     const logs =await btnLogin()
-     
-     if(logs.data.profile!=null){
-       this.loginchange=false
-       console.log("已登录")
-       console.log(logs.data.profile)
-       this.uesrId=logs.data.profile.userId
-       this.loginuser =logs.data.profile
-       this.getuserSub(this.uesrId)
-       this.getlike(this.uesrId)
-
-        
-     }else{
-       this.loginchange=true
-     }
-    },
-    // 获取登录信息详情
-    async getuser(id,cookie){
-      const {data:data} =await LoginDetail(id,cookie)
-      console.log("user",data.profile)
-      
-    },
+   
     // 获取用户歌单
     async getuserSub(id,cookie){
         const {data:data} =await Subcount(id,cookie)
@@ -264,18 +191,33 @@ export default {
       this.islogin =false
     },
 
-
+      async loginchan(){
+        const logs =await btnLogin()
+        if(logs.data.profile!=null){
+            console.log("已登录")
+            console.log(logs.data.profile)
+            this.uesrId=logs.data.profile.userId
+            this.loginuser =logs.data.profile
+            this.loginuser.loginchange =false
+            this.resetSetItem('loginchange', JSON.stringify(this.loginuser));
+            this.getuserSub(this.uesrId)
+            this.getlike(this.uesrId)
+        }else{
+            this.loginuser.loginchange=true
+        }
+    },
+    // 获取登录信息详情
+    async getuser(id,cookie){
+      const {data:data} =await LoginDetail(id,cookie)
+      console.log("user",data.profile)
+      
+    },
 
     
     
   },
   created(){
-    // this.getdata()
-    // this.gettuijian()
-    // this.getonlyone()
-    // this.getnewmusic()
     this.loginchan()
-    // this.islogin =this.btnLogin()
   }
 }
 </script>
@@ -336,15 +278,12 @@ body{
     top: 0;
     z-index: 333;
 }
-.container{
-  width: 1200px;
-  margin: 0 auto;
-}
+
 .el-main{
   height: 100%;
   padding: 0 !important;
 
-}
+} 
 .el-footer{
   height: 70px;
   width: 100%;
@@ -355,24 +294,10 @@ body{
   bottom: 0 ;
   display: flex;
   flex-direction: column;
+   z-index: 999;  
 }
-.usericon{
-  width: 50px;
-  height: 50px;
-}
-.usericon img{
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  transition: all 1s ;
-  animation: rotate 10s linear infinite;
-}
-.usericon img:hover{
-  transform: rotate(360deg);
-}
-.el-progress-bar__outer{
-  height: 3px;
-}
+
+
 .el-drawer{
   height: 600px !important;
   display: flex !important;
