@@ -20,7 +20,7 @@ export function MyPlaylist(id){
 // 历史播放
 export function MyRecord(id){
 	return request({
-		url:`/user/record?uid=${id}`
+		url:`/user/record?uid=${id}&type=1`
 	})
 }
 // 电台

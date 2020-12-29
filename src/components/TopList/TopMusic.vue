@@ -188,6 +188,9 @@ export default {
 		},
 		allplay(){
 			var mus =JSON.parse(sessionStorage.getItem('music'))
+			if(mus==null){
+              mus=[]
+            }
 			mus.unshift(...this.music)
             console.log("legthn",mus.length)
             this.resetSetItem('music', JSON.stringify(mus))

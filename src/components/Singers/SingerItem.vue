@@ -3,13 +3,11 @@
 	
 			<div class="sanxuan">
 				<div class="yunyantype">
-					
 					<slot name="yunyantype">
-						
 					</slot>
 					<div class="yuzhong">
 						<ul>
-							<li v-for="(item,index) in type" :key="index" :a="1" @click="saixuna(item,1)">
+							<li v-for="(item,index) in type" :key="index" :class="[item.name==types?'isactive':'']"  :a="1" @click="saixuna(item,1)">
 								<a href="#">{{item.name}}</a>
 							</li>
 						</ul>
@@ -21,7 +19,7 @@
 					</slot>
 					<div class="cary">
 						<ul>
-							<li v-for="(item,index) in area" :key="index" :a="2" @click="saixuna(item,2)">
+							<li v-for="(item,index) in area" :key="index" :class="[item.name==areas?'isactive':'']" :a="2" @click="saixuna(item,2)">
 								<a href="#">{{item.name}}</a>
 							</li>
 						</ul>
@@ -33,7 +31,7 @@
 					</slot>
 					<div class="zimu">
 						<ul>
-							<li v-for="(item,index) in zimu" :key="index" :a="3" @click="saixuna(item,3)">
+							<li v-for="(item,index) in zimu" :key="index" :class="[item.name==zimus?'isactive':'']" :a="3" @click="saixuna(item,3)">
 								<a href="#">{{item.name}}</a>
 							</li>
 						</ul>
@@ -80,9 +78,13 @@ li{
 }
 li a{
 	padding: 0 15px;
-	border-right: 1px #ccc solid;
+	/* border-right: 1px #ccc solid; */
 	text-decoration: none;
 	color: orange;
+}
+.isactive{
+	background: salmon;
+	border-radius: 20px;
 }
 </style>
 
@@ -93,6 +95,10 @@ export default {
 		return{
 			music:[],
 			percentage:0,
+			types:"",
+			areas:"",
+			zimus:""
+
 		}
 	},
 	props:{
@@ -108,7 +114,19 @@ export default {
 	},
 	methods:{
 		saixuna(item,a){
+
 			this.$emit('saixuna',{id:item.val,a})
+			console.log("分类",a )
+			if(a==1){
+					this.types=item.name
+				}
+				if(a==2){
+					this.areas=item.name
+				}
+				if(a==3){
+					this.zimus=item.name
+				}
+
 		},
 		SingersDetails(item){
 			this.$emit('SingersDetails',item)

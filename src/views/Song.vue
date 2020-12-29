@@ -205,10 +205,10 @@ export default {
 .hot_new{
 	position: absolute;
 	right: 15px;
-	height: 35px;
-	line-height: 35px;
+	height: 25px;
+	line-height: 25px;
 	display: flex;
-	border-radius: 10px;
+	border-radius: 3px;
 	background: #eee;
 }
 .hot_new span{
@@ -217,12 +217,12 @@ export default {
 	
 }
 .hot_new span:nth-child(1){
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
 }
 .hot_new span:nth-child(2){
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
 }
 .hot_new_active{
 	background: salmon ;

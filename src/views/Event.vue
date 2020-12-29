@@ -157,6 +157,10 @@ export default {
 			c.picUrl=obj.artists[0].img1v1Url
 			c.playtime =(obj.bMusic.playTime/1000/60<10 ? "0"+obj.bMusic.playTime/1000/60 : obj.bMusic.playTime/1000/60)+":"+(obj.bMusic.playTime/1000%60<10?"0"+obj.bMusic.playTime/1000%60:obj.bMusic.playTime/1000/60)
 			var mus = JSON.parse(sessionStorage.getItem('music'))
+			if(mus==null){
+              mus=[]
+            }
+            
 			mus.unshift(c)
 			// sessionStorage.clear()
 			this.resetSetItem('music', JSON.stringify(mus));

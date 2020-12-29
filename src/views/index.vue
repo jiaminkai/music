@@ -15,7 +15,7 @@ import TuiMusic from '../components/home/TuiJianMusic.vue'
 import OnlyOne from '../components/home/OnlyOne.vue'
 import NewMusic from '../components/home/NewMusic.vue'
 import {Home,Subcount,LikeMusic,GetMusic,GetMusicDetails,Music} from '../components/home/home'// eslint-disable-line no-unused-vars
-import {btnLogin,Login,LoginDetail} from '../components/login/login'// eslint-disable-line no-unused-vars
+import {Login,LoginDetail} from '../components/login/login'// eslint-disable-line no-unused-vars
 export default {
   name: 'Home',
   data(){
@@ -40,15 +40,18 @@ export default {
   methods:{
    
     // 播放新歌
+  
   async  palynewmusic(val){
-      var music ={}
-         await this.getmusic(val).then(res=>{
-           console.log("res",res )
-        //    this.likemusci.unshift(res[0])
-            music =res[0]
+      var music = JSON.parse(sessionStorage.getItem('music'))
+         await this.getmusic(val.id).then(res=>{
+           console.log("播放新歌",res )
+           res[0].picUrl=val.picUrl
+            if(music==null){
+              music=[]
+            }
+              music.unshift(res[0])
          })
-
-         this.$emit("palynewmusic",music)
+        this.resetSetItem('music', JSON.stringify(music));
     },
     // 获取音乐
     async getmusic(id){
@@ -99,7 +102,12 @@ export default {
     async getnewmusic(){
     const music= await Home('/personalized/newsong')
     console.log( music.data.result)
+    
     this.newmusic=music.data.result
+    this.newmusic.forEach(item=>{
+     
+      item.song.bMusic.playTime= (item.song.bMusic.playTime/1000/60<10? "0"+Math.floor(item.song.bMusic.playTime/1000/60) : Math.floor(item.song.bMusic.playTime/1000/60))+":"+(item.song.bMusic.playTime/1000%60<10?"0" +Math.floor(item.song.bMusic.playTime/1000%60):Math.floor(item.song.bMusic.playTime/1000%60))
+    })
   },
     handleClick(val){
       console.log(val )

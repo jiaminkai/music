@@ -13,6 +13,7 @@ import MVDetail from "../components/MV/MvDetails.vue";
 import TopMusics from "../components/TopList/TopMusic.vue";
 import MyMusic from '../views/MyMusic.vue';
 import Event from '../views/Event.vue';
+import  login  from "../views/Login.vue";
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
     name: 'Home',
     redirect: '/index',
     component: Home
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: login
   },
   {
     path:'/Home',

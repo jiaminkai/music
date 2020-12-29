@@ -1,7 +1,7 @@
 <template>
     <div class="foot" >
         <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
-        <div class="palybox">
+        <div class="palybox" >
             <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
         <div class="musictitle">
             <div class="name"><span >{{like[this.i].musicname }}</span>  - <span>{{ like[this.i].user}}</span></div>
@@ -131,9 +131,6 @@
 import { GetLyric } from "../MusicDetails/details";
 export default {
     name:'Play',
-    // props:{
-    //     like:Array
-    // },
     data(){
         return{
             value3:43,
@@ -218,13 +215,7 @@ export default {
     hoverleave(row,event,column){
         row.hover=false
       row.isonplay=false
-    //    console.log(row.userId,event,column)
-    //    var index= this.like.findIndex(item=>{
-    //     return  item.userId==row.userId
-    //   })
-    //   var a =this.like[index]
- 
-    //   this.$set(this.like,index,a)
+
      
 
     },
@@ -258,6 +249,7 @@ export default {
         }else{
             this.i=this.i-1
         }
+         this.playmusic()
     },
     // 下一首
     next(){
@@ -275,7 +267,7 @@ export default {
         if(this.type==3){
             this.i=Math.ceil(Math.random()*this.like.length-1)
         }
-        this.$emit("timeup",0)
+         this.playmusic()
     },
 
     // 播放方式
@@ -320,15 +312,25 @@ export default {
     playmusic(){
         console.log("播放音乐" )
         this.$refs.audio.play()
-        console.log( this.$refs.audio )
         this.ispaly=false
+        this.$nextTick(() => {
+        const audio = this.$refs.audio
+        if (audio) {
+          audio.play()
+        }
+      })
         
     },
     // 暂停音乐
     pausemusic(){
         console.log("停止播放" )
-        this.$refs.audio.pause()
         this.ispaly=true
+        this.$nextTick(() => {
+        const audio = this.$refs.audio
+        if (audio) {
+          audio.pause()
+        }
+      })
     },
 
         
@@ -354,7 +356,10 @@ export default {
                 item.isonplay=false
             })
             this.like = c
-            console.log("監聽到了" )      
+            this.$set(this.like,c)
+            console.log("監聽到了" )   
+            this.$forceUpdate();
+            this.playmusic()
         })
 
     },
@@ -389,6 +394,7 @@ export default {
     flex-direction: column;
     z-index: 99999;
 }
+
 .time{
     text-align: left;
 }

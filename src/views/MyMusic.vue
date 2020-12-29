@@ -1,7 +1,8 @@
 <template>
   <div class="mybox">
-      <div class="container">
+      <div class="container" >
       <!-- 左边信息介绍 -->
+      <div class="loading"  v-loading="loading" v-if="loading"></div>
         <div class="myleftbox">
           <div  class="myleft">
               <img :src="this.login.avatarUrl" alt="">
@@ -81,7 +82,8 @@ export default {
       myplay:[],
       myevent:[],
       myfolloweds:[],
-      myfollows:[]
+      myfollows:[],
+      loading: true
     }
   },
   computed:{
@@ -90,6 +92,10 @@ export default {
   methods:{
   async getMy(){
       const {data:my} = await My();
+      if(my.profile==null){
+        this.$message.error("需要登录")
+        this.$router.replace('login')
+      }
       const {data:myplay} = await MyPlaylist(this.login.userId);
       const {data:mycounr} = await MyCounr();
       // 用户的播放记录
@@ -102,8 +108,6 @@ export default {
       const {data:myevent} = await MyEvent(this.login.userId);
       // 用户粉丝
       const {data:myfolloweds} = await MyFolloweds(this.login.userId);
-
-    console.log(mycounr )
       var c = new Date(my.profile.createTime)
       var y = c.getFullYear();
       var m = c.getMonth()+1;
@@ -126,8 +130,11 @@ export default {
               a.playCount= (a.playCount/10000).toFixed(2)+"万";
             }
       })
-       
+        setTimeout(()=>{
+          this.loading=false
+        },1500)
     }
+   
   },
 
   created(){
@@ -234,6 +241,15 @@ export default {
   flex: 1;
   margin-top: 40px;
   padding: 50px;
+}
+.loading{
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255,1);
+  z-index: 9989;
 }
 .historyTitle{
   display: flex;

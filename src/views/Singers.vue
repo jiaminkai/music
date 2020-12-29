@@ -132,25 +132,23 @@ export default {
 			var Top =window.innerHeight
 			var chileTop = this.$el.offsetHeight
 			var times =null;
-			console.log( scrollTop,Top,chileTop)
 			if(chileTop+310-scrollTop==window.innerHeight){
-console.log("到了" )
-let timer =null; 
-let a =this;
-let args = arguments;
-var begin = new Date().getTime();
-return function(){
-var current = new Date().getTime();
-clearTimeout(timer);  //清除定时器
-if(current - begin >= 2000){
-	this.loads()
-}
-timer = setTimeout(function () {
-a.loads()
-timer =null
-}, 2000);
-}
-
+			console.log("到了" )
+			let timer =null; 
+			let a =this;
+			let args = arguments;
+			var begin = new Date().getTime();
+			return function(){
+			var current = new Date().getTime();
+			clearTimeout(timer);  //清除定时器
+			if(current - begin >= 2000){
+				this.loads()
+			}
+			timer = setTimeout(function () {
+			a.loads()
+			timer =null
+			}, 2000);
+			}
 }
 		},
 		SingersDetails(id){

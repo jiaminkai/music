@@ -5,12 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    music:[]
+    music:[],
+    loginchange:{}
   },
   mutations: {
     SetMusic(state, payload){
-       console.log("aaa",payload)
+       
        state.music=payload
+    },
+    loginSuccess(state, payload){
+      state.loginchange=payload
     }
   },
   actions: {

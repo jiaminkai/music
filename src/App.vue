@@ -26,23 +26,61 @@ import NavMenu from './components/home/NavMenu.vue'
 import bottom from './components/home/paly.vue'
 import foot from './components/home/bottom.vue'
 
-import { btnLogin,LoginDetail } from "./components/login/login";
+import { btnLogin } from "./components/login/login";
+import {Home,Subcount,LikeMusic,GetMusic,GetMusicDetails,Music} from './components/home/home'
 export default {
   components:{NavMenu,bottom,foot},
   data(){
     return {
-      loginuser:{}
+      loginuser:{
+        loginchange:false
+      },
+      likemusci:{}
     }
   },
   methods:{
+        // 获取音乐
+    async getmusic(id){
+        var array=[]
+        const {data:data} =await GetMusic(id)
+        const {data:ndata} =await GetMusicDetails(id)
+        console.log("musci",ndata)
+        for(var i =0 ;i<ndata.songs.length;i++){
+            var c = new Music(ndata.songs[i],data.data[i].url)
+            array.push(c)
+        }
+        return array
+    },
+    // 获取喜欢的歌曲列表
+    async getlike(id){
+        const {data:data} =await LikeMusic(id)
+       await this.getmusic(data.ids.join(',')).then(res=>{
+           this.likemusci=res
+        })
+        this.likemusci.forEach((item,index)=>{
+          item.isonplay=false
+          item.hover=false
+          item.index=index
+          var h=parseInt(item.playtime/1000/60)
+          if(parseInt(item.playtime/1000/60)<10){
+              h='0'+ parseInt(item.playtime/1000/60)
+          }
+          var s=parseInt(item.playtime/1000%60)
+          if(parseInt(item.playtime/1000%60)<10){
+              s='0'+ parseInt(item.playtime/1000%60)
+          }
+          item.playtime= h+':'+s
+        })
+        this.music = this.likemusci[0]
+        this.$store.commit('SetMusic',this.likemusci)
+    },
+      //查看登录状态
       async loginchan(){
         const logs =await btnLogin()
-        if(logs.data.profile!=null){
+        if(logs.data.code==200){
             console.log("已登录")
-            this.loginuser =logs.data.profile
-            this.loginuser.loginchange =false
-            sessionStorage.setItem('loginchange', JSON.stringify(this.loginuser))
-            this.resetSetItem('loginchange', JSON.stringify(this.loginuser));
+            this.uesrId=logs.data.profile.userId
+            this.getlike(this.uesrId)
         }else{
             this.loginuser.loginchange=true
         }
@@ -81,7 +119,7 @@ export default {
 .fly {
   pointer-events: none;
   position: fixed;
-  z-index: 100;
+  z-index: 99999;
 }
 .bg-fly-circle1 {
   left: 40px;

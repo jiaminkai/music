@@ -29,22 +29,22 @@
                             </div>
                         </div>
                     </div>
-                <div class="navuser" >
-                    <el-button v-if="this.loginuser.loginchange" class="button" @click="login">登录</el-button>
+                <div class="navuser"  >
+                    <el-button v-if="!this.loginuser" class="button" @click="login">登录</el-button>
                     <div v-else class="usericon" >
-                        <img :src="this.loginuser.avatarUrl" alt="" srcset=""  >
-                            <el-dropdown @command="handleCommand">
-                                <span class="el-dropdown-link">
-                                    {{this.loginuser.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item icon="el-icon-plus" command="a">管理个人信息</el-dropdown-item>
-                                    <el-dropdown-item icon="el-icon-circle-plus" command="b">我的音乐</el-dropdown-item>
-                                    <el-dropdown-item icon="el-icon-circle-plus-outline" command="c">我的消息</el-dropdown-item>
-                                    <el-dropdown-item icon="el-icon-check" command="d">我的动态</el-dropdown-item>
-                                    <el-dropdown-item icon="el-icon-circle-check" command="e">退出登录</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+                        <img :src="this.loginuser.avatarUrl" alt="" srcset="" >
+                        <el-dropdown @command="handleCommand" v-if="this.loginuser">
+                            <span class="el-dropdown-link">
+                                {{this.loginuser.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-plus" command="a">管理个人信息</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-circle-plus" command="b">我的音乐</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-circle-plus-outline" command="c">我的消息</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-check" command="d">我的动态</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-circle-check" command="e">退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </div>
                 </div>
                 <div v-if="this.ishotserch" class="mengban" @click="cloce">
@@ -58,7 +58,7 @@
 
 <script>
 import {HotSearch} from '../home/home';
-
+import { Logout } from "../login/login";
 export default {
    
  name:'NavMenu',
@@ -72,13 +72,23 @@ export default {
          uesrId:''
      }
  },
- 
+ computed:{
+     logins() {
+        return this.$store.state.loginchange;
+      }
+
+ },
  watch:{
-    '$route': function (to, from) {
-    //执行数据更新查询
-    }
+    logins: function (old,newd){
+        console.log(old)
+          this.loginuser = old;
+         }
+
  },
  methods:{
+     login(){
+         this.$router.replace('/login')
+     },
      //热门搜索
      async getHotsearch(){
          const{data:data} =await HotSearch()
@@ -95,7 +105,8 @@ export default {
         this.a=1
         this.ishotserch=false
     } ,        // 跳转到登录后的主页
-    handleCommand(command) {
+    async handleCommand(command) {
+       
         if(command=="b"){
             this.tomy();
             return ;
@@ -106,12 +117,17 @@ export default {
             params:{id:this.loginuser.userId}
 
         })
+
         return ;
         }
-           
-        this.$message("暂未开发")
-
-        
+        if(command=="e"){
+            const {data:data } =await Logout()
+            console.log("退出登录",data )
+            sessionStorage.clear('')
+            this.$forceUpdate()
+             return ;
+        }
+        this.$message("暂未开发") 
       },
     tomy(){
         this.$router.push({
@@ -121,7 +137,7 @@ export default {
     },
     // 调往歌曲详情
     tomusic(id){
-        console.log("aaa",id)
+        
         this.$router.push({
             path: '/details',
             query:{id:id}
@@ -131,7 +147,9 @@ export default {
 
  },
  created(){
-        this.loginuser = JSON.parse(sessionStorage.getItem('loginchange'))
+        if(this.$store.state.loginchange.avatarUrl==undefined){
+            this.loginuser = JSON.parse(sessionStorage.getItem('loginchange'))
+        }
         window.addEventListener('setItem', ()=> {
             this.loginuser=JSON.parse(sessionStorage.getItem('loginchange'))
             console.log("头像監聽到了" )      

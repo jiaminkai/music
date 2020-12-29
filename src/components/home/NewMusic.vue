@@ -2,15 +2,16 @@
   <div class="conatiner">
       <div class="title">最新新歌<i class="el-icon-arrow-right"></i> <span class="more">更多<i class="el-icon-circle-plus-outline"></i></span></div>
       <div class="newmusicbox">
-          <div class="newmusic-item" @click="paly(item.id)" v-for="(item,index) in newmusic" :key="index">
-              <div class="musicindex">{{index}}</div>
+          <div class="newmusic-item" @click="paly(item)" v-for="(item,index) in newmusic" :key="index" @mouseenter="mouse(index)">
+              <div class="musicindex">{{index+1}}</div>
               <img class="icon" :src="item.picUrl" alt="">
+              <div v-show="ishow==index" class="newmusic-item-hover"><i class="el-icon-video-play"></i></div>
               <div class="namebox">
                 <div class="singer">{{item.name}}</div>
                 <div class="name">{{item.song.artists[0].name}}</div>
               </div>
               <div class="musicname">『{{item.name}}』</div>
-              <div class="play"><i class="el-icon-video-play"></i></div>
+              <div class="play">{{item.song.bMusic.playTime}}</div>
           </div>
       </div>
   </div>
@@ -20,11 +21,20 @@
 export default {
   name:'NewMusic',
   props:{
-    newmusic:Array
+    newmusic:Array,
+   
+  },
+  data(){
+    return{
+       ishow:-1
+    }
   },
   methods:{
-    paly(id){
-      this.$emit("palynewmusic",id)
+    paly(item){
+      this.$emit("palynewmusic",item)
+    },
+    mouse(index){
+      this.ishow=index
     }
   }
 }
@@ -41,6 +51,13 @@ export default {
   justify-content: space-between;
   width: 100%;
 }
+.newmusic-item-hover{
+  font-size: 25px;
+  position: absolute;
+  top: 30;
+  left: 60px;
+  color: salmon;
+}
 .newmusic-item{
   display: flex;
   width: 49.6%;
@@ -48,10 +65,11 @@ export default {
   box-shadow:  1px 2px 5px #cccccc;
   margin-bottom: 20px;
   align-items: center;
+  position: relative;
 
 }
 .musicindex{
-  width: 60px;
+  width: 45px;
   text-align: center;
 }
 .icon{
@@ -76,6 +94,9 @@ export default {
 }
 .play{
   width: 50px;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #6e6e6e;
 }
 
 </style>

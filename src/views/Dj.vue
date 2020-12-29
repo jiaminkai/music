@@ -61,6 +61,7 @@
                     </template>
                 </el-table-column>
             </el-table>
+
         </div>
   </musicitem>
 </template>
@@ -82,54 +83,65 @@ export default {
     },
     components: { Musicitem },
     methods:{
+         // 鼠标离开移入
     hoverenter(row){
-        console.log(row.musicid)
+        
         var index = this.music.findIndex(item=>{
           return  row.musicid==item.musicid
         })
-        console.log("index",index )
         var a =this.music[index]
-        console.log(a )
         a.hover=true
         this.$set(this.music,index,a)
     },
+    // 鼠标离开事件
     hoverleave(row){
-          console.log(row.musicid)
+      
         var index = this.music.findIndex(item=>{
           return  row.musicid==item.musicid
         })
-        console.log("index",index )
+      
         var a =this.music[index]
-        console.log(a )
+  
         a.hover=false
         this.$set(this.music,index,a)
     },
+    // 播放全部
     allplay2(){
                 console.log("全部播放")
                 var mus = JSON.parse(sessionStorage.getItem('music'))
+                   if(mus==null){
+              mus=[]
+            }
+
                 mus.unshift(...this.music)
                 console.log("legthn",mus.length)
                 this.resetSetItem('music', JSON.stringify(mus))
       },
+    //   播放音乐
       paly(row, column, event){
-          console.log(row.url,column,event )
           this.music.forEach(item => {
                item.ispaly=false
           });
         var index = this.music.findIndex(item=>{
           return  row.musicid==item.musicid
         })
-        console.log("index",index )
+       
         var a =this.music[index]
-        console.log("a",a )
+        
         a.ispaly=true
         this.$set(this.music,index,a)
         var mus = JSON.parse(sessionStorage.getItem('music'))
+        if(mus==null){
+            mus=[]
+        }
+
         mus.unshift(row)
         // sessionStorage.clear()
         this.resetSetItem('music', JSON.stringify(mus));
 
+
       },
+    //   获取专辑信息
       async  getDj(id){
           const {data:data} =await GetDj(id)
           this.Dj=data.playlist
@@ -141,17 +153,17 @@ export default {
           console.log( this.Djid)
         this.getDjdetails(this.Djid)
         },
+        // 获取评论
         async GetComment(id){
             const {data:data} =await GetDjComment(id)
-            console.log("aaaa品论",data.comments)
+            
             this.comment =data.comments
 
         },
+        // 获取专辑的音乐详情
         async getDjdetails(id){
             const {data:data} =await GetMusicDetails(id)
             const {data:ndata} = await GetMusic(id)
-            
-            
         for(var i =0 ;i<data.songs.length;i++){
                 var c = new Music(data.songs[i],ndata.data[i].url)
                 this.music.push(c)

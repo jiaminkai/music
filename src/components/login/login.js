@@ -15,6 +15,15 @@ export function Login(data){
     })
 
 }
+export function Logout(data){
+    return request({
+        method:'get',
+        url:'/logout',
+        data
+    })
+
+}
+
 export function LoginDetail(id){
     return request({
         method:'post',
