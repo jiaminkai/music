@@ -95,7 +95,6 @@
                     <span>清空</span>
                 </div>
             </div>
-
         </el-drawer>
         <!-- 歌词 -->
         <el-drawer
@@ -159,6 +158,17 @@ export default {
 
         
     },
+    watch:{
+        playmusicindex:function(old,news){
+           this.i=old
+        }
+    },
+    computed:{
+         playmusicindex:function(){
+           return this.$store.playmusicindex
+        }
+    },
+
     // 获取处理歌词
     destroyed(){
         window.removeEventListener("timeupdate",this.updateTime)
@@ -169,7 +179,7 @@ export default {
         console.log(val.musicid)
         this.lyric=[]
         const {data:Lyric}  = await GetLyric(val.musicid) 
-        console.log("歌词",Lyric)
+    
         if(Lyric.lrc==undefined){
             this.lyric=[]
             console.log("歌词清空" )
@@ -291,15 +301,14 @@ export default {
         var s =Math.ceil(parseInt(this.$refs.audio.currentTime%60))
         if(m<10){ m='0'+m}
         if(s<10){ s='0'+s}
-        console.log(m+':'+s )
         this.starttime=m+':'+s
         var val =this.$refs.audio.currentTime/this.$refs.audio.duration
         if(Number.isNaN(parseFloat(val*100))){
             this.percentage=0
-            console.log(this.percentage)
+            
         }else{
             this.percentage=parseFloat(val*100)
-            console.log(this.percentage)
+           
         }
         this.$emit("timeup",val)
         if(this.$refs.audio.currentTime/this.$refs.audio.duration==1){
@@ -358,8 +367,13 @@ export default {
             this.like = c
             this.$set(this.like,c)
             console.log("監聽到了" )   
-            this.$forceUpdate();
-            this.playmusic()
+            this.$nextTick(() => {
+            const audio = this.$refs.audio
+            if (audio) {
+                this.playmusic()
+            }
+            })
+            
         })
 
     },

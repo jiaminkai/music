@@ -35,6 +35,7 @@
 					<el-table
 						:data="this.songs"
 						stripe
+						@row-click="rowclick"
 					>
 						<el-table-column
 							type="index"
@@ -44,25 +45,25 @@
 						<el-table-column
 							label="歌曲"
 							min-width="120px"
-							prop="name"
+							prop="musicname"
 							>
 						</el-table-column>
 						<el-table-column
 							label="歌手"
 							min-width="80px"
-							prop="ar[0].name"
+							prop="user"
 							>
 						</el-table-column>
 						<el-table-column
 							label="专辑"
 							min-width="120px"
-							prop="al.name"
+							prop="djname"
 							>
 						</el-table-column>
 						<el-table-column
 							label="时长"	
 							min-width="60px"
-							prop="dt"						
+							prop="playtime"						
 							>
 							
 						</el-table-column>
@@ -123,7 +124,7 @@
 
 <script>
 import MusicItem from '../components/MusicDetails/Musicitem.vue';
-import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger} from "../components/Singers/Singers";
+import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger,Song,SingersSong} from "../components/Singers/Singers";
 export default {
 	name:'SingersDetails',
 	data(){
@@ -147,15 +148,23 @@ export default {
 			console.log("data",data.data )
 			this.array = data.data
 		},
+		
 		async getSingersMusic(id,limit,num){
+			var list =[];
 			const {data:data} =await SingersMusic(id,limit,num)
 			console.log("music",data.songs)
 			data.songs.forEach(item => {
 				var m=Math.floor(item.dt/1000/60)<10?"0"+Math.floor(item.dt/1000/60):Math.floor(item.dt/1000/60)
-				var s =Math.floor(item.dt/1000%60)<10?"0"+Math.floor(item.dt/1000%60)<10:Math.floor(item.dt/1000%60)
+				var s =Math.floor(item.dt/1000%60)<10?"0"+Math.floor(item.dt/1000%60):Math.floor(item.dt/1000%60)
 				item.dt=m+":"+s
+				SingersSong(item.id).then((res)=>{
+					item.url  = res.data.data[0].url
+					var a = new Song(item)
+					list.push(a)
+				})
+
 			});
-			this.songs=data.songs
+			this.songs=list
 
 		},
 		async GetSingersDesc(id){
@@ -185,6 +194,28 @@ export default {
 		},
 		allplay2(){
 			console.log("播放全部" )
+			var c =JSON.parse(sessionStorage.getItem('music'));
+			if(c.length!=0){
+				c.unshift(...this.songs)
+			}else{
+				c=[];
+				c.unshift(...this.songs)
+			}
+		this.resetSetItem('music', JSON.stringify(c));
+        console.log("存入音乐" )
+		},
+		// 播放单曲
+		rowclick(row,column,event){
+			console.log(row )
+			var c =JSON.parse(sessionStorage.getItem('music'));
+			if(c.length!=0){
+			c.unshift(row)
+			}
+			else{
+				c=[];
+				c.unshift(row)
+			}
+			this.resetSetItem('music', JSON.stringify(c));
 		},
 		handleSizeChange(val) {
 			console.log(`每页 ${val} 条`);
@@ -334,7 +365,7 @@ export default {
 .djbox{
 	display: flex;
 	width: 100%;	
-	justify-content: space-between;
+	/* justify-content: space-between; */
 	flex-wrap: wrap
 }
 .djitem{
@@ -343,12 +374,15 @@ export default {
 	text-align: left;
 	padding-bottom: 30px;
 	position: relative;
+	margin-right: 10px;
 }
 .djitem img{
 	width: 170px;
 	height: 170px;
 	position: relative;
 	z-index: 2;
+	box-shadow: 1px 1px 5px #000;
+	border-radius: 5px;
 }
 .djitem::before{
 	content: "";
@@ -360,6 +394,17 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 30px;
+}
+.djitem::after{
+	content: "";
+	display: block;
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: sandybrown;
+	position: absolute;
+	top: 25px;
+	left: 60px;
 }
 .musicname{
 	font-size: 14px;

@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     music:[],
-    loginchange:{}
+    loginchange:{},
+    musicindex:0
   },
   mutations: {
     SetMusic(state, payload){
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     loginSuccess(state, payload){
       state.loginchange=payload
+    },
+    playmusicindex(state, payload){
+      state.musicindex=payload
     }
   },
   actions: {

@@ -14,6 +14,10 @@ import TopMusics from "../components/TopList/TopMusic.vue";
 import MyMusic from '../views/MyMusic.vue';
 import Event from '../views/Event.vue';
 import  login  from "../views/Login.vue";
+import  Search  from "../views/SeachMusic.vue";
+import  Dt  from "../views/DianTai.vue";
+
+
 
 Vue.use(VueRouter)
 
@@ -100,9 +104,20 @@ const routes = [
   name:'Event',
   component : Event
 }
+,
+{
+  path:'/Search',
+  name:'Search',
+  component : Search
+}
+,
+{
+  path:'/Dt',
+  name:'Dt',
+  component : Dt
+}
 
 ]
-
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,

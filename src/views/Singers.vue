@@ -88,7 +88,6 @@ export default {
 				initial:'-1',
 				limit :50,
 				offset:1,
-
 			},
 			more:true,
 			loading:false,
@@ -110,7 +109,6 @@ export default {
 	mounted(){
 		window.addEventListener("scroll",this.handleScroll)
 		this.$bus.$on('name',(value)=>{
-			console.log("singers",value )
 			this.palytime=value
 		})
 	},

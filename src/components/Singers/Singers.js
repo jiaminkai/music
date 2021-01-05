@@ -5,6 +5,12 @@ export function SingersTop(){
 		method:'get'
 	})
 }
+export function SingersSong(id){
+	return request({
+		url:`/song/url?id=${id}`,
+		method:'get'
+	})
+}
 export function SingersDj(id){
 	return request({
 		url:`/artist/album?id=${id}&limit=8`,
@@ -50,5 +56,19 @@ export class Singers{
 		this.coverImgUrl=singers.artist.cover
 		this.description   =singers.artist.briefDesc
 		this.name	=singers.artist.name
+	}
+}
+export class Song{
+	constructor(song){
+		this.url=song.url
+		this.djname=song.al.name
+		this.picUrl=song.al.picUrl
+		this.musicname=song.name
+		this.playtime=song.dt
+		this.musicid=song.id
+		this.djid = song.al.id
+		this.user=song.ar[0].name
+		this.userId=song.ar[0].id
+		
 	}
 }

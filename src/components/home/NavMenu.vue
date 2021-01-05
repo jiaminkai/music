@@ -14,8 +14,8 @@
 
                 </ul>
                 <div class="inputbox">
-                    <el-button class="search" circle icon="el-icon-search" />
-                    <input class="input" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
+                    <el-button class="search" circle icon="el-icon-search" @click="change" />
+                    <input class="input" v-model="input" @blur="cloce" @keyup.enter="change" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
                     <div class="hotserach_pos" v-if="this.ishotserch">
                         <div class="hotserach">
                             <div class="hotserach_title">热门搜索</div>
@@ -69,7 +69,8 @@ export default {
          a:1,
          ishotserch:false,
          hotsearch:[],
-         uesrId:''
+         uesrId:'',
+         input:''
      }
  },
  computed:{
@@ -101,10 +102,11 @@ export default {
         this.ishotserch=true
     },
     cloce(){
-       this.width=130;
+        this.width=130;
         this.a=1
         this.ishotserch=false
-    } ,        // 跳转到登录后的主页
+    } ,       
+     // 跳转到登录后的主页
     async handleCommand(command) {
        
         if(command=="b"){
@@ -125,6 +127,7 @@ export default {
             console.log("退出登录",data )
             sessionStorage.clear('')
             this.$forceUpdate()
+            this.$router.replace('/login')
              return ;
         }
         this.$message("暂未开发") 
@@ -137,14 +140,18 @@ export default {
     },
     // 调往歌曲详情
     tomusic(id){
-        
         this.$router.push({
             path: '/details',
             query:{id:id}
       })
       this.ishotserch=false
     },
-
+    //搜索按下回车
+    change(val){
+      this.$router.push({path:'/Search',query:{text:this.input}})
+      this.ishotserch=false
+      this.input=""
+    }
  },
  created(){
         if(this.$store.state.loginchange.avatarUrl==undefined){
@@ -269,11 +276,12 @@ color: rgb(245, 134, 8);
      
  }
  .mengban{
-     width: 1200px;
+     width: 100%;
      height: 100vh;
      background: rgba(255, 255, 255, 0.9);
-     position: absolute;
+     position: fixed;
      top: 62px;
+     left: 0;
  }
 
 

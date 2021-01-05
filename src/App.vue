@@ -73,6 +73,7 @@ export default {
         })
         this.music = this.likemusci[0]
         this.$store.commit('SetMusic',this.likemusci)
+        this.resetSetItem('music',JSON.stringify(this.likemusci))
     },
       //查看登录状态
       async loginchan(){

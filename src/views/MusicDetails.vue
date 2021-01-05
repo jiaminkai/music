@@ -1,6 +1,6 @@
 <template>
    
-<musicitem :music="this.music" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment">
+<musicitem :music="this.music" @allplay1="allplay1" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment" >
       
        <div slot="dj">
                  <div class="lyricbox" :style="{height:this.height}">
@@ -92,14 +92,20 @@ export default {
             })
         
       },
-    //   直接重搜索跳转到详情
+    //   直接从搜索跳转到详情
       async geimus(id){
           console.log(id )
            const {data:list} = await GetDetails(id)
            const {data:url} = await GetMusic(id)
-            console.log(list,url )
-            this.music = new Music(list.songs[0],url.data[0].url)
-            this.getmusic()
+           console.log("歌曲详情",list )
+           
+           var c= Math.floor(list.songs[0].dt/1000/60)
+                var b=Math.floor(list.songs[0].dt/1000%60)
+                if(c<10){c='0'+c}
+                if(b<10){b='0'+b}
+                list.songs[0].dt= c+':'+b
+           this.music = new Music(list.songs[0],url.data[0].url)
+           this.getmusic()
       },
 
       async  getmusic(){
@@ -109,7 +115,7 @@ export default {
             const {data:comment}  = await GetComment(this.music.musicid)
             const {data:Lyric}  = await GetLyric(this.music.musicid) 
             const {data:hotcomment}  = await GetHotComment(this.music.musicid)
-            console.log( comment)
+            console.log("歌曲详情",list )
             this.hotcomment=hotcomment.hotComments
             this.newcomment=comment.data.comments
             this.hotcomment.forEach(item=>{
@@ -118,6 +124,7 @@ export default {
              this.newcomment.forEach(item=>{
                 item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
             })
+            
             this.array =new Musics(list.songs[0],alcum,comment,Lyric)
             var c =this.array.lyric.replace(/\[.*?\]/g,'')
             var snsArr=c.split(/[(\r\n)\r\n]+/);
@@ -126,10 +133,25 @@ export default {
                     snsArr.splice(index,1);//删除空项
                 }
             })
-            // console.log(typeof(snsArr),snsArr )
             this.array.lyric =snsArr
+        },
+        allplay1(val){
+            console.log("a",val )
+            var c =JSON.parse(sessionStorage.getItem('music'))
+            var ind= c.findIndex((item,index)=>{
+                item.musicid==val.musicid
+            })
+            if(c!=null){
+                if(ind==-1){
+                    c.unshift(val)
+                }else{
+                    this.$sotre.commit('playmusicindex',ind)
+                    this.resetSetItem('music',c)
+                }
+            }
         }
     },
+  
     created(){
        this.music= this.$route.query
        if(this.$route.query.id!=undefined){

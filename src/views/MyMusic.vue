@@ -21,7 +21,7 @@
         <!-- 右边歌单，播放 -->
         <div class="myplay">
             <div class="historyTitle">
-                <div class="historyTitleitem"><div class="iconfont">&#xe682;</div><div class="tieleitem"><span>{{this.myrecord.length}}</span>最近播放</div></div>
+                <div class="historyTitleitem"><div class="iconfont">&#xe682;</div><div class="tieleitem"><span>0</span>最近播放</div></div>
                 <div class="historyTitleitem"><div class="iconfont">&#xe607;</div><div class="tieleitem"><span>0</span>我的收藏</div></div>
                 <div class="historyTitleitem"><div class="iconfont">&#xe79f;</div><div class="tieleitem"><span>0</span>已购音乐 </div></div>
             </div>
@@ -108,6 +108,7 @@ export default {
       const {data:myevent} = await MyEvent(this.login.userId);
       // 用户粉丝
       const {data:myfolloweds} = await MyFolloweds(this.login.userId);
+      console.log(myrecord)
       var c = new Date(my.profile.createTime)
       var y = c.getFullYear();
       var m = c.getMonth()+1;

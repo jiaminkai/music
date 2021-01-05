@@ -96,6 +96,7 @@ dj:{
     methods:{
         allplay1(){
                 this.$emit('allplay1',this.music)
+                console.log("aaa" )
             },
         allplay2(){
                 this.$emit('allplay2')
