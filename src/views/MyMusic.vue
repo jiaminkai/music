@@ -2,7 +2,7 @@
   <div class="mybox">
       <div class="container" >
       <!-- 左边信息介绍 -->
-      <div class="loading"  v-loading="loading" v-if="loading"></div>
+        <div class="loading"  v-loading="loading" v-if="loading"></div>
         <div class="myleftbox">
           <div  class="myleft">
               <img :src="this.login.avatarUrl" alt="">
@@ -21,9 +21,9 @@
         <!-- 右边歌单，播放 -->
         <div class="myplay">
             <div class="historyTitle">
-                <div class="historyTitleitem"><div class="iconfont">&#xe682;</div><div class="tieleitem"><span>0</span>最近播放</div></div>
-                <div class="historyTitleitem"><div class="iconfont">&#xe607;</div><div class="tieleitem"><span>0</span>我的收藏</div></div>
-                <div class="historyTitleitem"><div class="iconfont">&#xe79f;</div><div class="tieleitem"><span>0</span>已购音乐 </div></div>
+                <div class="historyTitleitem" @click="todetails(0)"><div class="iconfont">&#xe682;</div><div class="tieleitem"><span>{{this.myrecord.length}}</span>最近播放</div></div>
+                <div class="historyTitleitem" @click="todetails(1)"><div class="iconfont">&#xe607;</div><div class="tieleitem"><span>{{this.count.subPlaylistCount}}</span>我的收藏</div></div>
+                <div class="historyTitleitem" @click="todetails(2)"><div class="iconfont">&#xe79f;</div><div class="tieleitem"><span>0</span>已购音乐 </div></div>
             </div>
             <div class="creatgedaibox">
                 <div class="creatgedai"><span>我的歌单{{this.count.createdPlaylistCount}}</span> <div class="creatgedaimove"><span class="newgedan">新建歌单</span><span class="daorugedan">导入歌单</span><span class="allgedai">全部<span class="el-icon-arrow-right"></span></span></div></div>
@@ -51,11 +51,11 @@
             <div class="subgedan">
                 <div class="creatgedai">我的电台</div>
                     <div class="creatcontent">
-                    <div v-if="this.myplay.length!=0">
+                    <div class="errbox" v-if="this.myplay.length!=0">
                         <!-- <div class="creatcontent-item" v-for="(item,index) in this.myplay" :key="index">
                             <img :src="item.coverImgUrl" alt="">
                         </div> -->
-                        你暫時沒有收藏任何电台
+                        <div class="errnull"></div>
                     </div>
                     <div v-else>
                         <!-- <div class="creatcontent-item">
@@ -71,19 +71,20 @@
 </template>
 
 <script>
-import {My,MyPlaylist,MyCounr,MyRecord,MyDj,MyFollows,MyEvent,MyFolloweds,MySublist} from "../components/My/my";
+import {My,MyPlaylist,MyCounr,MyRecord,MyDj,MyFollows,MyEvent,MyFolloweds,MySublist,MyPlaylistVideo} from "../components/My/my";
 export default {
   name:'MyMusic',
   data(){
     return{
       login:{},
       count:{},
-      mycounr:{},
       myplay:[],
       myevent:[],
       myfolloweds:[],
       myfollows:[],
-      loading: true
+      loading: true,
+      myrecord:[],
+      video:[]
     }
   },
   computed:{
@@ -108,7 +109,9 @@ export default {
       const {data:myevent} = await MyEvent(this.login.userId);
       // 用户粉丝
       const {data:myfolloweds} = await MyFolloweds(this.login.userId);
-      console.log(myrecord)
+      //用户视频播放记录
+      const {data:myvaiod}  = await MyPlaylistVideo()
+      this.video =myvaiod.data.videos
       var c = new Date(my.profile.createTime)
       var y = c.getFullYear();
       var m = c.getMonth()+1;
@@ -122,8 +125,6 @@ export default {
       this.myfollows=myfollows.follow
       this.myevent= myevent.events
       this.myfolloweds=myfolloweds.data
-
-
       this.myplay.forEach(a=>{
            if(a.playCount/100000000>1){
               a.playCount= (a.playCount/100000000).toFixed(2)+"亿";
@@ -131,10 +132,44 @@ export default {
               a.playCount= (a.playCount/10000).toFixed(2)+"万";
             }
       })
-        setTimeout(()=>{
-          this.loading=false
-        },1500)
+      this.loading=false
+   
+    },
+  todetails(val){
+    if(val==0){
+        this.$router.push({
+        path:'/MySub',
+        name:'MySub',
+        params:{
+          song:this.myrecord,
+          userId:this.login.userId,
+          video:this.video,
+          username:this.login.name
+        }
+      })
     }
+    if(val==1){
+        this.$router.push({
+        path:'/MySub2',
+        name:'MySub2',
+        params:{
+          userId:this.login.userId,
+          username:this.login.nickname
+          
+        }
+      })
+    }
+    if(val==2){
+        this.$router.push({
+        path:'/MySub3',
+        name:'MySub3',
+        params:{
+         
+        }
+      })
+    }
+  
+  },
    
   },
 
@@ -161,6 +196,15 @@ export default {
     -webkit-font-smoothing: antialiased;
     -webkit-text-stroke-width: 0.2px;
     -moz-osx-font-smoothing: grayscale;}
+.errnull{
+	width: 100%;
+	height: 340px;
+	background: url('../assets/404.png') center no-repeat;
+}
+.errbox{
+  width: 100%;
+  min-height: 1100px;
+}
 .mybox{
   width: 100%;
   background: #eee;
@@ -306,11 +350,12 @@ export default {
 .creatcontent{
   display: flex;
   position: relative;
+  width: 100%;
 }
 .creatplay{
   position: absolute;
   font-size: 12px ;
-  z-index: 999;
+  z-index: 102;
   padding: 0 10px;
   line-height: 28px;
   right: 13px;

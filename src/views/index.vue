@@ -51,7 +51,7 @@ export default {
             }
               music.unshift(res[0])
          })
-        this.resetSetItem('music', JSON.stringify(music));
+        this.resSetItem('music', JSON.stringify(music));
     },
     // 获取音乐
     async getmusic(id){

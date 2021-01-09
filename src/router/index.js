@@ -9,13 +9,19 @@ import index from '../views/index.vue';
 import Singers from '../views/Singers.vue';
 import SingersDetails from "../views/SingersDetails.vue";
 import MV from "../views/MV.vue";
-import MVDetail from "../components/MV/MvDetails.vue";
-import TopMusics from "../components/TopList/TopMusic.vue";
+import MVDetail from "../views/MvDetails.vue";
+import TopMusics from "../views/TopMusic.vue";
 import MyMusic from '../views/MyMusic.vue';
 import Event from '../views/Event.vue';
 import  login  from "../views/Login.vue";
 import  Search  from "../views/SeachMusic.vue";
 import  Dt  from "../views/DianTai.vue";
+import  DtDetail  from "../views/DianTaiDetail.vue";
+import  Zj  from "../views/SingersZJ.vue";
+import  MySub  from "../components/My/MySubItem.vue";
+import  MySub2  from "../components/My/MySubItem2.vue";
+import  MySub3 from "../components/My/MySubItem3.vue";
+
 
 
 
@@ -116,7 +122,35 @@ const routes = [
   name:'Dt',
   component : Dt
 }
-
+,
+{
+  path:'/Dts:id',
+  name:'Dts',
+  component : DtDetail
+}
+,
+{
+  path:'/Zj:id',
+  name:'Zj',
+  component : Zj
+}
+,
+{
+  path:'/MySub',
+  name:'MySub',
+  component : MySub,
+}
+,
+{
+  path:'/MySub2',
+  name:'MySub2',
+  component : MySub2
+},
+{
+  path:'/MySub3',
+  name:'MySub3',
+  component : MySub3
+}
 ]
 const router = new VueRouter({
   mode: 'history',

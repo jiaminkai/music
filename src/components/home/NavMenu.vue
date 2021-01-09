@@ -2,15 +2,17 @@
         <div id="nav">
             <div class="navtab">
                 <div class="logo">
-                    <img src="http://images.shejidaren.com/wp-content/uploads/2014/09/021504BV4.jpg" alt="">
+                    <img src="../../assets/logoblack.png" alt="">
                 </div>
                 <ul id="nav-ul">
-                    <li><el-link :underline="false" href="/">发现音乐</el-link></li>
-                    <li><el-link :underline="false" href="/Top">排行榜</el-link></li>
-                    <li><el-link :underline="false" href="/Song">歌单</el-link></li>
-                    <li><el-link :underline="false" href="/Singers">歌手</el-link></li>
-                    <li><el-link :underline="false" href="/MV">MV</el-link></li>
-                    <li><el-link :underline="false" href="/Dt">电台</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/'?'activenav':'']" @click="to('/')" ><el-link :underline="false"  >发现音乐</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/Top'?'activenav':'']" @click="to('/Top')"><el-link :underline="false"  >排行榜</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/Song'?'activenav':'']" @click="to('/Song')"><el-link :underline="false"  >歌单</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/Singers'?'activenav':'']" @click="to('/Singers')"><el-link :underline="false"  >歌手</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/MV'?'activenav':'']" @click="to('/MV')"><el-link :underline="false" >MV</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/Dt'?'activenav':'']" @click="to('/Dt')"><el-link :underline="false" >电台</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/Yun'?'activenav':'']" @click="to('/Yun')"><el-link :underline="false" >云村</el-link></li>
+
 
                 </ul>
                 <div class="inputbox">
@@ -138,6 +140,10 @@ export default {
             params:{id:this.loginuser.userId}
         })
     },
+    to(val){
+        this.$router.push(val)
+        this.$store.commit('navmenuchange',val)
+    },
     // 调往歌曲详情
     tomusic(id){
         this.$router.push({
@@ -162,6 +168,7 @@ export default {
             console.log("头像監聽到了" )      
         })
         this.getHotsearch()
+
  }
 }
 </script>
@@ -184,6 +191,11 @@ export default {
     left: 0;
     z-index: 99;
 
+}
+.activenav{
+   font-weight: 700;
+ padding-bottom: 10px;
+   border-bottom: 3px solid rgb(245, 134, 8);
 }
 .navtab{
     width: 1200px ;
@@ -257,13 +269,11 @@ color: rgb(245, 134, 8);
 .logo{
     height: 100%;
     width: 160px;
-    margin-right: 50px;
     align-items: center;
     display: flex;
 }
 .logo img{
      width: 100px;
-     height: 90%   ;
      display: flex;
      place-self: center;
      vertical-align: middle;
@@ -300,6 +310,7 @@ color: rgb(245, 134, 8);
      font-size: 18px;
      font-weight: 500;
      padding: 15px 0;
+     margin-left: 15px;
  }
  .hotserach{
     width: 320px;
@@ -341,5 +352,11 @@ color: rgb(245, 134, 8);
  .searchitem div:nth-child(2){
      font-size: 14px;
      color: #cccccc;
+     width: 180px;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+
  }
+ 
 </style>

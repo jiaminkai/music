@@ -1,5 +1,5 @@
 <template>
-    <div class="foot" >
+    <div class="foot" v-if="this.show">
         <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
         <div class="palybox" >
             <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
@@ -145,7 +145,8 @@ export default {
             activeName:'first',
             drawergeci:false,
             lyric:[],
-            like:[]
+            like:[],
+            show:false
         }
     },
     mounted(){
@@ -365,6 +366,10 @@ export default {
                 item.isonplay=false
             })
             this.like = c
+            if(this.like.length!=0){
+                this.conle("显示播放栏")
+                this.show=true
+            }
             this.$set(this.like,c)
             console.log("監聽到了" )   
             this.$nextTick(() => {
@@ -407,6 +412,7 @@ export default {
     display: flex;
     flex-direction: column;
     z-index: 99999;
+    transition: all 2s ease-in;
 }
 
 .time{

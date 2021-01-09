@@ -4,19 +4,16 @@
     <div class="container">
       <el-aside width="360px">
           <div class="djbox">
-              <div class="img" >
-                  <img v-if="this.array!=undefined" :src="this.array.picUrl" alt="">
-                  <img v-else :src="this.dj.coverImgUrl" alt="">
-              </div>
-            <slot name="djdesc" class="slotdesc">
-                   
-              </slot>
-              <slot name="djcary">
-                 
-              
-              </slot>
+                <div class="img" >
+                    <img v-if="this.array!=undefined" :src="this.array.picUrl" alt="">
+                    <img v-else :src="this.dj.coverImgUrl" alt="">
+                </div> 
+                <slot name="djdesc" class="slotdesc">
+                    
+                </slot>
+                <slot name="djcary">
 
-
+                </slot>
           </div>
       </el-aside>
       <el-main>
@@ -49,7 +46,10 @@
           <slot name="dj">
               
           </slot>
-            <pinglun :type="3" :hotcomment="this.hotcomment" :newcomment="this.newcomment" >
+            <pinglun :type="2" :hotcomment="this.hotcomment" :newcomment="this.newcomment" :id="this.dj.id" v-if="this.dj!=undefined" >
+                <div slot="pingtitle">评论</div>
+            </pinglun>
+            <pinglun :type="0" :hotcomment="this.hotcomment" :newcomment="this.newcomment" :id="this.array.musicid" v-else >
                 <div slot="pingtitle">评论</div>
             </pinglun>
       </el-main>
@@ -69,19 +69,14 @@ export default {
     props:{
 music:{
     type:Object
-},array:{
-    type:Object
 },
-songs:{
-    tyep:Array
+array:{
+    type:Object
 },
 hotcomment:{
     type:Array
 },
 newcomment:{
-    type:Array
-},
-djmusic:{
     type:Array
 },
 dj:{
@@ -90,7 +85,8 @@ dj:{
     },
     data(){
         return{
-            textarea:''
+            textarea:'',
+            
         }
     },
     methods:{

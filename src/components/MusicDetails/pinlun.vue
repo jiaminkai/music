@@ -77,7 +77,8 @@ export default {
 			console.log("发送评论:",this.id,this.textarea )
 			const{data:Data} =await SendComment(this.type,this.id,this.textarea)
 			console.log(Data )
-			this.$forceUpdate()
+			this.textarea=""
+			this.$bus.$on('sendmessang')
 		}
 	},
 

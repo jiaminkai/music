@@ -10,12 +10,14 @@
               <div class="fly bg-fly-circle2"></div>
               <div class="fly bg-fly-circle3"></div>
               <div class="fly bg-fly-circle4"></div>
-              
       </el-main>
      <foot></foot>
-      <el-footer>
-        <bottom></bottom>
-      </el-footer>
+      <!-- <el-footer> -->
+        <transition name="fade">
+          <bottom></bottom>
+        </transition>
+        
+      <!-- </el-footer> -->
     </el-container>
       
   
@@ -38,6 +40,7 @@ export default {
       likemusci:{}
     }
   },
+
   methods:{
         // 获取音乐
     async getmusic(id){
@@ -72,8 +75,12 @@ export default {
           item.playtime= h+':'+s
         })
         this.music = this.likemusci[0]
+        var list =[]
         this.$store.commit('SetMusic',this.likemusci)
-        this.resetSetItem('music',JSON.stringify(this.likemusci))
+        this.resSetItem('music',JSON.stringify(list))
+        this.resSetItem('musiclike',JSON.stringify(this.likemusci))
+
+
     },
       //查看登录状态
       async loginchan(){
@@ -89,6 +96,7 @@ export default {
   },
   created(){
     this.loginchan()
+    
   }
 
 }
@@ -161,7 +169,12 @@ export default {
   background: linear-gradient(to right, rgba(100, 84, 239, 0.02) 0%, rgba(48, 33, 236, 0.04) 100%);
   animation: move 3.5s linear infinite;
 }
-
+.fade-enter-active, .fade-leave-active {
+  transition: 1s all ease-in;
+}
+.fade-enter, .fade-leave-to{
+   transition: 1s all ease-in;
+}
 @keyframes move {
   0% {
     transform: translateY(0px);

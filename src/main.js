@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.prototype.$message=Message;
 Vue.prototype.$bus=new Vue();
-Vue.prototype.resetSetItem = function (key, newVal) {
+Vue.prototype.resSetItem = function (key, newVal) {
   if (key === 'music') {
 
       // 创建一个StorageEvent事件

@@ -132,7 +132,9 @@ export default {
 		}
 	},
 	mounted(){
-		
+		this.$bus.$on('sendmessage',()=>{
+        this.getevent()
+        })
 	},
 	components:{pinlun	},
 	methods:{
@@ -163,7 +165,7 @@ export default {
             
 			mus.unshift(c)
 			// sessionStorage.clear()
-			this.resetSetItem('music', JSON.stringify(mus));
+			this.resSetItem('music', JSON.stringify(mus));
 			console.log(c )
 		},
 		// 获取动态并处理数据
@@ -348,10 +350,12 @@ export default {
 	font-size: 12px;
 	color: #0c73c2;
 	padding-top: 10px ;
+
 }
 .item-zhan div{
 padding: 0 10px;
 border-right: 1px solid #ccc;
+place-self: center;
 
 }
 .item-zhan div:nth-child(1){

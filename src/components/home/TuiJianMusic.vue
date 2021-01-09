@@ -1,6 +1,6 @@
 <template>
         <div class="container">
-            <div class="title">推荐歌单<i class="el-icon-arrow-right"></i> <span class="more">更多<i class="el-icon-circle-plus-outline"></i></span></div>
+            <div class="title">推荐歌单<i class="el-icon-arrow-right"></i> <span class="more" @click="tomore">更多<i class="el-icon-circle-plus-outline"></i></span></div>
             <div class="musicbox">
                 <div class="musciitem" @click="toDj(item.id)" v-for="(item,index) in this.tuijian" :key="index" >
                     <img :src="item.picUrl" alt="">
@@ -23,6 +23,9 @@ export default {
   methods:{
     toDj(id){
       this.$router.push({path:`/Dj${id}`})
+    },
+    tomore(){
+      this.$router.push({path:`/Song`})
     }
   }
 }

@@ -18,6 +18,7 @@
 				</el-form-item>
 				<el-form-item prop="password">		
 					<el-input
+						type="password"
 						v-model="ruleForm.password"
 						prefix-icon="el-icon-lock"
 						placeholder="请输入密码"
@@ -71,7 +72,7 @@ methods:{
 			this.loginuser.loginchange =false
 			this.$store.commit("loginSuccess",this.loginuser)
 			sessionStorage.setItem('loginchange', JSON.stringify(this.loginuser))
-			this.resetSetItem('loginchange', JSON.stringify(this.loginuser));
+			this.resSetItem('loginchange', JSON.stringify(this.loginuser));
 			this.$router.replace('/home')
         } else{
         this.$message.error("登录失败")
@@ -123,7 +124,7 @@ methods:{
 	border-radius: 10px;
 }
 .logo{
-	background: url('../assets/logo.jpg') center no-repeat;
+	background: url('../assets/logoblack.png') center no-repeat;
 	margin-top:20px;
 	width: 180px;
 	height: 60px;

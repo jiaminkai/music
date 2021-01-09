@@ -85,7 +85,7 @@
 					<div class="dj">
 						<div class="djname"><span>专辑</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
 						<div class="djbox">
-							<div class="djitem" v-for="(item,index) in  this.SingersDj" :key="index">
+							<div class="djitem" v-for="(item,index) in  this.SingersDj" :key="index" @click="tozj(item.id)">
 								<img :src="item.blurPicUrl" alt="">
 								<div class="musicname">
 									{{item.name}}
@@ -97,13 +97,14 @@
 					</div>
 					<div class="mv" v-if="this.mvs!=undefined">
 						<div class="djname"><span>MV</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
-						<div class="MVbox">
+						<div class="MVbox" v-if="this.mvs.length=0">
 							<div class="MVitem" v-for="(item,index) in this.mvs" :key="index">
 								<img :src="item.imgurl16v9" alt="">
 								<div class="artistName">{{item.name}}</div>
 								<div class="singersname">{{item.artistName}}</div>
 							</div>
 						</div>
+						<div class="errnull"></div>
 					</div>
 					<div class="singerss" v-if="this.smimt!=undefined">
 						<div class="djname"><span>相似歌手</span><span>更多<i class="el-icon-arrow-right"></i></span>
@@ -201,7 +202,7 @@ export default {
 				c=[];
 				c.unshift(...this.songs)
 			}
-		this.resetSetItem('music', JSON.stringify(c));
+		this.resSetItem('music', JSON.stringify(c));
         console.log("存入音乐" )
 		},
 		// 播放单曲
@@ -215,7 +216,7 @@ export default {
 				c=[];
 				c.unshift(row)
 			}
-			this.resetSetItem('music', JSON.stringify(c));
+			this.resSetItem('music', JSON.stringify(c));
 		},
 		handleSizeChange(val) {
 			console.log(`每页 ${val} 条`);
@@ -279,6 +280,11 @@ export default {
 	height: auto;
 	margin-right: 40px;
 	position: relative;
+}
+.errnull{
+	width: 100%;
+	height: 340px;
+	background: url('../assets/404.png') center no-repeat;
 }
 .aidesc{
 	width: 200px;
@@ -375,6 +381,7 @@ export default {
 	padding-bottom: 30px;
 	position: relative;
 	margin-right: 10px;
+	
 }
 .djitem img{
 	width: 170px;
@@ -393,7 +400,12 @@ export default {
 	background: #000;
 	position: absolute;
 	top: 0;
-	left: 30px;
+	left: 25px;
+	transition:  all .3s ease-in-out;
+}
+.djitem:hover:before{
+	left: 35px;
+	transition:  all .3s ease-in-out;
 }
 .djitem::after{
 	content: "";
@@ -404,7 +416,11 @@ export default {
 	background: sandybrown;
 	position: absolute;
 	top: 25px;
-	left: 60px;
+	left: 55px;
+	transition:  all .3s ease-in-out;
+}
+.djitem:hover:after{
+	left: 65px;
 }
 .musicname{
 	font-size: 14px;

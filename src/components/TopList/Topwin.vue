@@ -2,7 +2,7 @@
 	<div class="paihangbangbox">
 		<div class="TopWin">全球媒体榜</div>
 		<div class="winlist">
-			<div class="winitem" v-for="(item) in this.win" :key="item.id">
+			<div class="winitem" v-for="(item) in this.win" :key="item.id" @click="toTop(item.id)">
 				<img :src="item.coverImgUrl" alt="">
 				<div class="musictopname">{{item.name}}</div>
 				<div class="musicuptime">{{item.updateFrequency}}</div>
@@ -18,6 +18,15 @@ export default {
 		win:{
 			type:Array
 		}
+	},
+	methods:{
+		toTop(id){
+			console.log(id )
+			this.$router.push({
+				path:`/TopMusics${id}`,
+				params:id
+			})
+		}
 	}
 }
 </script>
@@ -27,7 +36,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	margin: 0 auto;
-	padding: 0 80px;
+	padding: 0 40px;
 	flex-wrap: wrap;	
 	justify-content: space-between;
 }
@@ -35,7 +44,7 @@ export default {
 	text-align: left;
 	font-size: 24px;
 	font-weight: 500;
-	padding: 60px 0 40px;
+	padding-bottom: 30px;
 }
 .winlist{
 	width: 100%;
@@ -44,15 +53,22 @@ export default {
 	/* justify-content: space-between; */
 }
 .winitem{
-	width: 150px;
+	width: 160px;
 	font-size: 14px;
 	text-align: left;
-	margin-right: 21px;
+	margin-right: 29px;
+	margin-bottom: 20px;
+	
+}
+.winitem:nth-child(6n){
+
+	margin-right: 0px;
 }
 .winitem img{
-	width: 150px;
-	height: 150px;
+	width: 160px;
+	height: 160px;
 	box-shadow: 0px 2px 5px #cccccc;
+	border-radius: 10px;
 }
 .winitem img:hover{
   box-shadow: 2px 0px 10px #000;

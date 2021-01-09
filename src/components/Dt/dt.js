@@ -28,9 +28,9 @@ export  function DtDetail(id){
 	})
 }
 //电台 -节目
-export  function DtSong(id){
+export  function DtSong(id,limit=30,offset=1){
 	return request({
-		url:`/song/url?id=${id}`,
+		url:`dj/program?rid=${id}&limit=${limit}&offset=${offset}`,
 		method:'get'
 	})
 }
@@ -41,3 +41,18 @@ export  function DtCateSub(id){
 		method:'get'
 	})
 }
+//电台订阅者列表
+export  function DtSubscriber(id){
+	return request({
+		url:`/dj/subscriber?id=${id}`,
+		method:'get'
+	})
+}
+//电台个性推荐
+export  function DtPersonalize(){
+	return request({
+		url:`/dj/personalize/recommend`,
+		method:'get'
+	})
+}
+

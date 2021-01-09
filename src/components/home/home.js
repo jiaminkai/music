@@ -42,9 +42,10 @@ export function HotSearch(){
 }
 export class Music{
     constructor(songs,url){
-        this.picUrl=songs.picUrl,
-        this.musicname=songs.name,
+        this.picUrl=songs.al.picUrl,
+        this.musicname=songs.name
         this.playtime=songs.dt
+        this.djname=songs.al.name,
         this.user=songs.ar[0].name
         this.userId=songs.ar[0].id
         this.djid=songs.al.id

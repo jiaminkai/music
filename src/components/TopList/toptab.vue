@@ -18,7 +18,7 @@
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span class="move">详情<div class="iconfont move">&#xe607;</div></span></div>
+                  <div class="allpaly"><span>全部播放</span> <span class="move" @click="tomore(0)">详情<div class="iconfont move">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[0].list" :key="index">
                           <img :src="n.al.picUrl" alt="">
@@ -40,7 +40,7 @@
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span>详情<div class="iconfont">&#xe607;</div></span></div>
+                  <div class="allpaly"><span>全部播放</span> <span @click="tomore(1)">详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[1].list" :key="index">
                           <img :src="n.al.picUrl" alt="">
@@ -61,10 +61,10 @@
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span>详情<div class="iconfont">&#xe607;</div></span></div>
+                  <div class="allpaly"><span>全部播放</span> <span @click="tomore(2)">详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
                       <div class="imgitem" v-for="(n,index) in this.guan[2].list" :key="index">
-                          <div class="hovepaly" ><span class="el-icon-video-play"></span></div>
+                          <div class="hovepaly"><span class="el-icon-video-play"></span></div>
                           <img :src="n.al.picUrl" alt="">
                           <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
@@ -118,6 +118,12 @@ export default {
       change(val){
         console.log(val )
         this.index=val
+      },
+      tomore(index){
+          this.$router.push({
+          path:`/TopMusics${this.guan[index].id}`,
+          params:this.guan[index].id  
+        })
       }
     },
   created(){

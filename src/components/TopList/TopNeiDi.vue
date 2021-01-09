@@ -1,30 +1,34 @@
 <template>
-    <div class="paihangbangbox">
-	<div class="toplist" @click="toTop(item.id)"   v-for="(item,index) in this.array" :key="index">
-		<img class="mobanimg" :src="item.coverImgUrl" alt=""/>
-		<div class="moban">
-			<div class="topitemimg">
-				<img :src="item.coverImgUrl" alt="">
-			</div>
-			<div class="topitems">
-				<div class="itemsuser" v-for="(n,index) in item.tracks" :key="index"  @click="PlayMusic(item.id)">
-					<span class="index">{{index+1}}</span>
-					<div class="indexitem">
-						<span>{{n.first}}</span>
-						<span>{{n.second}}</span>
+<div class="meidibang">
+	<div class="title">内地榜</div>
+	<div class="paihangbangbox">
+		<div class="toplist" @click="toTop(item.id)"   v-for="(item,index) in this.array" :key="index">
+			<img class="mobanimg" :src="item.coverImgUrl" alt=""/>
+			<div class="moban">
+				<div class="topitemimg">
+					<img :src="item.coverImgUrl" alt="">
+				</div>
+				<div class="topitems">
+					<div class="itemsuser" v-for="(n,index) in item.tracks" :key="index"  @click="PlayMusic(item.id)">
+						<span class="index">{{index+1}}</span>
+						<div class="indexitem">
+							<span>{{n.first}}</span>
+							<span>{{n.second}}</span>
+						</div>
 					</div>
 				</div>
+				<div class="topleft">
+					{{item.name}}
+					<span class="iconfont">&#xe65f;</span>
+				</div>
+				<div class="toprigth">
+					{{item.updateFrequency}}
+				</div>
 			</div>
-			<div class="topleft">
-				{{item.name}}
-				<span class="iconfont">&#xe65f;</span>
-			</div>
-			<div class="toprigth">
-				{{item.updateFrequency}}
-			</div>
-		</div>
 		</div>	
 	</div>
+</div>
+    
 
 </template>
 
@@ -83,22 +87,36 @@ export default {
   url('//at.alicdn.com/t/font_2223549_7dope0j0ell.ttf') format('truetype'),
   url('//at.alicdn.com/t/font_2223549_7dope0j0ell.svg#iconfont') format('svg');
 }
-.paihangbangbox{
+.meidibang{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 	margin: 0 auto;
-	padding: 0 80px;
-	/* width: 100%; */
+	padding: 0 40px;
+	box-sizing: border-box;
+}
+.paihangbangbox{
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap;	
 	justify-content: space-between;
 }
+.title{
+	text-align: left;
+	font-size: 24px;
+	font-weight: 500;
+	padding-bottom: 20px;
+}
 .toplist{
-	width: 32%;
-	height: 170px;
-	margin-bottom: 20px;
+	width: 31%;
+	height: 175px;
+	margin-bottom: 30px;
 	display: flex;
 	position: relative;
 	z-index: 9;
 	background: #fff;
+	box-shadow: 1px 1px 10px #ccc;
+	border-radius: 5px;
 }
 .topitemimg{
 	width: 140px;
@@ -147,12 +165,22 @@ export default {
 }
 .indexitem{
 	display: flex;
+	width: 120px;
 	flex-direction: column;
 	height: 100%;
 	justify-content: space-between;
 }
 .indexitem span {
 	width: 100%;
+	display: block;
+	font-size: 14px;
+	text-align: left;
+}
+.indexitem span:nth-child(1){
+	width: 90%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	display: block;
 	font-size: 14px;
 	text-align: left;

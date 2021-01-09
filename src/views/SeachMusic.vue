@@ -125,7 +125,6 @@ export default {
 
 			this.loading=false
 		},
-
 		// 切换当前页的数量
 		handleSizeChange(val){
 			this.offset = val

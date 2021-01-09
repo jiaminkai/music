@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     music:[],
     loginchange:{},
-    musicindex:0
+    musicindex:0,
+    navmenu:'/'
   },
   mutations: {
     SetMusic(state, payload){
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     playmusicindex(state, payload){
       state.musicindex=payload
+    },
+    navmenuchange(state, payload){
+      state.navmenu=payload
     }
   },
   actions: {

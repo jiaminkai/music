@@ -62,8 +62,12 @@ export default {
     },
     mounted(){
         this.$bus.$on('name',(value)=>{
-            console.log(value )
+
             this.palytime=value
+        })
+        this.$bus.$on('sendmessang',()=>{
+            this.getmusic()
+            
         })
     },
 
@@ -79,8 +83,8 @@ export default {
         this.height='350px'
     },
 
-     async getsong(){
-        const {data:data} = await GetSong(this.music.musicid)
+     async getsong(id){
+        const {data:data} = await GetSong(id)
         console.log("相似",data )
         this.songs=data.songs
             this.songs.forEach(item=>{
@@ -115,7 +119,7 @@ export default {
             const {data:comment}  = await GetComment(this.music.musicid)
             const {data:Lyric}  = await GetLyric(this.music.musicid) 
             const {data:hotcomment}  = await GetHotComment(this.music.musicid)
-            console.log("歌曲详情",list )
+         
             this.hotcomment=hotcomment.hotComments
             this.newcomment=comment.data.comments
             this.hotcomment.forEach(item=>{
@@ -146,7 +150,7 @@ export default {
                     c.unshift(val)
                 }else{
                     this.$sotre.commit('playmusicindex',ind)
-                    this.resetSetItem('music',c)
+                    this.resSetItem('music',c)
                 }
             }
         }
@@ -156,9 +160,10 @@ export default {
        this.music= this.$route.query
        if(this.$route.query.id!=undefined){
            this.geimus(this.$route.query.id)
+           this.getsong(this.$route.query.id)
        }else{
-         this.getmusic( this.music)
-        this.getsong()
+         this.getmusic(this.music)
+        this.getsong(this.music.musicid)
        }
 
 

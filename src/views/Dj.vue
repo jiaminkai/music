@@ -32,20 +32,20 @@
                 </el-table-column>
                 <el-table-column
                      label="歌曲"
-                     min-width="300"
+                     min-width="180"
                      prop="musicname"
                 >
                 
                 </el-table-column>
                 <el-table-column
                     label="歌手"
-                    min-width="180"
+                    min-width="160"
                     prop="user"
                 ></el-table-column>
                 <el-table-column
                    label="专辑"
-                   min-width="120"
-                   prop=""
+                   min-width="180"
+                   prop="djname"
                 ></el-table-column>
                 <el-table-column
                    label="时长"
@@ -115,7 +115,7 @@ export default {
 
                 mus.unshift(...this.music)
                 console.log("legthn",mus.length)
-                this.resetSetItem('music', JSON.stringify(mus))
+                this.resSetItem('music', JSON.stringify(mus))
       },
     //   播放音乐
       paly(row, column, event){
@@ -136,8 +136,7 @@ export default {
         }
 
         mus.unshift(row)
-        // sessionStorage.clear()
-        this.resetSetItem('music', JSON.stringify(mus));
+        this.resSetItem('music', JSON.stringify(mus));
 
 
       },
@@ -150,7 +149,6 @@ export default {
              djid.push(item.id) 
           });
            this.Djid= djid.join(',')
-          console.log( this.Djid)
         this.getDjdetails(this.Djid)
         },
         // 获取评论

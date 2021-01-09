@@ -47,10 +47,12 @@ export default {
         getTopGuan(guanlist){
             var array=[]
             guanlist.forEach(item=>{
+            
                 var  data =  TopGuan(item.id).then(res=>{
                     console.log(res.data.playlist.tracks.slice(0,8) )
                     var dre ={}
                     dre.list= res.data.playlist.tracks.slice(0,8)
+                    dre.id=item.id
                     array.push(dre)
                 })
                 })

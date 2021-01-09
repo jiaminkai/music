@@ -80,7 +80,7 @@
 					</el-table>
 				</div>
 				<!-- 评论主体 -->
-				<pin-lun class="pinglun" :type="2" :hotcomment="TopPingLun" ref="pinglun">
+				<pin-lun class="pinglun" :type="2" :id="this.TopDetail.playlist.id" :hotcomment="TopPingLun" ref="pinglun">
 					<div slot="pingtitle">评论</div>
 				</pin-lun>
 			</div>
@@ -127,9 +127,9 @@
 </template>
 
 <script>
-import bottom from '../../components/home/paly.vue'
-import PinLun from "../../components/MusicDetails/pinlun.vue";
-import { Toplist,TopGuan,TopGuanSongUrl,TopGuanSong,Guan,TopSubSingers,TopPingLun} from "./TopList";
+import bottom from '../components/home/paly.vue'
+import PinLun from "../components/MusicDetails/pinlun.vue";
+import { Toplist,TopGuan,TopGuanSongUrl,TopGuanSong,Guan,TopSubSingers,TopPingLun} from "../components/TopList/TopList";
 export default {
 	name:'TopMuisics',
 	data(){
@@ -158,7 +158,9 @@ export default {
 	},
 	mounted(){
 		window.addEventListener('scroll',this.handleScroll) 
-		
+		this.$bus.$on('sendmessage',()=>{
+        this.getTopPingLun()
+        })
 	},
 	methods:{
 		// 监听页面滚动
@@ -193,7 +195,7 @@ export default {
             }
 			mus.unshift(...this.music)
             console.log("legthn",mus.length)
-            this.resetSetItem('music', JSON.stringify(mus))
+            this.resSetItem('music', JSON.stringify(mus))
 		},
 		// 获取排行榜中的音乐
 		async getMusics(id){
@@ -232,7 +234,7 @@ export default {
 			})
 			if(indes==-1){
 				mus.unshift(row)
-				this.resetSetItem('music', JSON.stringify(mus))
+				this.resSetItem('music', JSON.stringify(mus))
 				this.$bus.$emit('plays')
 			}else{
 				this.$bus.$emit("playmnue",indes)

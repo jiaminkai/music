@@ -11,7 +11,7 @@ export function My(){
 		url:`/user/account`
 	})
 }
-// 播放列表
+// 用户歌单
 export function MyPlaylist(id){
 	return request({
 		url:`/user/playlist?uid=${id}`
@@ -20,7 +20,7 @@ export function MyPlaylist(id){
 // 历史播放
 export function MyRecord(id){
 	return request({
-		url:`/user/record?uid=${id}&type=1`
+		url:`/user/record?uid=${id}&type=0`
 	})
 }
 // 电台
@@ -47,8 +47,8 @@ export function MyAudio(id){
 	})
 }
 
-// 收藏的视频
-export function MyVideo(){
+// 收藏视频
+export function MyVaiod(){
 	return request({
 		url:`/video/sub`
 	})
@@ -63,6 +63,20 @@ export function MySublist(){
 export function MyFolloweds(){
 	return request({
 		url:`/album/sublist`
+	})
+}
+//收藏歌手列表
+export function MyArtist(){
+	return request({
+		url:`/artist/sublist`
+	})
+}
+
+
+//播放视频历史
+export function MyPlaylistVideo(){
+	return request({
+		url:`/playlist/video/recent`
 	})
 }
 

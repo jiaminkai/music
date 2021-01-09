@@ -1,8 +1,7 @@
 <template>
 	<div class="mvdebox">
-		<navmenu></navmenu>
-		<div class="mvcontent" 
-		>
+
+		<div class="mvcontent">
 			<div class="mvleft">
 					<h4 class="MvTitle"><i class="el-icon-arrow-left"></i>MV详情</h4>
 					<video-player  class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"></video-player>
@@ -46,9 +45,8 @@
 </template>
 
 <script>
-import navmenu from '../../components/home/NavMenu.vue'
-import Pinlun from '../../components/MusicDetails/pinlun.vue';
-import { MVDetail,MVPinglun,MVAddres,PalyVideo,MVComment,MVReMv} from "./MV";
+import Pinlun from '../components/MusicDetails/pinlun.vue';
+import { MVDetail,MVPinglun,MVAddres,PalyVideo,MVComment,MVReMv} from "../components/MV/MV";
 export default {
 	name:'MvDetails',
 	data(){
@@ -60,9 +58,15 @@ export default {
 		}
 		
 	},
-	components:{navmenu,Pinlun},
+	mounted(){
+		this.$bus.$on('sendmessage',()=>{
+        this.getMvData()
+        })
+	},
+	components:{Pinlun},
 	methods:{
 		async getMvData(id){
+			console.log(id )
 			const {data:details} =await MVDetail(id)
 			const {data:pinglun} =await MVPinglun(id)
 			const {data:addres} =await MVAddres(id)
@@ -84,7 +88,6 @@ export default {
 		}
 	},
 	created(){
-		console.log(this.$route.params.id )
 		this.getMvData(this.$route.params.id)
 		// var self = this;
         // self.fetchData();
