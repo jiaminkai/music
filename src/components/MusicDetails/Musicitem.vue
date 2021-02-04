@@ -1,5 +1,4 @@
 <template>
-   
 <el-container>
     <div class="container">
       <el-aside width="360px">
@@ -37,7 +36,8 @@
                     <div class="Btnbox">
                         <div @click="allplay1" v-if="this.dj==undefined"><span class="iconfont">&#xe630;</span><span>立即播放</span></div>
                         <div @click="allplay2" v-else><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
-                        <div><span class="iconfont">&#xe607;</span><span>1314159</span></div>
+                        <div v-if="dj!=undefined"><span class="iconfont">&#xe607;</span><span>{{this.dj.subscribedCount}}</span></div>
+                        <div v-else @click="musicsub"><span class="iconfont">&#xe607;</span><span>13345</span></div>
                         <div><span class="iconfont">&#xe785;</span><span>分享</span></div>
                         <div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
                     </div>
@@ -96,6 +96,9 @@ dj:{
             },
         allplay2(){
                 this.$emit('allplay2')
+    },
+    musicsub(){
+        this.$emit('musicsub')
     }
     },
     components:{
@@ -242,7 +245,7 @@ dj:{
 
 }
 .Btnbox div{
-    min-width: 70px;
+    min-width: 50px;
     height: 40px;
     border-radius: 30px;
    background: #f2f2f2;

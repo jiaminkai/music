@@ -143,7 +143,8 @@ export default {
 		
 	},
 	created(){
-		this.input=this.$route.query.text
+		
+		this.input=this.$route.query.text!=""?this.$route.query.text:"2020年度听歌报告"
 		this.GetSearch()
 	}
 
@@ -152,13 +153,13 @@ export default {
 
 <style scoped>
 .seachtop{
-height: 280px;
-width: 100%;
-background: url('../assets/seachbg.jpg') center center no-repeat;
-background-attachment:fixed;
-display: flex;
-justify-content: center;
-align-items: center;
+	height: 280px;
+	width: 100%;
+	background: url('../assets/seachbg.jpg') center center no-repeat;
+	background-attachment:fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .results{
 

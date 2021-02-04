@@ -25,9 +25,9 @@ export function DelComment(type,id,content){
 	})
 }
 //评论点赞
-export function LikeComment(type,id,cid){
+export function LikeComment(type,id,cid,t=1){
 	return request({
-		url:`/comment/like?id=${id}&cid=${cid}&t=1&type=${type}`
+		url:`/comment/like?id=${id}&cid=${cid}&t=${t}&type=${type}`
 	})
 }
 

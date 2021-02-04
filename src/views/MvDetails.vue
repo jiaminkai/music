@@ -1,7 +1,11 @@
 <template>
 	<div class="mvdebox">
 
-		<div class="mvcontent">
+		<div class="mvcontent" 
+			v-loading="loading"
+			element-loading-text="拼命加载中"
+			element-loading-spinner="el-icon-loading"
+		>
 			<div class="mvleft">
 					<h4 class="MvTitle"><i class="el-icon-arrow-left"></i>MV详情</h4>
 					<video-player  class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"></video-player>
@@ -17,7 +21,7 @@
 						</div>
 					</div>
 					<div class="comment">
-						<pinlun :type="1" :hotcomment="this.comment.hotComments" :newcomment="this.comment.comments">
+						<pinlun :type="1" :hotcomment="this.comment.hotComments" :newcomment="this.comment.comments" :id="this.mvid">
 							<div slot="pingtitle">评论</div>
 						</pinlun>
 					</div>
@@ -51,6 +55,7 @@ export default {
 	name:'MvDetails',
 	data(){
 		return{
+			loading:true,
 			mvid:'',
 			playerOptions:{},
 			comment:[],
@@ -81,14 +86,18 @@ export default {
 			this.comment=comment
 			this.remv=remv.mvs
 			console.log(this.playerOptions)
+			this.loading=false
 		}
 		,
 		tomv(id){
 			this.$router.push({path:`/MVDetail${id}`,params:{id}})
+
 		}
 	},
 	created(){
 		this.getMvData(this.$route.params.id)
+		this.mvid=this.$route.params.id
+		
 		// var self = this;
         // self.fetchData();
 	},

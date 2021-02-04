@@ -1,6 +1,9 @@
 <template>
     <div class="foot" v-if="this.show">
-        <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress>
+        <!-- <el-progress :show-text="false" :percentage="percentage" color="#FFC125"></el-progress> -->
+        <div class="block">
+            <el-slider class="slider" v-model="percentage" :show-tooltip="false" @change="changejindu"></el-slider>
+        </div>
         <div class="palybox" >
             <img  @click="geci(like[i])" class="icon" :src="like[this.i].picUrl" alt="">
         <div class="musictitle">
@@ -34,56 +37,62 @@
             :modal="false"
             size="450px"
             :with-header="false">
-            <div class="top">
+            <div class="topplay">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="正在播放" name="first">
+                    <div class="topplayitem">
                         <template>
-                            <el-table
-                                :data="like" 
-                                :show-header="false"
-                                height="450px"
-                                @row-click="onplay"
-                                @cell-mouse-enter="hoveraction"
-                                @cell-mouse-leave="hoverleave"
-                                :key="itemkey"
-                            >
-                                        <el-table-column
-                                            width="50"
-                                            prop="isonplay"
-                                            >
-                                            <template slot-scope="scope">
-                                                <span v-if="!scope.row.isonplay"  >{{scope.row.courrindex}}</span>
-                                                <!-- <span  v-else class="iconfont">&#xe61c;</span> -->
-                                                <span v-else class="iconfont">&#xe768;</span>
-                                            </template>
-                                            
-                                        </el-table-column>
-                                <el-table-column 
-                                    property="musicname"
-                                    min-width="140"
+                            <div class="playlishi">
+                                <div class="listbox">
+                                    <el-table
+                                    :data="like" 
+                                    :show-header="false"
+                                    height="450px"
+                                    @row-click="onplay"
+                                    @cell-mouse-enter="hoveraction"
+                                    @cell-mouse-leave="hoverleave"
+                                    :key="itemkey"
                                 >
-                                </el-table-column>
-                                <el-table-column 
-                                    property="user"
-                                    width="100"
-                                >
-                                </el-table-column>
-                                <el-table-column 
-                                    width="80"
-                                    prop="hover"
-                                >
-                                    <template slot-scope="scope">
-                                        <div v-if="scope.row.hover" >
-                                        <span class="iconfont" >&#xe607;</span>
-                                        <span class="iconfont" style="margin-left:10px">&#xe674;</span>
-                                        </div>
+                                            <el-table-column
+                                                width="50"
+                                                prop="isonplay"
+                                                >
+                                                <template slot-scope="scope">
+                                                    <span v-if="!scope.row.isonplay"  >{{scope.row.courrindex}}</span>
+                                                    <!-- <span  v-else class="iconfont">&#xe61c;</span> -->
+                                                    <span v-else class="iconfont">&#xe768;</span>
+                                                </template>
+                                                
+                                            </el-table-column>
+                                    <el-table-column 
+                                        property="musicname"
+                                        min-width="140"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column 
+                                        property="user"
+                                        width="100"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column 
+                                        width="80"
+                                        prop="hover"
+                                    >
+                                        <template slot-scope="scope">
+                                            <div v-if="scope.row.hover" >
+                                            <span class="iconfont" >&#xe607;</span>
+                                            <span class="iconfont" style="margin-left:10px">&#xe674;</span>
+                                            </div>
+                                        
+                                            <span v-else>{{scope.row.playtime}}</span>
+                                        </template>
+                                    </el-table-column>
                                     
-                                        <span v-else>{{scope.row.playtime}}</span>
-                                    </template>
-                                </el-table-column>
-                                
-                            </el-table>
+                                </el-table>
+                                </div>
+                            </div>
                         </template>
+                    </div>
                 </el-tab-pane>
                 <el-tab-pane label="播放历史" name="second">播放历史</el-tab-pane>
                 </el-tabs>
@@ -99,6 +108,7 @@
         <!-- 歌词 -->
         <el-drawer
             title="歌词"
+            class="drawer"
             :visible.sync="drawergeci"
             :modal="false"
             size="600px"
@@ -106,18 +116,20 @@
                 <div class="top">
                     <div class="geciname"><span>歌词</span> <span class="iconfont" @click="conle">&#xe701;</span></div>
                 </div>
-                <div class="lyricshowbox">
-                <div class="gecibox" >
-                    <p v-for="(item,index) in this.lyric" :key="index">{{item.text}}</p>
-                </div>
-                <!-- <div class="gecibox" v-else>
-                    <p > 暂无歌词</p>
-                </div> -->
+                <div class="geciwai">
+                    <div class="lyricshowbox">
+                        <div class="gecibox" v-if="this.lyric" :style="{top:this.top+'px'}" >
+                            <p v-for="(item,index) in this.lyric" :class="[index==geciindex ? 'geicicolor':'']" :key="index">{{item.text}}</p>
+                        </div>
+                        <div class="gecibox" v-else>
+                            <p > 暂无歌词</p>
+                        </div>
+                    </div>
                 </div>
             <div class="bottom">
                 <div>翻译</div>
                 <div>
-                    <span>歌词纠正</span>
+                    <span>桌面歌词</span>
                 </div>
             </div>
 
@@ -146,15 +158,22 @@ export default {
             drawergeci:false,
             lyric:[],
             like:[],
-            show:false
+            show:false,
+            top:150,
+            geciindex:0
         }
     },
     mounted(){
         window.addEventListener("timeupdate",this.updateTime)
-        this.$bus.$on('plays',this.playmusic)
+        this.$bus.$emit('plays',()=>{
+            this.i=0
+            this.playmusic()
+            
+        })
         this.$bus.$on('playmnue',(val)=>{
+            console.log("val",val)
             this.i=val
-            this.playmusic
+            // this.playmusic()
         })
 
         
@@ -162,12 +181,13 @@ export default {
     watch:{
         playmusicindex:function(old,news){
            this.i=old
-        }
+        },
+
     },
     computed:{
          playmusicindex:function(){
            return this.$store.playmusicindex
-        }
+        },
     },
 
     // 获取处理歌词
@@ -208,7 +228,7 @@ export default {
       }
       this.lyric.sort(this.sortRule); //由于不同时间的相同歌词我们给排到一起了，所以这里要以时间顺序重新排列一下
        //把歌词提交到store里，为了重新进入该组件时还能再次渲染
-       console.log(this.lyric )
+
     },
     conle(){
       this.drawergeci=false
@@ -255,10 +275,19 @@ export default {
     },
     // 上一首
     upone(){
-        if(this.i==0){
-            this.i=this.like.length-1
-        }else{
-            this.i=this.i-1
+      if(this.type==1){
+            if(this.i==0){
+                
+                this.i=this.like.length-1
+            }else{
+                this.i=this.i-1
+            }
+        }
+        if(this.type==2){
+            this.i=this.i+0
+        }
+        if(this.type==3){
+            this.i=Math.ceil(Math.random()*this.like.length-1)
         }
          this.playmusic()
     },
@@ -266,7 +295,6 @@ export default {
     next(){
         if(this.type==1){
             if(this.i==this.like.length-1){
-                
                 this.i=0
             }else{
                 this.i=this.i+1
@@ -317,6 +345,13 @@ export default {
         }
 
         this.$bus.$emit('name',this.starttime)
+        var lyricindex =  this.lyric.findIndex(item=>{
+            return item.time==Math.ceil(this.$refs.audio.currentTime)
+        })
+        if(lyricindex!=-1){
+            this.geciindex =lyricindex
+            this.top=150 -lyricindex*40
+        }
     },
     // 播放
     playmusic(){
@@ -327,6 +362,7 @@ export default {
         const audio = this.$refs.audio
         if (audio) {
           audio.play()
+          console.log("播放音乐" )
         }
       })
         
@@ -353,7 +389,12 @@ export default {
         console.log(m+':'+s )
         this.endtime =m+':'+s
     },
-
+    // 更改进度条
+    changejindu(val){
+        console.log("更改后的进度条",val )
+        console.log(this.$refs.audio.duration/100*val)
+        this.$refs.audio.currentTime=this.$refs.audio.duration/100*val
+    }
 
     },
     created(){
@@ -380,7 +421,8 @@ export default {
             })
             
         })
-
+        this.gecishow(this.like[this.i])
+        // console.log(this.like[this.i].musicid)
     },
 }
 </script>
@@ -427,7 +469,17 @@ export default {
     position: fixed;
     z-index: 9;
 }
-.el-progress{
+.block{
+    width: 100%;
+    position: relative;
+    top: -15px;
+}
+ .block /deep/ .slider{
+    width: 100%;
+    position: absolute;
+    top: -6px;
+}
+.block >>> .slider{
     width: 100%;
     position: absolute;
     top: -6px;
@@ -435,6 +487,7 @@ export default {
 .el-progress-bar__outer{
   height: 3px;
 }
+
 .icon{
     width: 45px;
     height: 45px;
@@ -511,8 +564,24 @@ width: 150px;
     display: block;
     place-self: center;
     font-size: 25px;
+    
 }
+.topplay{
+    width:400px;
+    /* overflow: hidden; */
 
+}
+.topplayitem{
+    width:420px;
+
+}
+.top{
+    width: 100%;
+}
+.playlishi{
+    width:98%;
+    
+}
 .geciname{
   display: flex;
   font-size: 20px;
@@ -525,34 +594,38 @@ width: 150px;
   display: block;
   width: 60px;
 }
+.geciwai{
+widows: 550px;
+overflow: hidden;
+}
 .gecibox{
   min-width: 230px;
   height: auto;
   position: absolute;
-  top: 0;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
+  transition: all 0.5s ease-in;
+  transform-style: preserve-3d;
+  perspective: 100px;
 }
 .lyricshowbox{
-  width: 100%;
+  width: 560px;
   height: 450px;
   margin-top: 20px;
-  background: chocolate;
+  background: #cacaca;
+  opacity: 0.5;
+  blur:52px;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 
-.el-drawer{
-  height: 60% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  position: fixed !important;
-  bottom: 60px !important;
-  top: auto!important;
-  right: 20px !important;
-  padding: 20px 30px;
-  background: #fff;
+
+ >>>.drawer{
+ bottom:80px !important;
+ background: #cacaca;
+ position: absolute
 }
 .bottom{
   display: flex;
@@ -563,5 +636,12 @@ width: 150px;
   align-items: center;
   width: 100%;
   left: 0;
+}
+.geicicolor{
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+   /* transform: translateZ(10px) translateY(90px); */
+   padding:12px 0;
 }
 </style>

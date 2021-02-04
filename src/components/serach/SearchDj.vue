@@ -47,6 +47,7 @@ export default {
 	}
 	.img img{
 		z-index: 999;
+		height: 130px;
 		position: relative;
 		border-radius: 5px;
 	}

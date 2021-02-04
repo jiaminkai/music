@@ -11,17 +11,17 @@
                     <li :class="[this.$store.state.navmenu=='/Singers'?'activenav':'']" @click="to('/Singers')"><el-link :underline="false"  >歌手</el-link></li>
                     <li :class="[this.$store.state.navmenu=='/MV'?'activenav':'']" @click="to('/MV')"><el-link :underline="false" >MV</el-link></li>
                     <li :class="[this.$store.state.navmenu=='/Dt'?'activenav':'']" @click="to('/Dt')"><el-link :underline="false" >电台</el-link></li>
-                    <li :class="[this.$store.state.navmenu=='/Yun'?'activenav':'']" @click="to('/Yun')"><el-link :underline="false" >云村</el-link></li>
+                    <li :class="[this.$store.state.navmenu=='/YunCun'?'activenav':'']" @click="to('/YunCun')"><el-link :underline="false" >云村</el-link></li>
 
 
                 </ul>
                 <div class="inputbox">
                     <el-button class="search" circle icon="el-icon-search" @click="change" />
-                    <input class="input" v-model="input" @blur="cloce" @keyup.enter="change" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
+                    <input class="input" v-model="input"  @keyup.enter="change" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
                     <div class="hotserach_pos" v-if="this.ishotserch">
                         <div class="hotserach">
                             <div class="hotserach_title">热门搜索</div>
-                                <div class="searchList" @click="tomusic(item.score)" v-for="(item,index) in this.hotsearch" :key="index">
+                                <div class="searchList" @click="tomusic(item.searchWord)" v-for="(item,index) in this.hotsearch" :key="index">
                                     <div class="searchindex">{{index+1}}</div>
                                     <div class="searchitem">
                                         <div>{{item.searchWord}}</div>
@@ -145,18 +145,22 @@ export default {
         this.$store.commit('navmenuchange',val)
     },
     // 调往歌曲详情
-    tomusic(id){
+    tomusic(text){
+        console.log(text)
+        this.input=text
         this.$router.push({
-            path: '/details',
-            query:{id:id}
+            path: '/Search',
+            query:{text}
       })
       this.ishotserch=false
+      this.$store.commit("navmenuchange","/")
     },
     //搜索按下回车
     change(val){
       this.$router.push({path:'/Search',query:{text:this.input}})
       this.ishotserch=false
       this.input=""
+      this.$store.commit("navmenuchange","/")
     }
  },
  created(){
@@ -189,7 +193,7 @@ export default {
     position:fixed;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 9999;
 
 }
 .activenav{
@@ -318,6 +322,7 @@ color: rgb(245, 134, 8);
     flex-direction: column;
     height: 800px;
     overflow: auto;
+    -webkit-overflow-scrolling:touch
  }
  .searchList{
      display: flex;

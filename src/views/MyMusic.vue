@@ -4,12 +4,17 @@
       <!-- 左边信息介绍 -->
         <div class="loading"  v-loading="loading" v-if="loading"></div>
         <div class="myleftbox">
+          <div class="mylefttop"></div>
           <div  class="myleft">
-              <img :src="this.login.avatarUrl" alt="">
-              <p>{{this.login.nickname}}</p>
-              <div class="level"><small>LV.{{this.count.artistCount}}</small></div>
+              <div class="myleftuser">
+                <img :src="this.login.avatarUrl" alt="">
+                <span>{{this.login.nickname}}</span>
+                <span class="qiandao">签到</span>
+              </div>
               <div class="liuyan">我还没有想好要说什么...</div>
               <div class="creat">来自宇宙的深处，于{{this.login.creattiem}}加入</div>
+              <div class="level"><span class="levelname">等级：</span><span>LV.{{this.count.artistCount}}</span></div>
+             
               <div class="history">
                   <div><span>{{this.myevent.length}}</span><span>动态</span></div>
                   <div><span>{{this.myfollows.length}}</span><span>关注</span></div>
@@ -207,7 +212,7 @@ export default {
 }
 .mybox{
   width: 100%;
-  background: #eee;
+
 }
 .container{
   width: 1400px;
@@ -218,32 +223,66 @@ export default {
   display: flex;
 
 }
+.mylefttop{
+  width:330px;
+  height:110px;
+  position:fixed;
+  background:#fff url('../assets/seachbg.jpg')  30% 30% no-repeat;
+}
 .myleftbox{
-  width: 300px;
-  height: 100vh;
-
+  width: 330px;
   box-sizing: border-box;
+  height:500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 40px;
   position: relative;
+  box-shadow: 2px 2px 10px #ccc;
+}
+.myleftuser{
+  display: flex;
+  margin-right: auto;
+  width:100%;
+  background:#fff;
+}
+.myleftuser img{
+  width:70px;
+  height:70px;
+  border-radius:10px;
+}
+.myleftuser span{
+  height:30px;
+  padding-left: 20px;
+  font-size: 18px;
+  margin-top: 35px;
+}
+.myleftuser .qiandao{
+  width:40px;
+  height:15px;
+  line-height: 15px;
+  display:inline-block;
+  margin-left: auto;
+  padding: 3px 3px;
+  border-radius: 20px;
+  background:red;
+  font-size: 13px;
+  text-align:center;
+  color: #eee;
 }
 .myleft{
-  width: 300px;
-  height: 100vh;
+  width: 330px;
+  height: 400px;
   padding: 50px 20px;
+
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: fixed;
+  top:200px;
 }
-.myleft img{
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-}
+
 .myleft p{
   font-size: 20px;
   font-weight: 600;
@@ -251,10 +290,25 @@ export default {
 }
 .level{
   font-size: 8px;  
+  margin: 15px 0 35px 25px;
   font-weight: 500;
-  border: 1px #000 solid;
+  width:100%;
+  text-align: left;
+  position: relative;
   border-radius: 2px;
-  margin-bottom: 35px;
+}
+.levelname::after{
+  position: absolute;
+  content:"";
+  width:6px;
+  height:12px;
+  border-radius: 50%;
+  background: red;
+  left: -9px;
+  top: 6px;
+}
+.level span:nth-child(2){
+  border: 1px #000 solid;
 }
 .liuyan,.creat{
   width: 100%;
@@ -263,6 +317,7 @@ export default {
   color: #999;
 }
 .liuyan{
+  margin-top: 15px;
   padding: 8px 0;
   color: #000;
 }
@@ -284,7 +339,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-top: 40px;
+  margin-top: 80px;
   padding: 50px;
 }
 .loading{

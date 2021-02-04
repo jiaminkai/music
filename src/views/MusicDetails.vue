@@ -1,6 +1,6 @@
 <template>
    
-<musicitem :music="this.music" @allplay1="allplay1" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment" >
+<musicitem :music="this.music" @allplay1="allplay1" @musicsub="musicsub" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment" v-loading="loading" >
       
        <div slot="dj">
                  <div class="lyricbox" :style="{height:this.height}">
@@ -15,8 +15,8 @@
                 <div class="xiangsibox">
                     <div class="xiangsi">
                     <p>相似歌曲</p>
-                    <div class="xiangsige">
-                            <div class="xiangsiitem" v-for="(item,index) in this.songs" :key="index">
+                    <div class="xiangsige" >
+                            <div class="xiangsiitem" v-for="(item,index) in this.songs" :key="index" @click="submusic(item)">
                                 <img :src="item.album.picUrl" alt="">
                                 <div class="xiangsimusic">{{item.name}}</div>
                                 <div class="xiangsiuser">{{item.artists[0].name}}</div>
@@ -39,9 +39,9 @@
 </template>
 
 <script>
-import {Musics,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
+import {Musics,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment,ChangePlay} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
 import Musicitem from "../components/MusicDetails/Musicitem.vue";
-import {Music,GetMusic} from '../components/home/home'
+import {Music,GetMusic,SubMusic} from '../components/home/home'
 export default {
     name:'Details',
     data(){
@@ -53,7 +53,8 @@ export default {
             hotcomment:[],
             newcomment:[],
             ismove:true,
-            height:'350px'
+            height:'350px',
+            loading:true,
 
         }
     },
@@ -61,14 +62,14 @@ export default {
         Musicitem
     },
     mounted(){
+        this.$bus.$on('sendmessang',()=>{
+            console.log("监听到了评论变化")
+            this.getmusic() 
+        })
         this.$bus.$on('name',(value)=>{
-
             this.palytime=value
         })
-        this.$bus.$on('sendmessang',()=>{
-            this.getmusic()
-            
-        })
+
     },
 
     methods:{
@@ -82,7 +83,7 @@ export default {
         this.ismove =true
         this.height='350px'
     },
-
+    // 获取相似歌曲
      async getsong(id){
         const {data:data} = await GetSong(id)
         console.log("相似",data )
@@ -92,12 +93,29 @@ export default {
                 var b=Math.floor(item.bMusic.playTime/1000%60)
                 if(c<10){c='0'+c}
                 if(b<10){b='0'+b}
-                    item.bMusic.playTime= c+':'+b
+                item.bMusic.playTime= c+':'+b
+                GetMusic(item.id).then((res)=>{
+                    item.url =res.data.data[0].url
+                })
             })
         
       },
+      //收藏歌曲
+        async  musicsub(){
+          console.log("收藏歌曲")
+        //   const{data:data} =await ChangePlay('add',)
+      },
+    //   播放相关音乐
+      submusic(item){
+          var musicitem=new SubMusic(item)
+          this.allplay1(musicitem)
+      },
     //   直接从搜索跳转到详情
       async geimus(id){
+          if(typeof(id)=="object"){
+              console.log(id.musicid )
+              id = id.musicid
+          }
           console.log(id )
            const {data:list} = await GetDetails(id)
            const {data:url} = await GetMusic(id)
@@ -111,9 +129,8 @@ export default {
            this.music = new Music(list.songs[0],url.data[0].url)
            this.getmusic()
       },
-
+        // 获取音乐详情信息
       async  getmusic(){
-          console.log(this.music)
             const {data:list} = await GetDetails(this.music.musicid)// eslint-disable-line no-unused-vars
             const {data:alcum}  = await GetAlbum(this.music.djid)
             const {data:comment}  = await GetComment(this.music.musicid)
@@ -139,19 +156,20 @@ export default {
             })
             this.array.lyric =snsArr
         },
+        // 播放音乐
         allplay1(val){
             console.log("a",val )
             var c =JSON.parse(sessionStorage.getItem('music'))
             var ind= c.findIndex((item,index)=>{
-                item.musicid==val.musicid
+               return item.musicid==val.musicid
             })
-            if(c!=null){
-                if(ind==-1){
-                    c.unshift(val)
-                }else{
-                    this.$sotre.commit('playmusicindex',ind)
-                    this.resSetItem('music',c)
-                }
+            console.log("index",ind)
+            if(ind==-1){
+                c.unshift(val)
+                this.resSetItem('music',JSON.stringify(c))
+            }else{
+                console.log("bbb" )
+                this.$bus.$emit('playmnue',ind)
             }
         }
     },
@@ -159,15 +177,10 @@ export default {
     created(){
        this.music= this.$route.query
        if(this.$route.query.id!=undefined){
-           this.geimus(this.$route.query.id)
-           this.getsong(this.$route.query.id)
+           Promise.all([this.geimus(this.$route.query.id),this.getsong(this.$route.query.id)]).then(() => this.loading=false)
        }else{
-         this.getmusic(this.music)
-        this.getsong(this.music.musicid)
+           Promise.all([this.geimus(this.music),this.getsong(this.music.musicid)]).then(() => this.loading=false)
        }
-
-
-
     }
 }
 </script>
@@ -414,6 +427,9 @@ color: #4a4a4a;
     text-align: left;
     margin-left: 10px;
     font-size: 14px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .xiangsitime{
     text-align: right;

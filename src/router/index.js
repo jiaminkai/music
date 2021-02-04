@@ -21,8 +21,11 @@ import  Zj  from "../views/SingersZJ.vue";
 import  MySub  from "../components/My/MySubItem.vue";
 import  MySub2  from "../components/My/MySubItem2.vue";
 import  MySub3 from "../components/My/MySubItem3.vue";
+import  CWDetail from "../views/CloudWallDetails.vue";
+import  DtItem from "../views/DianTaiItem.vue";
 
 
+import YunCun from "../views/CloudWall.vue"
 
 
 Vue.use(VueRouter)
@@ -151,6 +154,25 @@ const routes = [
   name:'MySub3',
   component : MySub3
 }
+,
+{
+  path:'/YunCun',
+  name:'YunCun',
+  component : YunCun
+}
+,
+{
+  path:'/CWDetail:id',
+  name:'CWDetail',
+  component : CWDetail
+}
+,
+{
+  path:'/DtItem:id',
+  name:'DtItem',
+  component : DtItem
+}
+
 ]
 const router = new VueRouter({
   mode: 'history',

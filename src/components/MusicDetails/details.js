@@ -38,6 +38,13 @@ export function GetSong(id){
         method:'get'
     })
 }
+// 收藏/删除音乐到歌单
+export function ChangePlay(op,playid,musicid){
+    return request({
+        url:`/playlist/tracks?op=${op}&pid=${playid}&tracks=${musicid}`,
+        method:'get'
+    })
+}
 
 export class Musics{
     constructor(songs,alcum,comments,lyric){

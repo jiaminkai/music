@@ -3,7 +3,7 @@
 		<div class="SingersItem"  @click="SingersDetails(item.id)" v-for="(item,index) in this.artists " :key="index">
 			<div class="Singersicon" >
 				<div>
-					<img :src="item.img1v1Url" alt="">
+					<img :src="item.img1v1Url" alt=""  >
 				</div>
 				<div>{{item.name}}</div>
 			</div>
@@ -27,6 +27,14 @@ export default {
 			}
 		}	
 		
+	},
+	methods:{
+		SingersDetails(id){
+			this.$router.push({
+				path: '/SingersDetails'+id+''
+			})
+		}
+		
 	}
 	
 }
@@ -47,14 +55,18 @@ export default {
 	}
 	.Singersicon{
 		position: relative;
+		width: 110px;
 	}
 	.Singersicon img{
-		width: 100px;
-		height: 100px;
+		width: 110px;
+		height: 110px;
 		border-radius: 50%;
 		margin-bottom: 10px;
 		position: relative;
 		z-index: 99;
+	}
+	.Singersicon img:hover{
+		box-shadow: 2px 2px 10px wheat;
 	}
 	.Singersicon div:nth-child(1)::after{
 		content: "";

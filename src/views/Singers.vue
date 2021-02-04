@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<p v-if="this.loading">加载中...</p>
+			<p v-loading="this.loading" element-loading-text="拼命加载中"></p>
 			<p v-if="!this.more">没有更多了</p>
 		</div>
 	</singer-item>
@@ -107,47 +107,42 @@ export default {
       }
     },
 	mounted(){
-		window.addEventListener("scroll",this.handleScroll)
+		window.addEventListener("scroll",this.handleScroll(this.loads,2000))
 		this.$bus.$on('name',(value)=>{
 			this.palytime=value
 		})
 	},
 	methods:{
 		loads () {
-			this.loading = true
-			this.index +=1
-			this.info.offset=this.info.limit*this.index
-			console.log("加载下一页" )
-			var c = this.SingersList
-			Singerscart(this.info.type,this.info.area,this.info.initial,this.info.limit,this.info.offset,).then(res=>{		
-			c.push(...res.data.artists)
-			this.SingersList=c
-			})
-		},
-		// 防抖	// 监听页面滚动
-		handleScroll(){
 			let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop // 滚动条偏移量
 			var Top =window.innerHeight
 			var chileTop = this.$el.offsetHeight
 			var times =null;
 			if(chileTop+310-scrollTop==window.innerHeight){
-			console.log("到了" )
-			let timer =null; 
-			let a =this;
-			let args = arguments;
-			var begin = new Date().getTime();
+				console.log("到了" )
+				this.loading = true
+				this.index +=1
+				this.info.offset=this.info.limit*this.index
+				console.log("加载下一页" )
+				var c = this.SingersList
+				Singerscart(this.info.type,this.info.area,this.info.initial,this.info.limit,this.info.offset,).then(res=>{		
+				c.push(...res.data.artists)
+				this.SingersList=c
+			})
+			}
+		},
+		// 防抖	// 监听页面滚动
+		handleScroll(fn,deply){
+			let timer = null 
 			return function(){
-			var current = new Date().getTime();
-			clearTimeout(timer);  //清除定时器
-			if(current - begin >= 2000){
-				this.loads()
+				if(timer!==null){
+					clearTimeout(timer)
+				}
+				timer=setTimeout(()=>{
+					fn.apply(this,arguments)
+					timer = null
+				},deply)
 			}
-			timer = setTimeout(function () {
-			a.loads()
-			timer =null
-			}, 2000);
-			}
-}
 		},
 		SingersDetails(id){
 			console.log(id )

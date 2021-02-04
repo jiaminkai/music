@@ -61,9 +61,7 @@ export default {
     },
 
     created(){
-        this.$nextTick(function(){
-                this.getTop()
-            })
+            this.getTop()
 
     }
 }

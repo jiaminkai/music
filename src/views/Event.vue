@@ -10,7 +10,6 @@
 		</div>
 		<div class="eventcontant">
 			<div class="backtop" v-if="showbacktop" @click="backtop">
-
 			</div>
 			<div class="eventitem" v-for="(item,index) in this.event" :key="index">
 				<div v-if="item.extJsonInfo!=null">
@@ -84,7 +83,8 @@
 					</div>
 				</div>
 				<!-- 廣告 -->
-				<div class="elesimg" v-else >
+				<div class="elesimg" v-else @click="close()">
+					<div class="elesimgclose" >X</div>
 					<img  :src="item.json.coverMobileUrl" alt="">
 					<div class="inner">
 						<div>#{{item.json.title}}</div>
@@ -384,6 +384,12 @@ border-right: none;
 .elesimg img{
 	width: 725px;
 	height: 315px;
+}
+.elesimgclose{
+	position:absolute;
+	top: 15px;right: 15px;
+	color: #fff;
+	font-size:16px
 }
 .moveimgbox{
 	width: 230px;

@@ -12,15 +12,15 @@
           <div class="topguanitem" v-if="this.index==0">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[0].list[0].al.picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[0].list[1].al.picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[0].list[2].al.picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.bendi[0].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.bendi[0].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.bendi[0].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span class="move" @click="tomore(0)">详情<div class="iconfont move">&#xe607;</div></span></div>
+                  <div class="allpaly"><span @click="allmusic(0)">全部播放</span> <span class="move" @click="tomore(0)">详情<div class="iconfont move">&#xe607;</div></span></div>
                   <div class="imglist">
-                      <div class="imgitem" v-for="(n,index) in this.guan[0].list" :key="index">
+                      <div class="imgitem" v-for="(n,index) in this.bendi[0].list" :key="index" @click="itemmusic(n)">
                           <img :src="n.al.picUrl" alt="">
                           <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
@@ -28,21 +28,20 @@
                   </div>
               </div>
           </div>
-
       </div>
      <div class="topguan">
           <div class="topguanitem" v-if="this.index==1">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[1].list[0].al.picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[1].list[1].al.picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[1].list[2].al.picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.bendi[1].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.bendi[1].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.bendi[1].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span @click="tomore(1)">详情<div class="iconfont">&#xe607;</div></span></div>
+                  <div class="allpaly"><span @click="allmusic(1)">全部播放</span> <span @click="tomore(1)">详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
-                      <div class="imgitem" v-for="(n,index) in this.guan[1].list" :key="index">
+                      <div class="imgitem" v-for="(n,index) in this.bendi[1].list" :key="index" @click="itemmusic(n)">
                           <img :src="n.al.picUrl" alt="">
                           <div class="couindex">{{index+1}}</div>
                           <div class="imgitemnam">{{n.name}}</div>
@@ -55,15 +54,15 @@
           <div class="topguanitem"  v-if="this.index==2">
               <div class="imgbox">
                   <div class="img">
-                      <img class="img1" :src="this.guan[2].list[0].al.picUrl" alt="" srcset="">
-                      <img  class="img2" :src="this.guan[2].list[1].al.picUrl" alt="" srcset="">
-                      <img class="img3"  :src="this.guan[2].list[2].al.picUrl" alt="" srcset="">
+                      <img class="img1" :src="this.bendi[2].list[0].al.picUrl" alt="" srcset="">
+                      <img  class="img2" :src="this.bendi[2].list[1].al.picUrl" alt="" srcset="">
+                      <img class="img3"  :src="this.bendi[2].list[2].al.picUrl" alt="" srcset="">
                   </div>
               </div>
               <div class="imgrigth">
-                  <div class="allpaly"><span>全部播放</span> <span @click="tomore(2)">详情<div class="iconfont">&#xe607;</div></span></div>
+                  <div class="allpaly" @click="allmusic(2)"><span>全部播放</span> <span @click="tomore(2)">详情<div class="iconfont">&#xe607;</div></span></div>
                   <div class="imglist">
-                      <div class="imgitem" v-for="(n,index) in this.guan[2].list" :key="index">
+                      <div class="imgitem" v-for="(n,index) in this.bendi[2].list" :key="index" @click="itemmusic(n)">
                           <div class="hovepaly"><span class="el-icon-video-play"></span></div>
                           <img :src="n.al.picUrl" alt="">
                           <div class="couindex">{{index+1}}</div>
@@ -78,7 +77,7 @@
 </template>
 
 <script>
-
+import { Song,SingersSong } from "../Singers/Singers";
 export default {
     name:'toptab',
     props:{
@@ -88,12 +87,12 @@ export default {
       guan:{
         type:Array,
         default:function(){
-           return {
-             guan:{
-               list:''
-             }
-           }
-        }
+           return [
+            //  {id:0,list:{type:Array,default:function(){return []}}},
+            //  {id:1,list:{type:Array,default:function(){return []}}},
+            //  {id:2,list:{type:Array,default:function(){return []}}},
+           ]
+        },
       }
     },
     data(){
@@ -104,11 +103,14 @@ export default {
       }
     },
     watch:{
-      deep:true,
-      guan(val){
-        this.bendi =val
+      
+      guan:function(n,o){
+       setTimeout(()=>{
+          this.bendi = n
+       },300)
       }
-	},
+  },
+
   
  
     methods:{
@@ -124,11 +126,46 @@ export default {
           path:`/TopMusics${this.guan[index].id}`,
           params:this.guan[index].id  
         })
+      },
+      // allmusic(index){
+      //   var a={}
+      //   var c =JSON.parse(sessionStorage.getItem('music'))
+      //   this.guan[index].list.forEach(item => {
+      //     SingersSong(item.id).then(res=>{
+      //       item.url=res.data.data[0].url
+      //        a= new Song(item)
+      //       var ind= c.findIndex((n,index)=>{
+      //         item.musicid==a.musicid
+      //       })
+      //       if(ind==-1){
+      //           c.unshift(a)
+      //           this.resSetItem('music',JSON.stringify(c))
+      //       }else{
+      //           this.$sotre.commit('playmusicindex',ind)
+      //           this.resSetItem('music',JSON.stringify(c))
+      //       }
+      //       })
+         
+      //   });
+      // },
+      async itemmusic(n){
+        console.log(n )
+        const {data:data} =await  SingersSong(n.id)
+        n.url=data.data[0].url
+        n=new Song(n)
+        var c =JSON.parse(sessionStorage.getItem('music'))||[]
+         var ind= c.findIndex((m)=>{
+              n.id==m.musicid
+            })
+            if(ind==-1){
+                c.unshift(n)
+                this.resSetItem('music',JSON.stringify(c))
+            }else{
+                this.$sotre.commit('playmusicindex',ind)
+                this.resSetItem('music',JSON.stringify(c))
+            }
       }
     },
-  created(){
-
-  }
 }
 </script>
 

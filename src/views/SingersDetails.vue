@@ -1,130 +1,126 @@
 <template>
-	<el-container>
-        <el-main>
-            <div class="container">
-				<div class="left">
-					<div class="aidesc">
-						<img :src="this.array.artist.cover" alt="">
-						<div >
-							<div class="descTitle">
-								歌手介紹
-							</div >
-							<div class="desc">{{this.array.artist.briefDesc}}</div>
-							<div class="move">更多</div>
-						</div>
-					</div>
+
+	<div class="container"  v-loading="loading" >
+		<div class="left">
+			<div class="aidesc">
+				<img :src="this.array.artist.cover" alt="">
+				<div >
+					<div class="descTitle">
+						歌手介紹
+					</div >
+					<div class="desc">{{this.array.artist.briefDesc}}</div>
+					<div class="move">更多</div>
 				</div>
+			</div>
+		</div>
 
 
-				<div class="mian">
-					<div class="username">
-						<div class="icon">
-							<span  v-if="this.array!=undefined">{{this.array.artist.name}}</span>  
-						</div>
-						<div class="signature" v-if="this.array.user" >{{this.array.user.description}}</div>
-						<div class="tabs" >
-							<span v-for="(item,index) in this.array.artist.identifyTag" :key="index">#{{item}}</span>
-						</div>
-						<div class="Btnbox">
-							<div @click="allplay2" ><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
-							<div><span class="iconfont">&#xe607;</span><span>1314159</span></div>
-							<div><span class="iconfont">&#xe785;</span><span>分享</span></div>
-							<div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
-						</div>
-					</div>
-					<el-table
-						:data="this.songs"
-						stripe
-						@row-click="rowclick"
+		<div class="mian">
+			<div class="username">
+				<div class="icon">
+					<span  v-if="this.array!=undefined">{{this.array.artist.name}}</span>  
+				</div>
+				<div class="signature" v-if="this.array.user" >{{this.array.user.description}}</div>
+				<div class="tabs" >
+					<span v-for="(item,index) in this.array.artist.identifyTag" :key="index">#{{item}}</span>
+				</div>
+				<div class="Btnbox">
+					<div @click="allplay2" ><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
+					<div><span class="iconfont">&#xe607;</span><span>1314159</span></div>
+					<div><span class="iconfont">&#xe785;</span><span>分享</span></div>
+					<div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
+				</div>
+			</div>
+			<el-table
+				:data="this.songs"
+				stripe
+				@row-click="rowclick"
+			>
+				<el-table-column
+					type="index"
+					width="50px"
 					>
-						<el-table-column
-							type="index"
-							width="50px"
-							>
-						</el-table-column>
-						<el-table-column
-							label="歌曲"
-							min-width="120px"
-							prop="musicname"
-							>
-						</el-table-column>
-						<el-table-column
-							label="歌手"
-							min-width="80px"
-							prop="user"
-							>
-						</el-table-column>
-						<el-table-column
-							label="专辑"
-							min-width="120px"
-							prop="djname"
-							>
-						</el-table-column>
-						<el-table-column
-							label="时长"	
-							min-width="60px"
-							prop="playtime"						
-							>
-							
-						</el-table-column>
-						<el-table-column
-							idth="60px"
-							label="播放"
-							>
-							<template>
-								<span v-if="true" class="iconfont">&#xe630;</span>
-							</template>
-						</el-table-column>
-					</el-table>
-					<el-pagination
-						background
-						layout="prev, pager, next"
-						@current-change="handleCurrentChange"
-						>
-					</el-pagination>
-					<div class="dj">
-						<div class="djname"><span>专辑</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
-						<div class="djbox">
-							<div class="djitem" v-for="(item,index) in  this.SingersDj" :key="index" @click="tozj(item.id)">
-								<img :src="item.blurPicUrl" alt="">
-								<div class="musicname">
-									{{item.name}}
-								</div>
-								<div class="singer"> {{item.artists[0].name}}</div>
-								<div class="time">{{item.publishTime}}</div>
-							</div>
+				</el-table-column>
+				<el-table-column
+					label="歌曲"
+					min-width="120px"
+					prop="musicname"
+					>
+				</el-table-column>
+				<el-table-column
+					label="歌手"
+					min-width="80px"
+					prop="user"
+					>
+				</el-table-column>
+				<el-table-column
+					label="专辑"
+					min-width="120px"
+					prop="djname"
+					>
+				</el-table-column>
+				<el-table-column
+					label="时长"	
+					min-width="60px"
+					prop="playtime"						
+					>
+					
+				</el-table-column>
+				<el-table-column
+					idth="60px"
+					label="播放"
+					>
+					<template>
+						<span v-if="true" class="iconfont">&#xe630;</span>
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-pagination
+				background
+				layout="prev, pager, next"
+				@current-change="handleCurrentChange"
+				>
+			</el-pagination>
+			<div class="dj">
+				<div class="djname"><span>专辑</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
+				<div class="djbox">
+					<div class="djitem" v-for="(item,index) in  this.SingersDj" :key="index" @click="tozj(item.id)">
+						<img :src="item.blurPicUrl" alt="">
+						<div class="musicname">
+							{{item.name}}
 						</div>
-					</div>
-					<div class="mv" v-if="this.mvs!=undefined">
-						<div class="djname"><span>MV</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
-						<div class="MVbox" v-if="this.mvs.length=0">
-							<div class="MVitem" v-for="(item,index) in this.mvs" :key="index">
-								<img :src="item.imgurl16v9" alt="">
-								<div class="artistName">{{item.name}}</div>
-								<div class="singersname">{{item.artistName}}</div>
-							</div>
-						</div>
-						<div class="errnull"></div>
-					</div>
-					<div class="singerss" v-if="this.smimt!=undefined">
-						<div class="djname"><span>相似歌手</span><span>更多<i class="el-icon-arrow-right"></i></span>
-						</div>
-						<div class="singerbox">
-								<div class="singerssitem" v-for="(item,index) in this.smimt" :key="index">
-									<img :src="item.img1v1Url" alt="">
-									<div class="artistName">{{item.name}}</div>
-									<div class="singersname" v-if="item.alias!=[]">{{item.alias[0]}}</div>
-								</div>
-							</div>
+						<div class="singer"> {{item.artists[0].name}}</div>
+						<div class="time">{{item.publishTime}}</div>
 					</div>
 				</div>
-            </div>
-        </el-main>
-    </el-container>
+			</div>
+			<div class="mv" v-if="this.mvs!=undefined">
+				<div class="djname"><span>MV</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
+				<div class="MVbox" v-if="this.mvs.length=0">
+					<div class="MVitem" v-for="(item,index) in this.mvs" :key="index">
+						<img :src="item.imgurl16v9" alt="">
+						<div class="artistName">{{item.name}}</div>
+						<div class="singersname">{{item.artistName}}</div>
+					</div>
+				</div>
+				<div class="errnull"></div>
+			</div>
+			<div class="singerss" v-if="this.smimt!=undefined">
+				<div class="djname"><span>相似歌手</span><span>更多<i class="el-icon-arrow-right"></i></span>
+				</div>
+				<div class="singerbox">
+						<div class="singerssitem" v-for="(item,index) in this.smimt" :key="index">
+							<img :src="item.img1v1Url" alt="">
+							<div class="artistName">{{item.name}}</div>
+							<div class="singersname" v-if="item.alias!=[]">{{item.alias[0]}}</div>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import MusicItem from '../components/MusicDetails/Musicitem.vue';
 import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger,Song,SingersSong} from "../components/Singers/Singers";
 export default {
 	name:'SingersDetails',
@@ -137,7 +133,8 @@ export default {
 			songs:[],
 			SingersDj:[],
 			mvs:[],
-			smimt:[]
+			smimt:[],
+			loading:true,
 		}
 	},
 
@@ -149,7 +146,7 @@ export default {
 			console.log("data",data.data )
 			this.array = data.data
 		},
-		
+		// 获取歌手音乐
 		async getSingersMusic(id,limit,num){
 			var list =[];
 			const {data:data} =await SingersMusic(id,limit,num)
@@ -168,6 +165,7 @@ export default {
 			this.songs=list
 
 		},
+		// 获取歌手简介
 		async GetSingersDesc(id){
 			const {data:data}  = await	SingersDj(id)
 			this.SingersDj=data.hotAlbums
@@ -181,18 +179,21 @@ export default {
 			})
 			console.log("lsita",data )
 		},
+		// 获取Mv
 		async GetMV(id){
 			const {data:data}  = await SingersMV(id)
 			console.log("mvs",data.mvs)
 			this.mvs = data.mvs.slice(0,4)
 			// this.SingersDj=data.hotAlbums
 		},
+		// 获取相似歌手
 		async GetSimi(id){
 			const {data:data}  = await SimiSinger(id)
 			console.log("mimt",data)
 			this.smimt = data.artists.slice(0,5)
 			// this.SingersDj=data.hotAlbums
 		},
+		// 播放全部
 		allplay2(){
 			console.log("播放全部" )
 			var c =JSON.parse(sessionStorage.getItem('music'));
@@ -226,16 +227,18 @@ export default {
 		handleCurrentChange() {
 			this.numindex +=1
 			this.getSingersMusic(this.SingersId,this.numindex)
+		},
+		tozj(id){
+			console.log(id )
 		}
 	},
 	created(){
 		this.SingersId = this.$route.params.id
 		console.log("this.SingersId",this.SingersId )
-		this.getSingersDetails(this.SingersId)
-		this.getSingersMusic(this.SingersId,this.numindex)
-		this.GetSingersDesc(this.SingersId)
-		this.GetMV(this.SingersId)
-		this.GetSimi(this.SingersId)
+		Promise.all([this.getSingersMusic(this.SingersId,this.numindex),this.getSingersDetails(this.SingersId),this.GetSingersDesc(this.SingersId),this.GetMV(this.SingersId),this.GetSimi(this.SingersId)]).then(()=>{
+			console.log("全部加载完成")
+			this.loading=false
+		})
 	}
 }
 </script>

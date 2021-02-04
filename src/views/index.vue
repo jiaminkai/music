@@ -42,16 +42,25 @@ export default {
     // 播放新歌
   
   async  palynewmusic(val){
-      var music = JSON.parse(sessionStorage.getItem('music'))
-         await this.getmusic(val.id).then(res=>{
-           console.log("播放新歌",res )
-           res[0].picUrl=val.picUrl
-            if(music==null){
-              music=[]
+      var arr ={}
+      await this.getmusic(val.id).then(res=>{
+        console.log("播放新歌",res )
+        res[0].picUrl=val.picUrl
+        arr =res[0]
+      })
+      var music = JSON.parse(sessionStorage.getItem('music'))||[]
+      console.log("index",arr)
+      var ind= music.findIndex((item,index)=>{
+               return item.musicid==arr.musicid
+            })
+            console.log("index",ind)
+            if(ind==-1){
+                music.unshift(val)
+                this.resSetItem('music',JSON.stringify(music))
+            }else{
+                console.log("bbb" )
+                this.$bus.$emit('playmnue',ind)
             }
-              music.unshift(res[0])
-         })
-        this.resSetItem('music', JSON.stringify(music));
     },
     // 获取音乐
     async getmusic(id){
@@ -102,10 +111,8 @@ export default {
     async getnewmusic(){
     const music= await Home('/personalized/newsong')
     console.log( music.data.result)
-    
     this.newmusic=music.data.result
     this.newmusic.forEach(item=>{
-     
       item.song.bMusic.playTime= (item.song.bMusic.playTime/1000/60<10? "0"+Math.floor(item.song.bMusic.playTime/1000/60) : Math.floor(item.song.bMusic.playTime/1000/60))+":"+(item.song.bMusic.playTime/1000%60<10?"0" +Math.floor(item.song.bMusic.playTime/1000%60):Math.floor(item.song.bMusic.playTime/1000%60))
     })
   },
@@ -115,11 +122,12 @@ export default {
     
     
   },
-  created(){
-    this.getdata()
-    this.gettuijian()
-    this.getonlyone()
-    this.getnewmusic()
+  async created(){
+    // await this.getdata()
+    // await this.gettuijian()
+    // await  this.getonlyone()
+    // await  this.getnewmusic()
+    Promise.all([this.getdata(), this.gettuijian(),this.getonlyone()],this.getnewmusic())
   }
 }
 

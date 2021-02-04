@@ -143,6 +143,7 @@ export default {
     //   获取专辑信息
       async  getDj(id){
           const {data:data} =await GetDj(id)
+          console.log("专辑",data )
           this.Dj=data.playlist
           var djid=[]
           data.playlist.trackIds.forEach(item => {

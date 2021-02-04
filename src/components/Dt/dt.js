@@ -34,6 +34,21 @@ export  function DtSong(id,limit=30,offset=1){
 		method:'get'
 	})
 }
+//电台 -节目-详情
+export  function Dtprogram(id){
+	return request({
+		url:`dj/program/detail?id=${id}`,
+		method:'get'
+	})
+}
+//电台 -节目-评论
+export  function DtComment(id){
+	return request({
+		url:`/comment/dj?id=${id}`,
+		method:'get'
+	})
+}
+
 //电台 -分类推选
 export  function DtCateSub(id){
 	return request({

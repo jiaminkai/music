@@ -176,8 +176,8 @@ export default {
 		},
 		// 点击表格中的行
 		rowclick(row,colom,event){
-			console.log(row )
-			
+			console.log(row.id)
+			this.$router.push({path:`/DtItem${row.id}`})
 		},
 		
 		//鼠标移入

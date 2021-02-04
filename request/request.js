@@ -75,11 +75,10 @@ export function request(config){
 
           // 404请求不存在
           case 404:
-        
-              Message.error('网络请求不存在')
+              Message.error('呃哦, 你所寻找的热评墙进入了时间的黑洞')
               break;
           case 301:
-              Message.error("需要登陸")                                      
+              Message.error("请先登陸")                                      
           break;
           // 其他错误，直接抛出错误提示
           default:

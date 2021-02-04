@@ -295,7 +295,6 @@ export default {
 	},
 
 	created(){
-		console.log(this.$route.params.id )
 		this.getTopDetail(this.$route.params.id)
 		
 	}

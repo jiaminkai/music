@@ -7,14 +7,14 @@
 			</ul>
 		</div>
 		<div class="DtRigthNav">
-			<div class="DtCatelistbox">
-				<div class="Dtacateitem" v-for="(item,index) in this.categories" :key="index" :ref="'item'+item.id"  >
+			<div class="DtCatelistbox" v-for="(items) in categories" :key="items.id" :ref="'item'+items.id"	>
+				<div class="Dtacateitem">
 					<div class="itemborder">
-						<span>{{item.name}}</span>
+						<span>{{items.name}}</span>
 						<div></div>
 					</div>
 					<div class="itemlist" >
-						<div class="itemitem" v-for="(n) in item.djRadios" :key="n.id" @click="todj(n.id)">
+						<div class="itemitem" v-for="(n) in items.djRadios" :key="n.id" @click="todj(n.id)">
 							<img :src="n.dj.avatarUrl" alt="">
 							<span>{{n.name}}</span>
 							<div>订阅量：{{n.subCount}}</div>
@@ -32,17 +32,15 @@ export default {
 	data(){
 		return{
 			categories:[],
-			ind:3,
-			top:'',
+			ind:1,
+			top:'10',
 		}
 	},
-	created(){
-		this.getDtCate()
 
-	},
 
 	mounted(){
 		window.addEventListener("scroll",this.hanvten)
+		this.$forceUpdate()
 	},
 	destroyed(){
 		window.removeEventListener("scroll",this.hanvten)
@@ -51,89 +49,89 @@ export default {
 	methods:{
 	// 获取电台分类
 		async getDtCate(){
-			const {data:data} = await DtCatelist()
-			var c =data.categories
-			c.forEach(item=>{
-				DtCateSub(item.id).then((res)=>{
-					item.djRadios=res.data.djRadios
+				const {data:data} = await DtCatelist()
+				var c =data.categories
+				c.forEach(item=>{
+					DtCateSub(item.id).then((res)=>{
+						item.djRadios=res.data.djRadios
+					})
 				})
-			})
-		this.categories=c;
-
-		this.$forceUpdate()
-
-	},
-	// 切换nav
-	tagers(val){
-		console.log(val )
-		this.ind=val
-		if(val==3){
-			document.documentElement.scrollTop =this.$refs.item3[0].offsetTop-100
-
-		}else if(val==2){
-			document.documentElement.scrollTop =this.$refs.item2[0].offsetTop-100
-		}else if(val==3001){
-			document.documentElement.scrollTop =this.$refs.item3001[0].offsetTop-100
-		}else if(val==2001){
-			document.documentElement.scrollTop =this.$refs.item2001[0].offsetTop-100
-		}else if(val==10001){
-			document.documentElement.scrollTop =this.$refs.item10001[0].offsetTop-100
-		}else if(val==8){
-			document.documentElement.scrollTop =this.$refs.item8[0].offsetTop-100
-		}else if(val==5){
-			document.documentElement.scrollTop =this.$refs.item5[0].offsetTop-100
-		}else if(val==10002){
-			document.documentElement.scrollTop =this.$refs.item10002[0].offsetTop-100
-		}else if(val==6){
-			document.documentElement.scrollTop =this.$refs.item6[0].offsetTop-100
-		}else if(val==14){
-			document.documentElement.scrollTop =this.$refs.item14[0].offsetTop-100
-		}else if(val==13){
-			document.documentElement.scrollTop =this.$refs.item13[0].offsetTop-100
-		}else if(val==11){
-			document.documentElement.scrollTop =this.$refs.item11[0].offsetTop-100
+			this.categories=c;
+			// this.$forceUpdate()
+		},
+		// 切换nav
+		tagers(val){
+			console.log(val )
+			this.ind=val
+			if(val==3){
+				document.documentElement.scrollTop =this.$refs.item3[0].offsetTop-100
+			}else if(val==2){
+				document.documentElement.scrollTop =this.$refs.item2[0].offsetTop-100
+			}else if(val==3001){
+				document.documentElement.scrollTop =this.$refs.item3001[0].offsetTop-100
+			}else if(val==2001){
+				document.documentElement.scrollTop =this.$refs.item2001[0].offsetTop-100
+			}else if(val==10001){
+				document.documentElement.scrollTop =this.$refs.item10001[0].offsetTop-100
+			}else if(val==8){
+				document.documentElement.scrollTop =this.$refs.item8[0].offsetTop-100
+			}else if(val==5){
+				document.documentElement.scrollTop =this.$refs.item5[0].offsetTop-100
+			}else if(val==10002){
+				document.documentElement.scrollTop =this.$refs.item10002[0].offsetTop-100
+			}else if(val==6){
+				document.documentElement.scrollTop =this.$refs.item6[0].offsetTop-100
+			}else if(val==14){
+				document.documentElement.scrollTop =this.$refs.item14[0].offsetTop-100
+			}else if(val==13){
+				document.documentElement.scrollTop =this.$refs.item13[0].offsetTop-100
+			}else if(val==11){
+				document.documentElement.scrollTop =this.$refs.item11[0].offsetTop-100
+			}
+		},
+		//监听滚动
+		hanvten(){
+			let scrollTop = document.documentElement.scrollTop  // 滚动条偏移量
+			if(scrollTop>30){
+					this.top=scrollTop
+			}else if(scrollTop<60){
+				this.top=0
+			}
+			if(scrollTop+30<300){
+				this.ind=3
+			}else if(scrollTop+300<this.$refs.item3001[0].offsetTop&&scrollTop+300>this.$refs.item2[0].offsetTop){
+				this.ind=2
+			}else if(scrollTop+300<this.$refs.item2001[0].offsetTop&&scrollTop+300>this.$refs.item3001[0].offsetTop){
+				this.ind=3001
+			}else if(scrollTop+300<this.$refs.item10001[0].offsetTop&&scrollTop+300>this.$refs.item2001[0].offsetTop){
+				this.ind=2001
+			}else if(scrollTop+300<this.$refs.item8[0].offsetTop&&scrollTop+300>this.$refs.item10001[0].offsetTop){
+				this.ind=10001
+			}else if(scrollTop+300<this.$refs.item5[0].offsetTop&&scrollTop+300>this.$refs.item8[0].offsetTop){
+				this.ind=8
+			}else if(scrollTop+300<this.$refs.item10002[0].offsetTop&&scrollTop+300>this.$refs.item5[0].offsetTop){
+				this.ind=5
+			}else if(scrollTop+300<this.$refs.item6[0].offsetTop&&scrollTop+300>this.$refs.item10002[0].offsetTop){
+				this.ind=10002
+			}else if(scrollTop+300<this.$refs.item14[0].offsetTop&&scrollTop+300>this.$refs.item6[0].offsetTop){
+				this.ind=6
+			}else if(scrollTop+300<this.$refs.item13[0].offsetTop&&scrollTop+300>this.$refs.item14[0].offsetTop){
+				this.ind=12
+			}else if(scrollTop+300<this.$refs.item11[0].offsetTop&&scrollTop+300>this.$refs.item13[0].offsetTop){
+				this.ind=13
+			}else{
+				this.ind=11
+			}
+		},
+		//跳转详情
+		async todj(id){
+			this.$router.push({path:`/Dts${id}`})
 		}
 	},
-	//监听滚动
-	hanvten(){
-		let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop // 滚动条偏移量
-		if(scrollTop>70){
-				this.top=scrollTop
-		}else if(scrollTop<60){
-			this.top=0
-		}
-		if(scrollTop+30<300){
-			this.ind=3
-		}else if(scrollTop+300<this.$refs.item3001[0].offsetTop&&scrollTop+300>this.$refs.item2[0].offsetTop){
-			this.ind=2
-		}else if(scrollTop+300<this.$refs.item2001[0].offsetTop&&scrollTop+300>this.$refs.item3001[0].offsetTop){
-			this.ind=3001
-		}else if(scrollTop+300<this.$refs.item10001[0].offsetTop&&scrollTop+300>this.$refs.item2001[0].offsetTop){
-			this.ind=2001
-		}else if(scrollTop+300<this.$refs.item8[0].offsetTop&&scrollTop+300>this.$refs.item10001[0].offsetTop){
-			this.ind=10001
-		}else if(scrollTop+300<this.$refs.item5[0].offsetTop&&scrollTop+300>this.$refs.item8[0].offsetTop){
-			this.ind=8
-		}else if(scrollTop+300<this.$refs.item10002[0].offsetTop&&scrollTop+300>this.$refs.item5[0].offsetTop){
-			this.ind=5
-		}else if(scrollTop+300<this.$refs.item6[0].offsetTop&&scrollTop+300>this.$refs.item10002[0].offsetTop){
-			this.ind=10002
-		}else if(scrollTop+300<this.$refs.item14[0].offsetTop&&scrollTop+300>this.$refs.item6[0].offsetTop){
-			this.ind=6
-		}else if(scrollTop+300<this.$refs.item13[0].offsetTop&&scrollTop+300>this.$refs.item14[0].offsetTop){
-			this.ind=12
-		}else if(scrollTop+300<this.$refs.item11[0].offsetTop&&scrollTop+300>this.$refs.item13[0].offsetTop){
-			this.ind=13
-		}else{
-			this.ind=11
-		}
+	created(){
+		this.getDtCate()
+		this.hanvten()
 	},
-	//跳转详情
-	async todj(id){
-		this.$router.push({path:`/Dts${id}`})
-
-	}
-	}
 
 }
 </script>

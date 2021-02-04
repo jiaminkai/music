@@ -72,7 +72,6 @@ methods:{
 			this.loginuser.loginchange =false
 			this.$store.commit("loginSuccess",this.loginuser)
 			sessionStorage.setItem('loginchange', JSON.stringify(this.loginuser))
-			this.resSetItem('loginchange', JSON.stringify(this.loginuser));
 			this.$router.replace('/home')
         } else{
         this.$message.error("登录失败")

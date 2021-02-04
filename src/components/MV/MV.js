@@ -1,8 +1,8 @@
 import { request } from "../../../request/request";
-export function AllMV(type='全部',area='全部',order='全部'){
+export function AllMV(type='全部',area='全部',order='全部',limit=30,offset=1){
 	return request({
 		method:'get',
-		url:`/mv/all?type=${type}&area=${area}&order=${order}`
+		url:`/mv/all?type=${type}&area=${area}&order=${order}&limit=${limit}&offset=${offset}`
 	})
 }
 export function MVTop(){

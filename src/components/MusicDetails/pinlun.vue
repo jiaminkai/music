@@ -24,7 +24,7 @@
 					<div class="pingluntime">    
 						<span>{{item.time}}</span>
 						<span class="iconfont">&#xe68e;</span>
-						<span class="iconfont">&#xe646;<span>{{item.likedCount}}</span></span>
+						<span class="iconfont" @click="likecommentadd(item)">&#xe646;<span>{{item.likedCount}}</span></span>
 						<span>更多</span>
 					</div>
 				</div>
@@ -44,7 +44,7 @@
 					<div class="pingluntime">    
 						<span>{{item.time}}</span>
 						<span class="iconfont">&#xe68e;</span>
-						<span class="iconfont">&#xe646;<span>{{item.likedCount}}</span></span>
+						<span class="iconfont" @click="likecommentadd(item)" > &#xe646;<span>{{item.likedCount}}</span></span>
 						<span>更多</span>
 					</div>
 				</div>
@@ -70,15 +70,24 @@ export default {
 			type:Array
 		},
 		type:Number,
-		id:String 
+		id:Number 
 	},
 	methods:{
+		// 发送评论
 		async sendcomment(){
 			console.log("发送评论:",this.id,this.textarea )
 			const{data:Data} =await SendComment(this.type,this.id,this.textarea)
 			console.log(Data )
 			this.textarea=""
-			this.$bus.$on('sendmessang')
+			this.$bus.$emit('sendmessang')
+		},
+		// 评论点赞
+		async likecommentadd(item){
+			// type,id,cid,t=1
+			console.log(this.type,this.id,item.commentId	)
+			const{data:Data} =await LikeComment(this.type,this.id,item.commentId,)
+			console.log(Data )
+			this.$bus.$emit('sendmessang')
 		}
 	},
 

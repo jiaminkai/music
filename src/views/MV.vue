@@ -6,13 +6,19 @@
 	<div slot="catery">类型：</div>
 	<div slot="zimu">排序：</div>
 	<div slot="Singers">
-		<div class="MV">
+		<div class="MV" v-loading="loading">
 			<div class="MVbox">
 				<div class="MVitem" @click="SingersDetails(item.id)" v-for="(item,index) in this.SingersList " :key="index">		
 					<img class="MVicon" :src="item.cover" alt="">
 					<div>{{item.name}}</div>
 				</div>
 			</div>
+			<el-pagination
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+				layout=" prev, pager, next"
+				>
+			</el-pagination>
 		</div>
 	</div>
 </singer-item>
@@ -29,6 +35,10 @@ export default {
 		return{
 			music:[],
 			SingersList:[],
+			totel:0,
+			size:30,
+			page:1,
+			loading:true,
 			type:[
 				{name:'全部',val:'全部'},
 				{name:'官方版',val:'官方版'},
@@ -61,31 +71,60 @@ export default {
 	},
 	methods:{
 		async saixuna(val){
+			console.log(val)
 			console.log("saixuna",val.a)
-			console.log("saixuna",val.item.val)
+			console.log("saixuna",val.id)
 			if(val.a==1){
-				this.info.type=val.item.val
+				if(this.info.type==val.id)
+					this.info.type="全部"
+				this.info.type=val.id
 			}
 			if(val.a==2){
-				this.info.area=val.item.val
+				if(this.info.area==val.id)
+					this.info.area="全部"
+				this.info.area=val.id
 			}
 			if(val.a==3){
-				this.info.order=val.item.val
+				if(this.info.order==val.id)
+					this.info.order="全部"
+				this.info.order=val.id
 			}
 			console.log(this.info)
 			const {data:data}= await AllMV(this.info.type,this.info.area,this.info.order)
 			console.log("info",data.data)
 			this.SingersList=data.data
+			this.loading=false
+			this.$forceUpdate()
 		},
 		SingersDetails(id){
 			console.log(id)
 			this.$router.push({path:`/MVDetail${id}`,params:{id}})
-		}
+		},
+			// 更改当前页的数量
+		async handleSizeChange(val){
+			console.log(val )
+			this.size=val
+			const {data:data}= await AllMV(this.info.type,this.info.area,this.info.order,this.size,this.page)
+			console.log("info",data)
+			this.SingersList=data.data
+			this.loading=false
+		},
+		//切换页 
+		async handleCurrentChange(val){
+			console.log(val )
+			this.page=(val-1)*this.size
+			const {data:data}= await AllMV(this.info.type,this.info.area,this.info.order,this.size,this.page)
+			console.log("info",data.data)
+			this.SingersList=data.data
+			this.loading=false
+
+		},
 	},
 	async created(){
 		const {data:data}= await AllMV(this.info.type,this.info.area,this.info.order)
 			console.log("info",data.data)
 			this.SingersList=data.data
+			this.loading=false
 	}
 
 }

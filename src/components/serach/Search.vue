@@ -4,6 +4,7 @@
 		<el-table
 			:data="song"
 			stripe
+			@row-click="rowclick"
 		>
 			<el-table-column
 				type="index"
@@ -52,6 +53,22 @@ export default {
 		return{
 			xuhao:"序号"
 		}
+	},
+	methods:{
+		rowclick(row){
+			console.log(row)
+			var c=JSON.parse(sessionStorage.getItem('music'));
+			var index =c.findIndex(item=>{
+				return item.musicid=row.musicid
+			})
+			if(index!=-1){
+				c.unshift(row)
+				this.resSetItem('music', JSON.stringify(c))
+				
+			}else{
+				this.$bus.$emit('playmnue',index)
+			}
+		},
 	}
 }
 </script>

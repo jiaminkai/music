@@ -9,6 +9,7 @@ export default new Vuex.Store({
     loginchange:{},
     musicindex:0,
     navmenu:'/'
+    
   },
   mutations: {
     SetMusic(state, payload){

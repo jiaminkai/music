@@ -78,7 +78,7 @@ export default {
         var list =[]
         this.$store.commit('SetMusic',this.likemusci)
         this.resSetItem('music',JSON.stringify(list))
-        this.resSetItem('musiclike',JSON.stringify(this.likemusci))
+        this.sessionStorage.setItem('musiclike',JSON.stringify(this.likemusci))
 
 
     },
