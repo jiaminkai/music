@@ -1,5 +1,4 @@
-# 项目 API 来自 Binaryify/NeteaseCloudMusicApi 提供，点击查看API 中文文档
-#目前以实现的功能：
+# 项目 API 来自 Binaryify/NeteaseCloudMusicApi 提供，目前以实现的功能：
 用户登录
 用户基本信息/歌单/歌曲/昵称/头像...
 获取用户的歌单基本信息/歌曲
