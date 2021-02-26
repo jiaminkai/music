@@ -9,7 +9,9 @@
               <div class="myleftuser">
                 <img :src="this.login.avatarUrl" alt="">
                 <span>{{this.login.nickname}}</span>
-                <span class="qiandao">签到</span>
+                <span v-if="this.yunbei" class="qiandao" @click="qiandao('签到')" >签到</span>
+                <span v-else class="qiandao" @click="qiandao('已签到')">已签到</span>
+
               </div>
               <div class="liuyan">我还没有想好要说什么...</div>
               <div class="creat">来自宇宙的深处，于{{this.login.creattiem}}加入</div>
@@ -30,11 +32,34 @@
                 <div class="historyTitleitem" @click="todetails(1)"><div class="iconfont">&#xe607;</div><div class="tieleitem"><span>{{this.count.subPlaylistCount}}</span>我的收藏</div></div>
                 <div class="historyTitleitem" @click="todetails(2)"><div class="iconfont">&#xe79f;</div><div class="tieleitem"><span>0</span>已购音乐 </div></div>
             </div>
-            <div class="creatgedaibox">
-                <div class="creatgedai"><span>我的歌单{{this.count.createdPlaylistCount}}</span> <div class="creatgedaimove"><span class="newgedan">新建歌单</span><span class="daorugedan">导入歌单</span><span class="allgedai">全部<span class="el-icon-arrow-right"></span></span></div></div>
+            <div class="creatgedaibox" style="margin-top:40px">
+                <div class="creatgedai"><span>我创建的歌单{{this.count.createdPlaylistCount}}</span> <div class="creatgedaimove"><span class="newgedan">新建歌单</span><span class="daorugedan">导入歌单</span><span class="allgedai">全部<span class="el-icon-arrow-right"></span></span></div></div>
                 <div class="creatcontent">
-                    <div style="display:flex" v-if="this.myplay.length!=0">
-                        <div class="creatcontent-item" v-for="(item,index) in this.myplay" :key="index">
+                    <div style="display:flex;flex-wrap: wrap;" v-if="this.creatPlay.length!=0">
+                        <div class="creatcontent-item" v-for="(item,index) in this.creatPlay" :key="index">
+                           <div class="creatplay" v-if="item.playCount!=undefined"><i class="el-icon-video-play" style="padding-right:5px"></i>{{item.playCount}}</div>
+                            <div class="img-bg">
+                                <img :src="item.coverImgUrl" alt="">
+                            </div>
+                            <div class="gedainame">{{item.name}}</div>
+                            <div class="creatgedai-tab" v-if="item.tags!=undefined">
+                              <span v-for="(n,index) in item.tags" :key="index">#{{n}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="creatcontent-item">
+                            <img src="" alt="">
+                            <div class="gedainame">{{item.name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="creatgedaibox">
+                <div class="creatgedai"><span>我收藏的歌单{{this.subPlay.length}}</span> <div class="creatgedaimove"><span class="allgedai">全部<span class="el-icon-arrow-right"></span></span></div></div>
+                <div class="creatcontent">
+                    <div style="display:flex;flex-wrap: wrap;" v-if="this.subPlay.length!=0">
+                        <div class="creatcontent-item" v-for="(item,index) in this.subPlay" :key="index">
                            <div class="creatplay" v-if="item.playCount!=undefined"><i class="el-icon-video-play" style="padding-right:5px"></i>{{item.playCount}}</div>
                             <div class="img-bg">
                                 <img :src="item.coverImgUrl" alt="">
@@ -76,7 +101,7 @@
 </template>
 
 <script>
-import {My,MyPlaylist,MyCounr,MyRecord,MyDj,MyFollows,MyEvent,MyFolloweds,MySublist,MyPlaylistVideo} from "../components/My/my";
+import {My,MyPlaylist,MyCounr,MyRecord,MyDj,MyFollows,MyEvent,MyFolloweds,MySublist,MyPlaylistVideo,MyYunbei,MyYun} from "../components/My/my";
 export default {
   name:'MyMusic',
   data(){
@@ -84,12 +109,15 @@ export default {
       login:{},
       count:{},
       myplay:[],
+      creatPlay:[],
+      subPlay:[],
       myevent:[],
       myfolloweds:[],
       myfollows:[],
       loading: true,
       myrecord:[],
-      video:[]
+      video:[],
+      yunbei:true,
     }
   },
   computed:{
@@ -117,14 +145,12 @@ export default {
       //用户视频播放记录
       const {data:myvaiod}  = await MyPlaylistVideo()
       this.video =myvaiod.data.videos
-      var c = new Date(my.profile.createTime)
-      var y = c.getFullYear();
-      var m = c.getMonth()+1;
-      var d = c.getDate();
-      this.login.creattiem=y+'年'+(m)+'月'+(d)+'日'
+      this.login.creattiem=this.$time(my.profile.createTime)
       this.login.city=my.profile.city
       this.count =mycounr
       this.myplay=myplay.playlist
+      this.creatPlay= myplay.playlist.filter(item=>{return item.userId ==this.login.userId})
+      this.subPlay= myplay.playlist.filter(item=>{return item.userId !=this.login.userId})
       this.myrecord=myrecord.allData
       this.mydj =mydj.programs
       this.myfollows=myfollows.follow
@@ -140,6 +166,7 @@ export default {
       this.loading=false
    
     },
+    //跳转tab页
   todetails(val){
     if(val==0){
         this.$router.push({
@@ -175,12 +202,35 @@ export default {
     }
   
   },
+  //查看签到信息
+  async getYunbei(){
+    const {data:data} =await MyYunbei()
+    if(data.message=="今日未签到"){
+      this.yunbei = true
+    }else{
+      this.yunbei = false
+    }
+  },
+  //签到
+  async qiandao(name){
+     if(name=="已签到"){
+       this.$message.warning("今日已经签到")
+       return ;
+     }
+      const {data:data} =await MyYun()
+      console.log(data)
+      this.getYunbei()
+      this.$message.success("签到成功")
+
+  }
    
   },
 
-  created(){
+  async created(){
     this.login = JSON.parse(sessionStorage.getItem('loginchange'));
     this.getMy()
+    this.getYunbei()
+
   },
 }
 </script>
@@ -208,7 +258,7 @@ export default {
 }
 .errbox{
   width: 100%;
-  min-height: 1100px;
+  min-height: 500px;
 }
 .mybox{
   width: 100%;
@@ -232,13 +282,12 @@ export default {
 .myleftbox{
   width: 330px;
   box-sizing: border-box;
-  height:500px;
+  height:auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 40px;
   position: relative;
-  box-shadow: 2px 2px 10px #ccc;
 }
 .myleftuser{
   display: flex;
@@ -274,13 +323,13 @@ export default {
   width: 330px;
   height: 400px;
   padding: 50px 20px;
-
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: fixed;
-  top:200px;
+  top:210px;
+  box-shadow: 2px 2px 10px #ccc;
 }
 
 .myleft p{
@@ -301,7 +350,7 @@ export default {
   position: absolute;
   content:"";
   width:6px;
-  height:12px;
+  height:6px;
   border-radius: 50%;
   background: red;
   left: -9px;
@@ -309,6 +358,9 @@ export default {
 }
 .level span:nth-child(2){
   border: 1px #000 solid;
+  margin-left: 5px;
+  padding:1px 4px;
+  box-shadow: 1px 1px 10px #ccc;
 }
 .liuyan,.creat{
   width: 100%;
@@ -326,10 +378,27 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-top: 40px;
+  height:100%;
 }
 .history div{
   display: flex;
   flex-direction: column;
+  height:100%;
+  position: relative;
+}
+.history div::after{
+  content: "";
+  display: flex;
+  background: #ccc;
+  height:100%;
+  width: 1px;
+  position:absolute;
+  right: -50px;
+}
+.history div:nth-child(3)::after{
+  content: "";
+  display: none;
+
 }
 .history div span{
   display: block;
@@ -338,8 +407,9 @@ export default {
 .myplay{
   display: flex;
   flex-direction: column;
-  flex: 1;
+  width: 64%;
   margin-top: 80px;
+  overflow: hidden;
   padding: 50px;
 }
 .loading{
@@ -406,6 +476,7 @@ export default {
   display: flex;
   position: relative;
   width: 100%;
+  
 }
 .creatplay{
   position: absolute;

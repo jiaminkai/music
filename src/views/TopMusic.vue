@@ -228,17 +228,18 @@ export default {
 				item.cells =false
 			})
 			row.cells=true
-			var mus = JSON.parse(sessionStorage.getItem('music'))
-			var indes= mus.findIndex((item)=>{
-				return	item.musicid ==row.musicid
-			})
-			if(indes==-1){
-				mus.unshift(row)
-				this.resSetItem('music', JSON.stringify(mus))
-				this.$bus.$emit('plays')
-			}else{
-				this.$bus.$emit("playmnue",indes)
-			}
+			this.sendmusic(row);
+			// var mus = JSON.parse(sessionStorage.getItem('music'))
+			// var indes= mus.findIndex((item)=>{
+			// 	return	item.musicid ==row.musicid
+			// })
+			// if(indes==-1){
+			// 	mus.unshift(row)
+			// 	this.resSetItem('music', JSON.stringify(mus))
+			// 	this.$bus.$emit('plays')
+			// }else{
+			// 	this.$bus.$emit("playmnue",indes)
+			// }
 
 		},
 		//获取推荐相似歌单
@@ -554,7 +555,8 @@ export default {
 	.hotpinluncontent{
 		padding: 10px;
 		text-align: left;
-		width: 100%;
+		
+
 		
 	}
 	.hotpinluncontent_nickname{
@@ -570,13 +572,14 @@ export default {
 	}
 	.content{
 		margin-top: 5px;
-		width: 100%;
+		width: 222px;
 		padding: 5px 10px  5px 5px;
 		box-sizing: border-box;
 		background: #ececec;
 		font-size: 12px;
 		text-align: left;
 		border-radius: 5px;
+		overflow: hidden;
 	}
 	.pinglun{
 		padding: 20px 60px 60px 40px;

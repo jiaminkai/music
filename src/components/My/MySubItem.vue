@@ -8,7 +8,7 @@
 			</ul>
 		</div>
 		<div v-if="this.index==0" class="subboxcontent">
-			<div class="">
+			<div class="subboxcontenttab">
 				<el-table
 					:data="music"
 					@row-click="rowclick"
@@ -44,12 +44,17 @@
 			</div>
 		</div>
 		<div v-if="this.index==1" class="subboxcontent">
-			<div class="itembox" v-for="(item,index) in this.video" :key="index">
-				<img :src="item.mlogBaseData.coverUrl" alt="">
-				<div class="userbox">
-					<span>{{item.mlogExtVO.artistName}}:</span>
-					<span>{{item.mlogBaseData.text}}</span>
+			<div v-if="this.video.length!=0">
+				<div class="itembox" v-for="(item,index) in this.video" :key="index" >
+					<img :src="item.mlogBaseData.coverUrl" alt="">
+					<div class="userbox">
+						<span>{{item.mlogExtVO.artistName}}:</span>
+						<span>{{item.mlogBaseData.text}}</span>
+					</div>
 				</div>
+			</div>
+			<div v-else class="show">
+
 			</div>
 		</div>
 	</div>
@@ -73,7 +78,7 @@ export default {
 		// 处理数据
 		getoldmusic(){
 			this.song.forEach(item=>{
-				item.song.dt= (Math.floor(item.song.dt/1000/60)<10?"0"+Math.floor(item.song.dt/1000/60):Math.floor(item.song.dt/1000/60))+":" +(Math.floor(item.song.dt/1000%60)<10?"0"+Math.floor(item.song.dt/1000%60):Math.floor(item.song.dt/1000%60))
+				item.song.dt= this.$musictime(item.song.dt)
 			GetMusic(item.song.id).then(res=>{
 				var c = new Music(item.song,res.data.data[0].url)
 				this.music.push(c)
@@ -87,9 +92,8 @@ export default {
 		// 点击表行事件
 		rowclick(row){
 			console.log(row )
-			var list =JSON.parse(sessionStorage.getItem('music'));
-			list.unshift(row)
-			this.resSetItem('music',JSON.stringify(list))
+			this.sendmusic(row)
+
 		},
 	},
 	created(){
@@ -103,6 +107,11 @@ export default {
 </script>
 
 <style scoped>
+.show{
+	width: 100%;
+	height: 300px;
+	background: url('../../assets/404.png') no-repeat center;
+}
 .subbox{
 	width: 1200px;
 	margin: 0 auto;
@@ -134,6 +143,9 @@ export default {
 	width: 1200px;
 	display: flex;
 	flex-wrap: wrap;
+}
+.subboxcontenttab{
+	width: 100%	;
 }
 .itembox{
 	position: relative;

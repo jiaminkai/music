@@ -1,7 +1,7 @@
 <template>
 <div class="seach">
 	<div class="seachtop">
-		<el-input v-model="input" placeholder="请输入内容" @keyup.enter.native="aaa">
+		<el-input v-model="input" placeholder="请输入内容" @keyup.enter.native="aaa" >
 			<template slot="append">
 				<div class="el-icon-search"></div>
 			</template>
@@ -53,7 +53,7 @@ import SearchSinger from '../components/serach/SearchSinger.vue';
 import SearchMv from '../components/serach/SearchMv.vue';
 import SearchDj from '../components/serach/SearchDj.vue'
 import SearchAlbums from '../components/serach/SearchAlbums.vue';
-import { Search } from "../components/serach/Search";
+import { Search,SearchKey } from "../components/serach/Search";
 import {SingersSong,Song } from "../components/Singers/Singers";
 
 
@@ -89,9 +89,7 @@ export default {
 				this.total=data.result.songCount 
 				var a =[]
 				data.result.songs.forEach(item => {
-					var h=Math.floor(item.dt/1000/60)<10?"0"+Math.floor(item.dt/1000/60):Math.floor(item.dt/1000/60);
-					var m =Math.floor(item.dt/1000%60)<10?"0"+Math.floor(item.dt/1000%60):Math.floor(item.dt/1000%60);
-					item.dt =h+":"+m;
+					item.dt =this.$musictime(item.dt);
 					SingersSong(item.id).then(res=>{
 						item.url=res.data.data[0].url
 						var c = new Song(item);
@@ -111,8 +109,7 @@ export default {
 				this.mvs=data.result.mvs
 				this.mvs.forEach(item=>{
 					item.playCount = item.playCount>1000000?Math.floor(item.playCount/1000000)+"百万":item.playCount>10000?Math.floor(item.playCount/10000)+"万":item.playCount
-					item.duration=(Math.floor(item.duration/1000/60)<10?"0"+Math.floor(item.duration/1000/60):Math.floor(item.duration/1000/60))+":"+(Math.floor(item.duration/1000%60)<10?"0"+Math.floor(item.duration/1000%60):Math.floor(item.duration/1000%60))
-					console.log(item.playCount,item.duration )
+					item.duration=this.$musictime(item.duration)
 				})
 
 			}else if(this.index==1000){
@@ -130,6 +127,7 @@ export default {
 			this.offset = val
 			this.GetSearch()
 		},
+
 		handleCurrentChange(val){
 			console.log("当前页数",val )
 			this.offset = this.offset*this.count

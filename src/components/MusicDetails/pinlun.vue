@@ -76,7 +76,7 @@ export default {
 		// 发送评论
 		async sendcomment(){
 			console.log("发送评论:",this.id,this.textarea )
-			const{data:Data} =await SendComment(this.type,this.id,this.textarea)
+			const{data:Data} =await SendComment(this.type,this.id,this.textarea,'1')
 			console.log(Data )
 			this.textarea=""
 			this.$bus.$emit('sendmessang')

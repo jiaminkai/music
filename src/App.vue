@@ -4,9 +4,9 @@
       <el-header>
           <nav-menu></nav-menu>
       </el-header>
-      <el-main>
+      <el-main >
             <router-link to="/"></router-link><router-view/>
-              <div class="fly bg-fly-circle1"></div>
+              <div  class="fly bg-fly-circle1" ></div>
               <div class="fly bg-fly-circle2"></div>
               <div class="fly bg-fly-circle3"></div>
               <div class="fly bg-fly-circle4"></div>
@@ -64,15 +64,8 @@ export default {
           item.isonplay=false
           item.hover=false
           item.index=index
-          var h=parseInt(item.playtime/1000/60)
-          if(parseInt(item.playtime/1000/60)<10){
-              h='0'+ parseInt(item.playtime/1000/60)
-          }
-          var s=parseInt(item.playtime/1000%60)
-          if(parseInt(item.playtime/1000%60)<10){
-              s='0'+ parseInt(item.playtime/1000%60)
-          }
-          item.playtime= h+':'+s
+
+          item.playtime= this.$musictime(item.playtime)
         })
         this.music = this.likemusci[0]
         var list =[]
@@ -96,7 +89,6 @@ export default {
   },
   created(){
     this.loginchan()
-    
   }
 
 }

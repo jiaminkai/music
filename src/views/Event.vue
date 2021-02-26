@@ -157,7 +157,7 @@ export default {
 			c.musicid=obj.id
 			c.url =obj.url
 			c.picUrl=obj.artists[0].img1v1Url
-			c.playtime =(obj.bMusic.playTime/1000/60<10 ? "0"+obj.bMusic.playTime/1000/60 : obj.bMusic.playTime/1000/60)+":"+(obj.bMusic.playTime/1000%60<10?"0"+obj.bMusic.playTime/1000%60:obj.bMusic.playTime/1000/60)
+			c.playtime =this.$musictime(obj.bMusic.playTime)
 			var mus = JSON.parse(sessionStorage.getItem('music'))
 			if(mus==null){
               mus=[]

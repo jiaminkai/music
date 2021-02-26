@@ -11,24 +11,60 @@
                     <li :class="[this.$store.state.navmenu=='/Singers'?'activenav':'']" @click="to('/Singers')"><el-link :underline="false"  >歌手</el-link></li>
                     <li :class="[this.$store.state.navmenu=='/MV'?'activenav':'']" @click="to('/MV')"><el-link :underline="false" >MV</el-link></li>
                     <li :class="[this.$store.state.navmenu=='/Dt'?'activenav':'']" @click="to('/Dt')"><el-link :underline="false" >电台</el-link></li>
-                    <li :class="[this.$store.state.navmenu=='/YunCun'?'activenav':'']" @click="to('/YunCun')"><el-link :underline="false" >云村</el-link></li>
+                    <!-- <li :class="[this.$store.state.navmenu=='/YunCun'?'activenav':'']" @click="to('/YunCun')"><el-link :underline="false" >云村</el-link></li> -->
 
 
                 </ul>
                 <div class="inputbox">
                     <el-button class="search" circle icon="el-icon-search" @click="change" />
-                    <input class="input" v-model="input"  @keyup.enter="change" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
+                    <input class="input" v-model="input" @input="keychange" @keyup.enter="change" @click="folthinput" :style="{ width: width+'px', borderBottom: '#ccc solid '+this.a+'px'  }"  placeholder="请输入查找内容"/>
                     <div class="hotserach_pos" v-if="this.ishotserch">
-                        <div class="hotserach">
+                        <div class="hotserach" v-if="this.result.isactive" >
                             <div class="hotserach_title">热门搜索</div>
-                                <div class="searchList" @click="tomusic(item.searchWord)" v-for="(item,index) in this.hotsearch" :key="index">
-                                    <div class="searchindex">{{index+1}}</div>
-                                    <div class="searchitem">
-                                        <div>{{item.searchWord}}</div>
-                                        <div>{{item.content}}</div>
-                                    </div>
+                            <div class="searchList" @click="tomusic(item.searchWord)" v-for="(item,index) in this.hotsearch" :key="index">
+                                <div class="searchindex">{{index+1}}</div>
+                                <div class="searchitem">
+                                    <div>{{item.searchWord}}</div>
+                                    <div>{{item.content}}</div>
                                 </div>
                             </div>
+                        </div>
+                        <div v-else class="searchkey">
+                                <div class="searchkey_title" >搜索{{this.input}}结果>></div>
+
+                                <div class="search_item" v-if="this.result.artists">
+                                    <div class="searchkey_left">
+                                        <i class="el-icon-user">歌手</i>
+                                    </div>
+                                    <div class="searchkey_right">
+                                        <span @click="toartists(item)" v-for="(item,index) in this.result.artists" :key="index">{{item.name}}</span>
+                                    </div>
+                                </div>
+                                <div class="search_item" v-if="this.result.songs">
+                                    <div class="searchkey_left">
+                                        <i class="el-icon-mic">单曲</i>
+                                    </div>
+                                    <div class="searchkey_right">
+                                        <span @click="tosongs(item)" v-for="(item,index) in this.result.songs" :key="index">{{item.name}}</span>
+                                    </div>
+                                </div>
+                                <div class="search_item" v-if="this.result.albums">
+                                    <div class="searchkey_left">
+                                        <i class="el-icon-video-play">专辑</i>
+                                    </div>
+                                    <div class="searchkey_right dandu">
+                                        <span @click="toalbums(item)" v-for="(item,index) in this.result.albums" :key="index">{{item.name}}-{{item.artist.name}}</span>
+                                    </div>
+                                </div>
+                                <div class="search_item" v-if="this.result.playlists">
+                                    <div class="searchkey_left">
+                                        <i class="el-icon-tickets">歌单</i>
+                                    </div>
+                                    <div class="searchkey_right">
+                                        <span @click="toplaylists(item)" v-for="(item,index) in this.result.playlists" :key="index">{{item.name}}</span>
+                                    </div>
+                                </div>
+                        </div>
                         </div>
                     </div>
                 <div class="navuser"  >
@@ -61,6 +97,8 @@
 <script>
 import {HotSearch} from '../home/home';
 import { Logout } from "../login/login";
+import { SearchKey } from "../serach/Search";
+
 export default {
    
  name:'NavMenu',
@@ -71,21 +109,26 @@ export default {
          a:1,
          ishotserch:false,
          hotsearch:[],
+         result:{
+             isactive:true,
+         },
          uesrId:'',
-         input:''
+         input:'',
+         Times:''
      }
  },
  computed:{
-     logins() {
+    logins() {
         return this.$store.state.loginchange;
-      }
+      },
 
  },
  watch:{
     logins: function (old,newd){
         console.log(old)
           this.loginuser = old;
-         }
+    },
+        
 
  },
  methods:{
@@ -161,7 +204,54 @@ export default {
       this.ishotserch=false
       this.input=""
       this.$store.commit("navmenuchange","/")
-    }
+    },
+        //输入框变化
+    keychange(){
+        this.fnThrottle(this.keyseach,1000)
+    },
+    //获取搜索关键字的结果
+    async keyseach(){
+        console.log(this.input)
+        const {data:data} = await SearchKey(this.input)
+        console.log(data)
+        if(data.code){
+            this.result =data.result
+            this.result.isactive=false
+        }else{
+            this.result.isactive=true
+        }
+
+    },
+    //节流
+    fnThrottle(func,delay) {
+        let that =this
+        return function(){
+            if(!that.Times==""){
+                clearTimeout(that.Times)
+            }
+            that.Times = setTimeout(()=>{
+                func()
+                that.Times = ""
+            },delay)
+            
+        }()
+    },
+    //点击搜索结果中的歌手
+    toartists(item){
+        console.log(item.id)
+    },
+    //点击搜索结果中的歌曲
+    tosongs(item){
+        console.log(item.id)
+    },
+    //点击搜索结果中的专辑
+    toalbums(item){
+       console.log(item.id)
+    },
+    //点击搜索结果中的歌单
+    toplaylists(item){
+        console.log(item.id)
+    },
  },
  created(){
         if(this.$store.state.loginchange.avatarUrl==undefined){
@@ -172,7 +262,6 @@ export default {
             console.log("头像監聽到了" )      
         })
         this.getHotsearch()
-
  }
 }
 </script>
@@ -363,5 +452,59 @@ color: rgb(245, 134, 8);
      white-space: nowrap;
 
  }
- 
+ .searchkey{
+    font-size: 12px;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid #bebebe;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 4px 7px #555;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    width: 240px;
+ }
+ .searchkey_title{
+     border-bottom: 1px solid #ccc;
+     padding: 12px;
+     font-size: 14px;
+    text-align: left;
+    color: #ccc;
+ }
+ .search_item{
+    display: flex;
+    flex-direction: row;
+    min-height: 40px;
+    line-height: 24px;
+    font-size: 12px;
+ }
+ .searchkey_left{
+    width: 65px;
+    border-right: 1px solid #ccc;
+    padding-top: 5px;
+
+ }
+ .searchkey_right{
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+    display:flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 5px 0;
+    box-sizing: border-box;
+    background: #fff;
+ }
+ /* .dandu{
+     background:#ccc
+ } */
+ .searchkey_right span{
+     display: block;
+     width: 164px;
+     overflow: hidden;
+     white-space: nowrap;
+     text-overflow: ellipsis;
+     padding: 0 5px;
+ }
+.searchkey_right span:hover{
+    background:#ccc
+}
 </style>

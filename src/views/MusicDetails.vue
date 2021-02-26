@@ -1,6 +1,6 @@
 <template>
-   
-<musicitem :music="this.music" @allplay1="allplay1" @musicsub="musicsub" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment" v-loading="loading" >
+<div>
+     <musicitem :music="this.music" @allplay1="allplay1" @musicsub="musicsub" :newcomment="newcomment" :array="array" :songs="songs" :palytime="palytime" :hotcomment="hotcomment" v-loading="loading" >
       
        <div slot="dj">
                  <div class="lyricbox" :style="{height:this.height}">
@@ -34,14 +34,63 @@
                   <div><span>作曲</span><span>{{this.array.user}}</span></div>
              </div>
        </div>
-</musicitem>
+    </musicitem>
+    <el-dialog
+        title="添加到歌单"
+        :visible.sync="dialogVisible"
+        width="25%"
+        :before-close="handleClose"
+        center
+        :modal="false"
+        top="25vh"
+        >
+        <div class="submusicbox">
+            <div class="adddj" @click="addnewplay">
+                <span class="el-icon-circle-plus-outline addicon"></span>
+                <span >新歌单</span>
+            </div>
+            <div class="palylist">
+                <div class="palyitem" @click="addpaly(item.id)" v-for="(item,index) in this.playlist" :key="index">
+                    <img :src="item.coverImgUrl" alt="">
+                    <div class="listname">
+                        <div class="">{{item.name}}</div>
+                        <div class="">{{item.trackCount}}首</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </el-dialog>
+        <el-dialog
+        title="新建歌单"
+        :visible.sync="dialogVisible2"
+        width="25%"
+        :before-close="handleClose"
+        center
+        :modal="false"
+        top="25vh"
+        >
+        <div class="newpaly">
+           <div class="newplayname">
+                <span>歌单名：</span>
+                <input  placeholder="输入歌单名" v-model="input1">
+           </div>
+           <span class="newdesc">可通过“收藏”将音乐添加到新歌单中</span>
+           <div class="buttongroud">
+               <div class="newcreat" @click="creatplay">新建</div>
+               <div class="newdel" @click="handleClose">取消</div>
+
+           </div>
+        </div>
+    </el-dialog>
+</div>
+   
 
 </template>
 
 <script>
-import {Musics,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment,ChangePlay} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
+import {Musics,GetComment,GetAlbum,GetDetails,GetLyric,GetSong,GetHotComment,ChangePlay,CreatePlay} from '../components/MusicDetails/details';// eslint-disable-line no-unused-vars
 import Musicitem from "../components/MusicDetails/Musicitem.vue";
-import {Music,GetMusic,SubMusic} from '../components/home/home'
+import {Music,GetMusic,SubMusic,Subcount} from '../components/home/home'
 export default {
     name:'Details',
     data(){
@@ -55,7 +104,10 @@ export default {
             ismove:true,
             height:'350px',
             loading:true,
-
+            dialogVisible:false,
+            dialogVisible2:true,
+            playlist:[],
+            input1:""
         }
     },
     components:{
@@ -74,94 +126,100 @@ export default {
 
     methods:{
     // 展开歌词
-    showmove(){
-        this.ismove =false
-        this.height='auto'
-    },
-    // 折叠歌词
-    hiedmove(){
-        this.ismove =true
-        this.height='350px'
-    },
-    // 获取相似歌曲
-     async getsong(id){
-        const {data:data} = await GetSong(id)
-        console.log("相似",data )
-        this.songs=data.songs
-            this.songs.forEach(item=>{
-                var c= Math.floor(item.bMusic.playTime/1000/60)
-                var b=Math.floor(item.bMusic.playTime/1000%60)
-                if(c<10){c='0'+c}
-                if(b<10){b='0'+b}
-                item.bMusic.playTime= c+':'+b
-                GetMusic(item.id).then((res)=>{
-                    item.url =res.data.data[0].url
-                })
-            })
-        
-      },
-      //收藏歌曲
-        async  musicsub(){
-          console.log("收藏歌曲")
-        //   const{data:data} =await ChangePlay('add',)
-      },
-    //   播放相关音乐
-      submusic(item){
-          var musicitem=new SubMusic(item)
-          this.allplay1(musicitem)
-      },
-    //   直接从搜索跳转到详情
-      async geimus(id){
-          if(typeof(id)=="object"){
-              console.log(id.musicid )
-              id = id.musicid
-          }
-          console.log(id )
-           const {data:list} = await GetDetails(id)
-           const {data:url} = await GetMusic(id)
-           console.log("歌曲详情",list )
-           
-           var c= Math.floor(list.songs[0].dt/1000/60)
-                var b=Math.floor(list.songs[0].dt/1000%60)
-                if(c<10){c='0'+c}
-                if(b<10){b='0'+b}
-                list.songs[0].dt= c+':'+b
-           this.music = new Music(list.songs[0],url.data[0].url)
-           this.getmusic()
-      },
-        // 获取音乐详情信息
-      async  getmusic(){
-            const {data:list} = await GetDetails(this.music.musicid)// eslint-disable-line no-unused-vars
-            const {data:alcum}  = await GetAlbum(this.music.djid)
-            const {data:comment}  = await GetComment(this.music.musicid)
-            const {data:Lyric}  = await GetLyric(this.music.musicid) 
-            const {data:hotcomment}  = await GetHotComment(this.music.musicid)
-         
-            this.hotcomment=hotcomment.hotComments
-            this.newcomment=comment.data.comments
-            this.hotcomment.forEach(item=>{
-                item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
-            })
-             this.newcomment.forEach(item=>{
-                item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
-            })
-            
-            this.array =new Musics(list.songs[0],alcum,comment,Lyric)
-            var c =this.array.lyric.replace(/\[.*?\]/g,'')
-            var snsArr=c.split(/[(\r\n)\r\n]+/);
-            snsArr.forEach((item,index)=>{
-                if(!item){
-                    snsArr.splice(index,1);//删除空项
-                }
-            })
-            this.array.lyric =snsArr
+        showmove(){
+            this.ismove =false
+            this.height='auto'
         },
-        // 播放音乐
+        // 折叠歌词
+        hiedmove(){
+            this.ismove =true
+            this.height='350px'
+        },
+        // 获取相似歌曲
+        async getsong(id){
+            const {data:data} = await GetSong(id)
+            console.log("相似",data )
+            this.songs=data.songs
+                this.songs.forEach(item=>{
+                    item.bMusic.playTime= this.$musictime(item.bMusic.playTime)
+                    GetMusic(item.id).then((res)=>{
+                        item.url =res.data.data[0].url
+                    })
+                })
+            
+        },
+        //收藏歌曲
+            async  musicsub(){
+            console.log("收藏歌曲")
+            let login = JSON.parse(sessionStorage.getItem("loginchange"))||null;
+            if(login==null){
+                this.$toast("请先登录")
+                return
+            }else{
+                this.UserDj(login.userId) 
+            }
+            this.dialogVisible=true;
+            // this.UserDj()
+        },
+        //   播放相关音乐
+        submusic(item){
+            var musicitem=new SubMusic(item)
+            this.allplay1(musicitem)
+        },
+        //获取用户的歌单
+        async UserDj(id){
+            const {data:data} = await Subcount(id)
+            console.log("用户歌单",data)
+            this.playlist=data.playlist
+            this.$set(this,'playlist',data.playlist)
+        },
+        //   直接从搜索跳转到详情
+        async geimus(id){
+            if(typeof(id)=="object"){
+                console.log(id.musicid )
+                id = id.musicid
+            }
+            console.log(id )
+            const {data:list} = await GetDetails(id)
+            const {data:url} = await GetMusic(id)
+            console.log("歌曲详情",list )
+        list.songs[0].dt= this.$musictime(list.songs[0].dt)
+            this.music = new Music(list.songs[0],url.data[0].url)
+            this.getmusic()
+        },
+            // 获取音乐详情信息
+        async  getmusic(){
+                const {data:list} = await GetDetails(this.music.musicid)// eslint-disable-line no-unused-vars
+                const {data:alcum}  = await GetAlbum(this.music.djid)
+                const {data:comment}  = await GetComment(this.music.musicid)
+                const {data:Lyric}  = await GetLyric(this.music.musicid) 
+                const {data:hotcomment}  = await GetHotComment(this.music.musicid)
+            
+                this.hotcomment=hotcomment.hotComments
+                this.newcomment=comment.data.comments
+                this.hotcomment.forEach(item=>{
+                    item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
+                })
+                this.newcomment.forEach(item=>{
+                    item.time=new Date(item.time).toLocaleDateString().replace(/\//g,"-")
+                })
+                
+                this.array =new Musics(list.songs[0],alcum,comment,Lyric)
+                var c =this.array.lyric.replace(/\[.*?\]/g,'')
+                var snsArr=c.split(/[(\r\n)\r\n]+/);
+                snsArr.forEach((item,index)=>{
+                    if(!item){
+                        snsArr.splice(index,1);//删除空项
+                    }
+                })
+                this.array.lyric =snsArr
+            },
+            // 播放音乐
         allplay1(val){
             console.log("a",val )
             var c =JSON.parse(sessionStorage.getItem('music'))
             var ind= c.findIndex((item,index)=>{
-               return item.musicid==val.musicid
+                return item.musicid==val.musicid
             })
             console.log("index",ind)
             if(ind==-1){
@@ -170,6 +228,52 @@ export default {
             }else{
                 console.log("bbb" )
                 this.$bus.$emit('playmnue',ind)
+            }
+        }   ,
+        //关闭添加歌单
+        handleClose(){
+            this.dialogVisible=false
+            this.dialogVisible2=false
+        }  ,
+        //添加歌曲到歌单
+        async addpaly(id){
+            try{
+                const {data:data} =await ChangePlay("add",id,this.music.musicid)
+                console.log("添加音乐",data)
+                if(data.status==200){
+                    if(data.body.code==502){
+                        this.$toast("歌单内歌曲重复","warning")
+                        this.dialogVisible=false
+                    }
+                    if(data.body.code==200){
+                        this.$toast("添加歌单成功","success")
+                        this.dialogVisible=false
+                    }
+                }
+            }catch(Exception){
+                this.$toast("添加歌曲报错","danger")
+                this.dialogVisible=false
+                console.log(Exception)
+            }
+        },
+        //打开新建歌单
+        addnewplay(){
+            this.dialogVisible=false;
+            this.dialogVisible2 = true;
+        },
+        //创建歌单
+        async creatplay(){
+            if(this.input1==""){
+                this.$message.error("请输入歌单名称")
+                return;
+            }else{
+                const {data:data} = await CreatePlay(this.input1)
+                console.log("创建歌单",data)
+                    if(data.code==200){
+                        this.$message.success("创建歌单成功")
+                        this.addpaly(data.id)
+                        this.handleClose() 
+                    }
             }
         }
     },
@@ -520,5 +624,92 @@ color: #4a4a4a;
 .desc{
     height: 300px;
 
+}
+>>>.el-dialog .el-dialog__title{
+    color: #fff;
+}
+>>>.el-dialog .el-dialog__header{
+    background:#000
+}
+>>>.el-dialog .el-dialog__body{
+    padding:0
+}
+.adddj{
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    font-size: 12px;
+    padding-left: 30px;
+    box-sizing: border-box;
+    display: flex;
+    background:#e6e6e6;
+    box-shadow: 1px 2px 5px #ccc;
+}
+.addicon{
+    font-size: 35px;
+    place-self: center;
+}
+.palylist{
+    padding-bottom: 70px;
+}
+.palyitem{
+    display:flex;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    padding: 8px 0 8px 30px;
+}
+.listname{
+    display: flex;
+    flex-direction:column;
+    font-size: 12px;
+}
+.palyitem img{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+.newpaly{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    
+}
+.newplayname{
+    width: 80%;
+    height:30px;
+    display: flex;
+}
+.newplayname input{
+    height:25px;
+    width:210px;
+    outline: none;
+}
+.newplayname span{
+    font-size: 14px;
+    width:60px;
+    line-height: 40px;
+}
+.newdesc{
+    margin: 25px  0 20px 59px;
+}
+.buttongroud{
+    display: flex;
+    padding-left: 58px;
+}
+.newcreat,.newdel{
+    width:80px;
+    height:30px;
+    font-size:13px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+}
+.newcreat{
+    background: #0c73c2;
+    color: #fff;
+    margin-right: 30px;
+}
+.newdel{
+    background: #ccc
 }
 </style>

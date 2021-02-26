@@ -278,7 +278,7 @@ export default {
 	width: 100%;
 }
 .itembox{
-	width: 17%;
+	width: 16%;
 	padding-bottom: 20px;
 } 
 .mvimg{

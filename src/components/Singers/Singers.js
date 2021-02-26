@@ -11,9 +11,10 @@ export function SingersSong(id){
 		method:'get'
 	})
 }
-export function SingersDj(id){
+//歌手的专辑
+export function SingersDj(id,limit=8,offset=0){
 	return request({
-		url:`/artist/album?id=${id}&limit=8`,
+		url:`/artist/album?id=${id}&limit=${limit}&offset=${offset}`,
 		method:'get'
 	})
 }
@@ -23,13 +24,14 @@ export function Singerscart(type=0,area=-1,initial='-1',limit=50,offset=1){
 		method:'get'
 	})
 }
-
+//歌手的mv
 export function SingersMV(id){
 	return request({
 		url:`/artist/mv?id=${id}`,
 		method:'get'
 	})
 }
+
 export function SimiSinger(id){
 	return request({
 		url:`/simi/artist?id=${id}`,
@@ -38,19 +40,28 @@ export function SimiSinger(id){
 }
 
 
-
+//歌手详情
 export function SingersDetails(id){
 	return request({
 		url:`/artist/detail?id=${id}`,
 		method:'get'
 	})
 }
+//歌手的所有音乐
 export function SingersMusic(id,num){
 	return request({
 		url:`/artist/songs?id=${id}&order=hot&limit=15&offset=${num}`,
 		method:'get'
 	})
 }
+//收藏歌手
+export function SubSinger(id,t=1){
+	return request({
+		url:`/artist/sub?id=${id}&t=${t}`,
+		method:'get'
+	})
+}
+
 export class Singers{
 	constructor(singers){
 		this.coverImgUrl=singers.artist.cover

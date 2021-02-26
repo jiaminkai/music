@@ -53,7 +53,8 @@ export default {
 				var c =data.categories
 				c.forEach(item=>{
 					DtCateSub(item.id).then((res)=>{
-						item.djRadios=res.data.djRadios
+						// item.djRadios=res.data.djRadios
+						this.$set(item,'djRadios',res.data.djRadios)
 					})
 				})
 			this.categories=c;

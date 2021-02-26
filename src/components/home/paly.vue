@@ -58,9 +58,12 @@
                                                 prop="isonplay"
                                                 >
                                                 <template slot-scope="scope">
-                                                    <span v-if="!scope.row.isonplay"  >{{scope.row.courrindex}}</span>
-                                                    <!-- <span  v-else class="iconfont">&#xe61c;</span> -->
-                                                    <span v-else class="iconfont">&#xe768;</span>
+                                                    <div class="playstatic" v-if="scope.row.courrindex!=scope.i">
+                                                        <span v-if="!scope.row.isonplay"  >{{scope.row.courrindex}}</span>
+                                                        <span v-else class="iconfont">&#xe768;</span>
+                                                    </div >
+                                                    <span  v-else class="iconfont">&#xe61c;</span>
+                                                    
                                                 </template>
                                                 
                                             </el-table-column>
@@ -165,7 +168,7 @@ export default {
     },
     mounted(){
         window.addEventListener("timeupdate",this.updateTime)
-        this.$bus.$emit('plays',()=>{
+        this.$bus.$on('plays',()=>{
             this.i=0
             this.playmusic()
             
@@ -173,7 +176,10 @@ export default {
         this.$bus.$on('playmnue',(val)=>{
             console.log("val",val)
             this.i=val
-            // this.playmusic()
+            if(val==0){
+                this.$refs.audio.currentTime=0
+            }
+            this.playmusic()
         })
 
         
@@ -246,9 +252,6 @@ export default {
     hoverleave(row,event,column){
         row.hover=false
       row.isonplay=false
-
-     
-
     },
     // 播放目录中的音乐
     onplay(row,event,column){
@@ -350,7 +353,7 @@ export default {
         })
         if(lyricindex!=-1){
             this.geciindex =lyricindex
-            this.top=150 -lyricindex*40
+            this.top=150 -lyricindex*37
         }
     },
     // 播放
@@ -398,7 +401,11 @@ export default {
 
     },
     created(){
-        this.like= JSON.parse(sessionStorage.getItem('music'))
+        this.like= JSON.parse(sessionStorage.getItem('music'))||new Array();
+         if(this.like.length!=0){
+                this.conle("显示播放栏")
+                this.show=true
+            }
         window.addEventListener('setItem', ()=> {
             var c =JSON.parse(sessionStorage.getItem('music'))
             c.forEach((item,index)=>{
@@ -421,7 +428,7 @@ export default {
             })
             
         })
-        this.gecishow(this.like[this.i])
+
         // console.log(this.like[this.i].musicid)
     },
 }
@@ -615,7 +622,7 @@ overflow: hidden;
   margin-top: 20px;
   background: #cacaca;
   opacity: 0.5;
-  blur:52px;
+  /* filter: blur(52px); */
   position: relative;
   overflow: auto;
 }
@@ -641,7 +648,6 @@ overflow: hidden;
     color: #fff;
     font-size: 18px;
     font-weight: bold;
-   /* transform: translateZ(10px) translateY(90px); */
-   padding:12px 0;
+    padding:12px 0;
 }
 </style>

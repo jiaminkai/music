@@ -1,13 +1,13 @@
 import { request } from "../../../request/request";
 //发送、恢复评论
-export function SendComment(type,id,content){
+export function SendComment(type,id,content,t=1){
 	if(type==6){
 		return request({
-			url:`/comment?t=1&type=${type}&threadId=${id}&content=${content}`
+			url:`/comment?t=${t}&type=${type}&threadId=${id}&content=${content}`
 		})
 	}else{
 		return request({
-			url:`/comment?t=1&type=${type}&id=${id}&content=${content}`
+			url:`/comment?t=${t}&type=${type}&id=${id}&content=${content}`
 		})
 	}
 

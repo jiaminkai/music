@@ -79,6 +79,18 @@ export function MyPlaylistVideo(){
 		url:`/playlist/video/recent`
 	})
 }
+//查看签到信息
+export function MyYunbei(){
+	return request({
+		url:`/yunbei/today`
+	})
+}
+//签到
+export function MyYun(){
+	return request({
+		url:`/yunbei/sign`
+	})
+}
 
 
 

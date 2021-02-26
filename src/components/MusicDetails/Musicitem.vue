@@ -25,7 +25,7 @@
                             <span  v-if="this.array!=undefined">{{this.array.user}}</span>
                             <span v-else>{{this.dj.name}}</span>    
                       </div>
-                      <div class="signature" v-if="this.dj!=undefined">{{this.dj.creator.signature}}</div>
+                      <div class="signature" v-if="this.dj!=undefined"><span v-if="this.dj.creator!=undefined">{{this.dj.creator.signature}}</span></div>
                       <div class="tabs" v-if="this.dj==undefined">
                           <span>#独立摇滚</span>
                           <span>#另类摇滚</span>
@@ -35,8 +35,8 @@
                       </div>
                     <div class="Btnbox">
                         <div @click="allplay1" v-if="this.dj==undefined"><span class="iconfont">&#xe630;</span><span>立即播放</span></div>
-                        <div @click="allplay2" v-else><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
-                        <div v-if="dj!=undefined"><span class="iconfont">&#xe607;</span><span>{{this.dj.subscribedCount}}</span></div>
+                        <div @click="allplay2" v-else><span class="iconfont" >&#xe630;</span><span>全部播放</span></div>
+                        <div v-if="dj!=undefined" @click="SubDj" ><span class="iconfont" :style="{color:(this.submusic?'red':'#ccc')}">&#xe607;</span><span>{{this.dj.subscribedCount}}</span></div>
                         <div v-else @click="musicsub"><span class="iconfont">&#xe607;</span><span>13345</span></div>
                         <div><span class="iconfont">&#xe785;</span><span>分享</span></div>
                         <div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
@@ -46,7 +46,7 @@
           <slot name="dj">
               
           </slot>
-            <pinglun :type="2" :hotcomment="this.hotcomment" :newcomment="this.newcomment" :id="this.dj.id" v-if="this.dj!=undefined" >
+            <pinglun :type="2" :hotcomment="this.hotcomment"  :newcomment="this.newcomment" :id="this.dj.id" v-if="this.dj!=undefined" >
                 <div slot="pingtitle">评论</div>
             </pinglun>
             <pinglun :type="0" :hotcomment="this.hotcomment" :newcomment="this.newcomment" :id="this.array.musicid" v-else >
@@ -63,25 +63,30 @@
 </template>
 
 <script>
+import { DjSub } from "../Dj/Dj";
 import pinglun from '../../components/MusicDetails/pinlun.vue';// eslint-disable-line no-unused-vars
 export default {
     name:'Detailsitem',
     props:{
-music:{
-    type:Object
-},
-array:{
-    type:Object
-},
-hotcomment:{
-    type:Array
-},
-newcomment:{
-    type:Array
-},
-dj:{
-    type:Object
-}
+        music:{
+            type:Object
+        },
+        array:{
+            type:Object
+        },
+        hotcomment:{
+            type:Array
+        },
+        newcomment:{
+            type:Array
+        },
+        dj:{
+            type:Object,
+
+        },
+        submusic:{
+            type:Boolean
+        }
     },
     data(){
         return{
@@ -89,17 +94,21 @@ dj:{
             
         }
     },
-    methods:{
+    methods:{ 
+        //收藏/取消歌单
+       async SubDj(){
+            this.$emit('subdj')
+        },
         allplay1(){
                 this.$emit('allplay1',this.music)
                 console.log("aaa" )
             },
         allplay2(){
                 this.$emit('allplay2')
-    },
-    musicsub(){
-        this.$emit('musicsub')
-    }
+        },
+        musicsub(){
+            this.$emit('musicsub')
+        }
     },
     components:{
         pinglun

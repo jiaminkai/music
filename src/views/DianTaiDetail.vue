@@ -9,7 +9,7 @@
 					<div class="content">
 						<div class="DtTitle"><span>电台</span><span>{{this.desc.rcmdText}}</span></div>
 						<div class="DtUser">
-							<img :src="this.desc.dj['avatarUrl']" alt="">
+							<img :src="this.desc.dj.avatarUrl" alt="加载中">
 							<span>{{this.desc.dj.nickname}}</span>
 						</div>
 						<div class="sub">
@@ -157,7 +157,7 @@ export default {
 				item.index=index+1
 				item.hover=false
 				item.createTime =this.getTime(item.createTime)
-				item.duration=(Math.floor(item.duration/1000/60)<10?"0"+Math.floor(item.duration/1000/60):Math.floor(item.duration/1000/60))+":"+(Math.floor(item.duration/1000%60)<10?"0"+Math.floor(item.duration/1000%60):Math.floor(item.duration/1000%60))
+				item.duration=this.$musictime(item.duration)
 			})
 			this.more=data.more
 		},

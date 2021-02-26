@@ -1,5 +1,4 @@
 <template>
-
 	<div class="container"  v-loading="loading" >
 		<div class="left">
 			<div class="aidesc">
@@ -26,7 +25,7 @@
 				</div>
 				<div class="Btnbox">
 					<div @click="allplay2" ><span class="iconfont">&#xe630;</span><span>全部播放</span></div>
-					<div><span class="iconfont">&#xe607;</span><span>1314159</span></div>
+					<div><span class="iconfont" @click="subsinger">&#xe607;</span><span>1314159</span></div>
 					<div><span class="iconfont">&#xe785;</span><span>分享</span></div>
 					<div><span class="iconfont">&#xe608;</span><span>手机试听</span></div>
 				</div>
@@ -82,7 +81,7 @@
 				>
 			</el-pagination>
 			<div class="dj">
-				<div class="djname"><span>专辑</span><span>全部<i class="el-icon-arrow-right"></i></span></div>
+				<div class="djname"><span>专辑</span><span @click="djtomore">全部<i class="el-icon-arrow-right"></i></span></div>
 				<div class="djbox">
 					<div class="djitem" v-for="(item,index) in  this.SingersDj" :key="index" @click="tozj(item.id)">
 						<img :src="item.blurPicUrl" alt="">
@@ -121,7 +120,8 @@
 </template>
 
 <script>
-import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger,Song,SingersSong} from "../components/Singers/Singers";
+import { SingersDetails,Singers,SingersMusic,SingersDj,SingersMV,SimiSinger,Song,SingersSong,SubSinger} from "../components/Singers/Singers";
+import {MyArtist} from "../components/My/my"
 export default {
 	name:'SingersDetails',
 	data(){
@@ -152,9 +152,7 @@ export default {
 			const {data:data} =await SingersMusic(id,limit,num)
 			console.log("music",data.songs)
 			data.songs.forEach(item => {
-				var m=Math.floor(item.dt/1000/60)<10?"0"+Math.floor(item.dt/1000/60):Math.floor(item.dt/1000/60)
-				var s =Math.floor(item.dt/1000%60)<10?"0"+Math.floor(item.dt/1000%60):Math.floor(item.dt/1000%60)
-				item.dt=m+":"+s
+				item.dt=this.$musictime(item.dt)
 				SingersSong(item.id).then((res)=>{
 					item.url  = res.data.data[0].url
 					var a = new Song(item)
@@ -168,6 +166,7 @@ export default {
 		// 获取歌手简介
 		async GetSingersDesc(id){
 			const {data:data}  = await	SingersDj(id)
+			console.log("专辑",data)
 			this.SingersDj=data.hotAlbums
 			this.SingersDj.forEach(item=>{
 				var n = item.publishTime ;
@@ -196,28 +195,13 @@ export default {
 		// 播放全部
 		allplay2(){
 			console.log("播放全部" )
-			var c =JSON.parse(sessionStorage.getItem('music'));
-			if(c.length!=0){
-				c.unshift(...this.songs)
-			}else{
-				c=[];
-				c.unshift(...this.songs)
-			}
-		this.resSetItem('music', JSON.stringify(c));
-        console.log("存入音乐" )
+			this.sendmusic(this.songs)
+			console.log("存入音乐" )
 		},
 		// 播放单曲
 		rowclick(row,column,event){
 			console.log(row )
-			var c =JSON.parse(sessionStorage.getItem('music'));
-			if(c.length!=0){
-			c.unshift(row)
-			}
-			else{
-				c=[];
-				c.unshift(row)
-			}
-			this.resSetItem('music', JSON.stringify(c));
+			this.sendmusic(row)
 		},
 		handleSizeChange(val) {
 			console.log(`每页 ${val} 条`);
@@ -229,7 +213,16 @@ export default {
 			this.getSingersMusic(this.SingersId,this.numindex)
 		},
 		tozj(id){
-			console.log(id )
+			this.$router.push({name:`DatailAlbum`,params:{id}})
+
+		},
+		//调往歌手的全部专辑
+		djtomore(){
+			this.$router.push({path:`/Album${this.$route.params.id}`,query:{name:this.array.artist.name}})
+		},
+		//收藏歌手
+		subsinger(){
+			
 		}
 	},
 	created(){

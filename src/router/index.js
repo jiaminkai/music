@@ -23,8 +23,8 @@ import  MySub2  from "../components/My/MySubItem2.vue";
 import  MySub3 from "../components/My/MySubItem3.vue";
 import  CWDetail from "../views/CloudWallDetails.vue";
 import  DtItem from "../views/DianTaiItem.vue";
-
-
+import  Album from "../views/Album.vue";
+import DatailAlbum from "../views/AlbumDetails.vue";
 import YunCun from "../views/CloudWall.vue"
 
 
@@ -171,6 +171,16 @@ const routes = [
   path:'/DtItem:id',
   name:'DtItem',
   component : DtItem
+},
+{
+  path:'/Album:id',
+  name:'Album',
+  component : Album
+},
+{
+  path:'/DatailAlbum:id',
+  name:'DatailAlbum',
+  component : DatailAlbum
 }
 
 ]

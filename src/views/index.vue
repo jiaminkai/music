@@ -46,21 +46,15 @@ export default {
       await this.getmusic(val.id).then(res=>{
         console.log("播放新歌",res )
         res[0].picUrl=val.picUrl
+        var time =res[0].playtime
+
+        time= this.$musictime(time)
+        res[0].playtime=time
+        console.log(time)
         arr =res[0]
       })
-      var music = JSON.parse(sessionStorage.getItem('music'))||[]
-      console.log("index",arr)
-      var ind= music.findIndex((item,index)=>{
-               return item.musicid==arr.musicid
-            })
-            console.log("index",ind)
-            if(ind==-1){
-                music.unshift(val)
-                this.resSetItem('music',JSON.stringify(music))
-            }else{
-                console.log("bbb" )
-                this.$bus.$emit('playmnue',ind)
-            }
+      console.log("arr",arr)
+      this.sendmusic(arr)
     },
     // 获取音乐
     async getmusic(id){
@@ -96,8 +90,6 @@ export default {
        this.tuijianmusic=music.data.result
        this.tuijianmusic.forEach(function(item){
         item.playCount=  parseInt(item.playCount)/10000>0 ? (parseInt(item.playCount)/10000).toFixed(1)+'万' : parseInt(item.playCount)/1000>0 ? (parseInt(item.playCount)/1000).toFixed(1)+'千':parseInt(item.playCount)
-        
-        // console.log( item.playCount )
            
       })
     },
@@ -113,7 +105,7 @@ export default {
     console.log( music.data.result)
     this.newmusic=music.data.result
     this.newmusic.forEach(item=>{
-      item.song.bMusic.playTime= (item.song.bMusic.playTime/1000/60<10? "0"+Math.floor(item.song.bMusic.playTime/1000/60) : Math.floor(item.song.bMusic.playTime/1000/60))+":"+(item.song.bMusic.playTime/1000%60<10?"0" +Math.floor(item.song.bMusic.playTime/1000%60):Math.floor(item.song.bMusic.playTime/1000%60))
+      item.song.bMusic.playTime= this.$musictime(item.song.bMusic.playTime)
     })
   },
     handleClick(val){
@@ -123,17 +115,13 @@ export default {
     
   },
   async created(){
-    // await this.getdata()
-    // await this.gettuijian()
-    // await  this.getonlyone()
-    // await  this.getnewmusic()
     Promise.all([this.getdata(), this.gettuijian(),this.getonlyone()],this.getnewmusic())
   }
 }
 
 </script>
     
-<style scoped>
+<style scoped>  
 
 .top{
   margin-top: 30px;
